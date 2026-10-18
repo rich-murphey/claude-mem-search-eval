@@ -1,0 +1,52 @@
+# miracl-ja through claude-mem's server search (scoped)
+
+MIRACL ja dev, human-judged, pooled corpus (mteb/MIRACLRetrievalHardNegatives @ 332a9acb, CC-BY-SA-4.0). 860 queries; each query searches its claude-mem project; a document is one observation and each part one embedding part; top 10 from PostgresObservationRepository.search; 95% intervals from 2000 bootstrap resamples over queries.
+
+MIRACL answers "how accurate is it, measured properly": human-judged relevance with explicit non-relevant judgments, two to three relevant passages per query, so P@5, R@5 and F1@5 are meaningful; J@5 bounds the unjudged share of each top 5.
+
+Best treated as a measurement of relative accuracy between models, given the label errors discussed in the README ("Caveat on absolute accuracy").
+
+| Run | P@5 | R@5 | F1@5 | R@10 | R-prec | MRR@10 | nDCG@10 | J@5 |
+|---|---|---|---|---|---|---|---|---|
+| keyword only | 0.001 (0.000–0.002) | 0.003 (0.000–0.007) | 0.001 (0.000–0.003) | 0.003 (0.000–0.007) | 0.003 (0.000–0.007) | 0.003 (0.000–0.008) | 0.003 (0.000–0.007) | 0.001 (0.000–0.003) |
+| minilm-l6 vector | 0.004 (0.002–0.006) | 0.010 (0.005–0.016) | 0.005 (0.003–0.008) | 0.016 (0.010–0.024) | 0.007 (0.003–0.011) | 0.014 (0.008–0.020) | 0.011 (0.006–0.016) | 0.010 (0.007–0.013) |
+| minilm-l6 hybrid | 0.005 (0.003–0.007) | 0.012 (0.007–0.019) | 0.006 (0.004–0.009) | 0.019 (0.011–0.027) | 0.008 (0.004–0.013) | 0.016 (0.010–0.023) | 0.013 (0.008–0.019) | 0.010 (0.007–0.013) |
+| multilingual-minilm-l12 vector | 0.081 (0.072–0.091) | 0.201 (0.179–0.226) | 0.106 (0.095–0.118) | 0.267 (0.243–0.295) | 0.115 (0.099–0.132) | 0.215 (0.192–0.239) | 0.192 (0.172–0.212) | 0.182 (0.167–0.197) |
+| multilingual-minilm-l12 hybrid | 0.082 (0.073–0.091) | 0.204 (0.182–0.229) | 0.107 (0.096–0.119) | 0.269 (0.244–0.297) | 0.117 (0.100–0.134) | 0.216 (0.194–0.241) | 0.193 (0.175–0.213) | 0.183 (0.168–0.198) |
+| multilingual-e5-small vector | 0.240 (0.230–0.251) | 0.682 (0.657–0.707) | 0.329 (0.317–0.342) | 0.771 (0.748–0.793) | 0.455 (0.428–0.483) | 0.678 (0.654–0.703) | 0.639 (0.618–0.661) | 0.527 (0.510–0.544) |
+| multilingual-e5-small hybrid | 0.240 (0.230–0.251) | 0.682 (0.657–0.707) | 0.329 (0.317–0.342) | 0.771 (0.748–0.793) | 0.456 (0.429–0.484) | 0.678 (0.654–0.703) | 0.639 (0.618–0.661) | 0.527 (0.510–0.544) |
+
+## R@5 / F1@5 by query type
+
+| Run | ja (860) |
+|---|---|
+| keyword only | 0.003 / 0.001 |
+| minilm-l6 vector | 0.010 / 0.005 |
+| minilm-l6 hybrid | 0.012 / 0.006 |
+| multilingual-minilm-l12 vector | 0.201 / 0.106 |
+| multilingual-minilm-l12 hybrid | 0.204 / 0.107 |
+| multilingual-e5-small vector | 0.682 / 0.329 |
+| multilingual-e5-small hybrid | 0.682 / 0.329 |
+
+## Paired differences
+
+Per-question difference, then the mean and its 95% interval.
+
+| Run − baseline | P@5 | R@5 | F1@5 | R@10 | R-prec | MRR@10 | nDCG@10 | J@5 |
+|---|---|---|---|---|---|---|---|---|
+| minilm-l6 hybrid − minilm-l6 vector | +0.001 (0.000–0.002) | +0.003 (0.000–0.006) | +0.001 (0.000–0.002) | +0.003 (0.000–0.006) | +0.001 (0.000–0.004) | +0.002 (0.000–0.005) | +0.002 (0.000–0.005) | +0.001 (0.000–0.002) |
+| minilm-l6 hybrid − keyword only | +0.004 (0.002–0.006) | +0.010 (0.005–0.016) | +0.005 (0.003–0.008) | +0.016 (0.009–0.024) | +0.005 (0.001–0.010) | +0.012 (0.006–0.019) | +0.010 (0.005–0.015) | +0.009 (0.006–0.012) |
+| multilingual-minilm-l12 hybrid − multilingual-minilm-l12 vector | +0.001 (0.000–0.002) | +0.003 (0.000–0.006) | +0.001 (0.000–0.002) | +0.002 (0.000–0.004) | +0.001 (0.000–0.004) | +0.002 (0.000–0.004) | +0.002 (0.000–0.004) | +0.001 (0.000–0.002) |
+| multilingual-minilm-l12 hybrid − keyword only | +0.081 (0.072–0.090) | +0.201 (0.179–0.226) | +0.106 (0.095–0.118) | +0.265 (0.241–0.293) | +0.114 (0.098–0.131) | +0.213 (0.190–0.238) | +0.190 (0.171–0.211) | +0.181 (0.167–0.196) |
+| multilingual-e5-small hybrid − multilingual-e5-small vector | +0.000 (0.000–0.000) | +0.000 (0.000–0.000) | +0.000 (0.000–0.000) | -0.000 (-0.001–0.000) | +0.001 (0.000–0.003) | +0.000 (-0.002–0.002) | +0.000 (-0.001–0.001) | +0.000 (0.000–0.000) |
+| multilingual-e5-small hybrid − keyword only | +0.239 (0.228–0.250) | +0.679 (0.654–0.705) | +0.328 (0.316–0.341) | +0.768 (0.745–0.791) | +0.454 (0.426–0.481) | +0.674 (0.650–0.700) | +0.636 (0.615–0.658) | +0.526 (0.509–0.543) |
+| multilingual-minilm-l12 vector − minilm-l6 vector | +0.077 (0.068–0.087) | +0.192 (0.169–0.216) | +0.101 (0.090–0.112) | +0.250 (0.226–0.279) | +0.109 (0.093–0.126) | +0.201 (0.179–0.226) | +0.181 (0.162–0.201) | +0.172 (0.158–0.188) |
+| multilingual-minilm-l12 hybrid − minilm-l6 hybrid | +0.077 (0.068–0.087) | +0.192 (0.169–0.216) | +0.101 (0.090–0.112) | +0.250 (0.224–0.278) | +0.109 (0.093–0.126) | +0.201 (0.178–0.226) | +0.180 (0.162–0.200) | +0.172 (0.158–0.188) |
+| multilingual-e5-small vector − minilm-l6 vector | +0.236 (0.226–0.247) | +0.672 (0.647–0.698) | +0.324 (0.312–0.337) | +0.755 (0.732–0.778) | +0.449 (0.421–0.477) | +0.664 (0.639–0.690) | +0.628 (0.606–0.650) | +0.518 (0.500–0.535) |
+| multilingual-e5-small hybrid − minilm-l6 hybrid | +0.235 (0.225–0.246) | +0.669 (0.644–0.696) | +0.323 (0.311–0.336) | +0.752 (0.729–0.776) | +0.449 (0.421–0.477) | +0.662 (0.636–0.688) | +0.626 (0.605–0.648) | +0.517 (0.500–0.534) |
+
+## Timing
+
+- minilm-l6: load and index 576s, 2580 searches 36s
+- multilingual-minilm-l12: load and index 607s, 1720 searches 31s
+- multilingual-e5-small: load and index 610s, 1720 searches 34s

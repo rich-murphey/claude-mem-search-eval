@@ -1,0 +1,52 @@
+# longmemeval-s through claude-mem's server search (scoped)
+
+LongMemEval-S cleaned (xiaowu0162/longmemeval-cleaned @ 98d7416c, MIT). 14 queries with at least 5 relevant documents; each query is its own claude-mem project holding its own haystack; a document is one observation and each part one embedding part; top 10 from PostgresObservationRepository.search; 95% intervals from 2000 bootstrap resamples over queries.
+
+LongMemEval answers whether a model change costs English memory search accuracy.
+
+Best treated as a measurement of relative accuracy between models, given the label errors discussed in the README ("Caveat on absolute accuracy").
+
+| Run | P@5 | R@5 | F1@5 | R@10 | R-prec | MRR@10 | nDCG@10 |
+|---|---|---|---|---|---|---|---|
+| keyword only | 0.629 (0.500–0.757) | 0.605 (0.481–0.736) | 0.616 (0.490–0.743) | 0.729 (0.586–0.862) | 0.617 (0.486–0.750) | 0.893 (0.786–1.000) | 0.741 (0.635–0.840) |
+| minilm-l6 vector | 0.829 (0.729–0.914) | 0.798 (0.695–0.888) | 0.812 (0.710–0.901) | 0.945 (0.876–1.000) | 0.810 (0.702–0.902) | 0.964 (0.893–1.000) | 0.924 (0.866–0.971) |
+| minilm-l6 hybrid | 0.829 (0.743–0.914) | 0.798 (0.710–0.888) | 0.812 (0.725–0.899) | 0.974 (0.933–1.000) | 0.810 (0.719–0.902) | 1.000 (1.000–1.000) | 0.944 (0.908–0.976) |
+| multilingual-minilm-l12 vector | 0.857 (0.771–0.929) | 0.826 (0.745–0.902) | 0.840 (0.760–0.913) | 0.962 (0.900–1.000) | 0.850 (0.757–0.929) | 1.000 (1.000–1.000) | 0.959 (0.907–0.994) |
+| multilingual-minilm-l12 hybrid | 0.871 (0.786–0.943) | 0.840 (0.757–0.917) | 0.855 (0.774–0.926) | 0.988 (0.964–1.000) | 0.864 (0.779–0.943) | 1.000 (1.000–1.000) | 0.965 (0.939–0.988) |
+| multilingual-e5-small vector | 0.914 (0.843–0.971) | 0.883 (0.805–0.960) | 0.897 (0.826–0.965) | 1.000 (1.000–1.000) | 0.907 (0.833–0.974) | 1.000 (1.000–1.000) | 0.986 (0.973–0.997) |
+| multilingual-e5-small hybrid | 0.857 (0.786–0.929) | 0.829 (0.745–0.912) | 0.842 (0.764–0.917) | 0.988 (0.964–1.000) | 0.864 (0.793–0.931) | 1.000 (1.000–1.000) | 0.967 (0.940–0.990) |
+
+## R@5 / F1@5 by query type
+
+| Run | multi-session (6) | temporal-reasoning (8) |
+|---|---|---|
+| keyword only | 0.567 / 0.567 | 0.633 / 0.652 |
+| minilm-l6 vector | 0.733 / 0.733 | 0.846 / 0.870 |
+| minilm-l6 hybrid | 0.767 / 0.767 | 0.821 / 0.845 |
+| multilingual-minilm-l12 vector | 0.800 / 0.800 | 0.846 / 0.870 |
+| multilingual-minilm-l12 hybrid | 0.867 / 0.867 | 0.821 / 0.845 |
+| multilingual-e5-small vector | 0.933 / 0.933 | 0.846 / 0.870 |
+| multilingual-e5-small hybrid | 0.867 / 0.867 | 0.800 / 0.823 |
+
+## Paired differences
+
+Per-question difference, then the mean and its 95% interval.
+
+| Run − baseline | P@5 | R@5 | F1@5 | R@10 | R-prec | MRR@10 | nDCG@10 |
+|---|---|---|---|---|---|---|---|
+| minilm-l6 hybrid − minilm-l6 vector | -0.000 (-0.057–0.057) | -0.000 (-0.057–0.057) | -0.000 (-0.057–0.057) | +0.029 (0.000–0.086) | -0.000 (-0.057–0.057) | +0.036 (0.000–0.107) | +0.020 (-0.017–0.066) |
+| minilm-l6 hybrid − keyword only | +0.200 (0.057–0.357) | +0.193 (0.057–0.336) | +0.196 (0.057–0.345) | +0.245 (0.124–0.388) | +0.193 (0.057–0.336) | +0.107 (0.000–0.214) | +0.203 (0.108–0.308) |
+| multilingual-minilm-l12 hybrid − multilingual-minilm-l12 vector | +0.014 (-0.029–0.057) | +0.014 (-0.029–0.057) | +0.014 (-0.029–0.057) | +0.026 (0.000–0.067) | +0.014 (-0.029–0.057) | +0.000 (0.000–0.000) | +0.006 (-0.020–0.039) |
+| multilingual-minilm-l12 hybrid − keyword only | +0.243 (0.114–0.386) | +0.236 (0.114–0.371) | +0.239 (0.114–0.378) | +0.260 (0.129–0.405) | +0.248 (0.119–0.395) | +0.107 (0.000–0.214) | +0.224 (0.131–0.331) |
+| multilingual-e5-small hybrid − multilingual-e5-small vector | -0.057 (-0.100–-0.014) | -0.055 (-0.100–-0.014) | -0.056 (-0.100–-0.014) | -0.012 (-0.036–0.000) | -0.043 (-0.086–0.000) | +0.000 (0.000–0.000) | -0.019 (-0.035–-0.005) |
+| multilingual-e5-small hybrid − keyword only | +0.229 (0.129–0.343) | +0.224 (0.124–0.333) | +0.226 (0.126–0.338) | +0.260 (0.129–0.405) | +0.248 (0.140–0.357) | +0.107 (0.000–0.214) | +0.226 (0.137–0.329) |
+| multilingual-minilm-l12 vector − minilm-l6 vector | +0.029 (-0.029–0.086) | +0.029 (-0.029–0.086) | +0.029 (-0.029–0.086) | +0.017 (-0.024–0.060) | +0.040 (-0.017–0.098) | +0.036 (0.000–0.107) | +0.035 (-0.002–0.078) |
+| multilingual-minilm-l12 hybrid − minilm-l6 hybrid | +0.043 (0.000–0.086) | +0.043 (0.000–0.086) | +0.043 (0.000–0.086) | +0.014 (0.000–0.043) | +0.055 (0.014–0.100) | +0.000 (0.000–0.000) | +0.022 (0.006–0.042) |
+| multilingual-e5-small vector − minilm-l6 vector | +0.086 (-0.014–0.200) | +0.086 (-0.019–0.202) | +0.086 (-0.017–0.203) | +0.055 (0.000–0.124) | +0.098 (-0.000–0.212) | +0.036 (0.000–0.107) | +0.062 (0.015–0.120) |
+| multilingual-e5-small hybrid − minilm-l6 hybrid | +0.029 (-0.043–0.100) | +0.031 (-0.033–0.100) | +0.030 (-0.038–0.100) | +0.014 (0.000–0.043) | +0.055 (-0.005–0.114) | +0.000 (0.000–0.000) | +0.024 (0.003–0.049) |
+
+## Timing
+
+- minilm-l6: load and index 14s, 42 searches 0s
+- multilingual-minilm-l12: load and index 13s, 28 searches 0s
+- multilingual-e5-small: load and index 12s, 28 searches 0s

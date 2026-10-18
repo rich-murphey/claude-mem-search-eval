@@ -1,0 +1,30 @@
+# longmemeval-s, vector only (exact)
+
+LongMemEval-S cleaned (xiaowu0162/longmemeval-cleaned @ 98d7416c, MIT). 470 queries; each searches its own haystack; a document scores as its best part; 95% intervals from 2000 bootstrap resamples over queries.
+
+LongMemEval answers whether a model change costs English memory search accuracy.
+
+Best treated as a measurement of relative accuracy between models, given the label errors discussed in the README ("Caveat on absolute accuracy").
+
+| Run | P@5 | R@5 | F1@5 | R@10 | R-prec | MRR@10 | nDCG@10 |
+|---|---|---|---|---|---|---|---|
+| minilm-l6 | 0.346 (0.331–0.362) | 0.934 (0.917–0.951) | 0.484 (0.469–0.500) | 0.970 (0.958–0.981) | 0.808 (0.778–0.838) | 0.912 (0.892–0.933) | 0.908 (0.890–0.925) |
+| multilingual-minilm-l12 | 0.347 (0.331–0.364) | 0.931 (0.911–0.949) | 0.484 (0.469–0.502) | 0.972 (0.959–0.983) | 0.819 (0.791–0.847) | 0.904 (0.882–0.926) | 0.906 (0.888–0.924) |
+| multilingual-e5-small | 0.354 (0.339–0.370) | 0.948 (0.931–0.964) | 0.494 (0.479–0.510) | 0.981 (0.970–0.991) | 0.861 (0.834–0.887) | 0.937 (0.918–0.954) | 0.935 (0.919–0.950) |
+
+## R@5 / F1@5 by query type
+
+| Run | knowledge-update (72) | multi-session (121) | single-session-assistant (56) | single-session-preference (30) | single-session-user (64) | temporal-reasoning (127) |
+|---|---|---|---|---|---|---|
+| minilm-l6 | 0.979 / 0.560 | 0.907 / 0.601 | 1.000 / 0.333 | 0.967 / 0.322 | 0.969 / 0.323 | 0.881 / 0.516 |
+| multilingual-minilm-l12 | 0.993 / 0.567 | 0.912 / 0.607 | 1.000 / 0.333 | 0.900 / 0.300 | 0.984 / 0.328 | 0.862 / 0.509 |
+| multilingual-e5-small | 1.000 / 0.571 | 0.945 / 0.630 | 1.000 / 0.333 | 0.900 / 0.300 | 1.000 / 0.333 | 0.885 / 0.518 |
+
+## Paired differences
+
+Per-question difference, then the mean and its 95% interval.
+
+| Run − baseline | P@5 | R@5 | F1@5 | R@10 | R-prec | MRR@10 | nDCG@10 |
+|---|---|---|---|---|---|---|---|
+| multilingual-minilm-l12 − minilm-l6 | +0.001 (-0.006–0.007) | -0.004 (-0.018–0.011) | +0.000 (-0.008–0.008) | +0.002 (-0.012–0.015) | +0.011 (-0.013–0.034) | -0.008 (-0.025–0.009) | -0.002 (-0.015–0.012) |
+| multilingual-e5-small − minilm-l6 | +0.008 (0.001–0.015) | +0.014 (-0.002–0.030) | +0.010 (0.001–0.019) | +0.011 (-0.000–0.023) | +0.053 (0.026–0.078) | +0.025 (0.006–0.041) | +0.027 (0.013–0.040) |
