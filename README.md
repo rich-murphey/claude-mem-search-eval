@@ -40,9 +40,11 @@ Checked in this repo's preparation (2026-10-18):
 - A literal search for each short answer string in non-answer sessions hit
   64 of 298 questions; a sample of 12 hits were all coincidences ("two",
   "Tom", "$300" in unrelated text), none an unlabelled answer. The cleaned
-  release exists to remove sessions that interfered with answers. Unlabelled
-  paraphrased answers cannot be ruled out without judging, so precision is a
-  lower bound.
+  release exists to remove sessions that interfered with answers.
+- **Caveat: precision measured against these labels is a lower bound.** Some
+  sessions that hold an answer may be unlabelled, in paraphrase that a
+  literal search cannot find, and a retrieved unlabelled answer counts as a
+  miss. Bounding this takes judging (plan step 5).
 - The text is native English, not translated, but much of it is
   machine-generated: UltraChat dialogues, ShareGPT chats and LLM-simulated
   evidence sessions.
