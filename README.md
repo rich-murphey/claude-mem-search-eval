@@ -28,6 +28,8 @@ Face at a pinned revision and checked against its sha256
 - 300 of the 470 have two to six relevant sessions, so precision and F1 are
   not just recall divided by k.
 - 19,195 distinct sessions, 199,509 turns, 198 million characters.
+- 12 answerable questions list one session (never an answer session) twice
+  in their haystack; each session is counted once.
 
 ### Label errors
 
