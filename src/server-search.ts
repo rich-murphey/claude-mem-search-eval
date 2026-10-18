@@ -1,23 +1,23 @@
-// Retrieval accuracy of claude-mem's own server search on LongMemEval-S,
-// from the precomputed vectors: keyword only, vector only, and the shipped
-// hybrid (reciprocal rank fusion of both).
+// Retrieval accuracy of claude-mem's own server search, from the precomputed
+// vectors: keyword only, vector only, and the shipped hybrid (reciprocal rank
+// fusion of both).
 //
 //   bun src/server-search.ts --claude-mem ~/wt/claude-mem/<tree> \
-//     --db postgres://postgres:t@127.0.0.1:55480/postgres [--models a,b] [--mode haystack|store]
-//     [--manifest manifests/lme-s-100-v1.txt]
+//     --db postgres://postgres:t@127.0.0.1:55480/postgres --dataset longmemeval-s \
+//     [--models a,b] [--mode scoped|store] [--manifest manifests/x.txt] [--min-relevant 5]
 //
 // Runs under bun because it imports claude-mem's TypeScript source. The
-// database must be a throwaway pgvector Postgres: each model gets its own
-// schema, dropped and rebuilt on every run.
+// database must be a throwaway pgvector Postgres: each dataset, mode and model
+// gets its own schema, dropped and rebuilt on every run.
 //
 // Modes:
-//   haystack  each question is its own claude-mem project holding its ~47
-//             sessions (LongMemEval's definition).
-//   store     every session in one project, searched by every question:
-//             closer to how one claude-mem user's store is searched, and
-//             harder than the benchmark.
+//   scoped  each query searches what the dataset gives it: LongMemEval's
+//           per-question haystack, stored as that question's own claude-mem
+//           project; otherwise the query's project.
+//   store   every document in one project, searched by every query: closer to
+//           one claude-mem user's store, and harder than the benchmark.
 //
-// A session is one observation; each of its turns is one embedding part,
+// A document is one observation; each of its parts is one embedding part,
 // carrying the published vector and the model id claude-mem's LocalEmbedder
 // gives that model. The vector-only run sends a query of stop words alone,
 // which gives an empty text-search query, so the keyword leg returns nothing
@@ -27,8 +27,8 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 import pg from 'pg';
-import { distinctTurns, loadLongMemEvalS, LME_REVISION } from './longmemeval.ts';
-import { BOOTSTRAP, loadVectors, metricsFor, readManifest, RELATIVE_ACCURACY_NOTE, renderTables, type Metrics } from './metrics.ts';
+import { loadDataset, rowsOf, type Doc, type Query } from './datasets.ts';
+import { BOOTSTRAP, loadVectors, metricsFor, readManifest, renderTables, resultsHeader, type Metrics } from './metrics.ts';
 import { MODELS, modelByKey, type EvalModel } from './models.ts';
 
 const LIMIT = 10;
@@ -38,8 +38,9 @@ const { values } = parseArgs({
   options: {
     'claude-mem': { type: 'string' },
     db: { type: 'string' },
+    dataset: { type: 'string', default: 'longmemeval-s' },
     models: { type: 'string', default: MODELS.map(m => m.key).join(',') },
-    mode: { type: 'string', default: 'haystack' },
+    mode: { type: 'string', default: 'scoped' },
     manifest: { type: 'string' },
     'min-relevant': { type: 'string', default: '1' },
     out: { type: 'string', default: 'out' },
@@ -47,8 +48,8 @@ const { values } = parseArgs({
   },
 });
 const claudeMem = resolve(values['claude-mem'] ?? '');
-const mode = values.mode as 'haystack' | 'store';
-if (mode !== 'haystack' && mode !== 'store') throw new Error(`--mode must be haystack or store, not ${mode}`);
+const mode = values.mode as 'scoped' | 'store';
+if (mode !== 'scoped' && mode !== 'store') throw new Error(`--mode must be scoped or store, not ${mode}`);
 
 // claude-mem's logger writes under its data directory; keep it out of the
 // user's own.
@@ -58,29 +59,28 @@ const { createPostgresStorageRepositories, PostgresObservationRepository } = awa
 const { LocalEmbedder } = await import(`${claudeMem}/src/services/vector/LocalEmbedder.ts`);
 const { EMBEDDING_MODELS } = await import(`${claudeMem}/src/services/vector/models.ts`);
 
-/** claude-mem's entry for an eval model, which must describe the same embedding. */
-function claudeMemModel(model: EvalModel) {
+/** claude-mem's model id for an eval model, whose models.ts entry must describe the same embedding. */
+function claudeMemModelId(model: EvalModel): string {
   const entry = Object.values(EMBEDDING_MODELS as Record<string, any>).find(m => m.repo === model.repo);
   if (!entry || entry.maxTokens !== model.maxTokens || entry.queryPrefix !== model.queryPrefix
     || entry.passagePrefix !== model.passagePrefix || entry.dims !== model.dims) {
     throw new Error(`claude-mem at ${claudeMem} has no models.ts entry matching ${model.key}`);
   }
-  return entry;
+  return new LocalEmbedder(entry).modelId;
 }
 
-const allQuestions = await loadLongMemEvalS();
+const dataset = await loadDataset(values.dataset!);
 const manifest = values.manifest ? readManifest(values.manifest) : null;
-// --min-relevant 5 keeps questions with at least five relevant sessions,
-// where a perfect top 5 scores P@5 = 1 (with one, P@5 cannot exceed 0.2).
+// --min-relevant 5 keeps queries with at least five relevant documents, where
+// a perfect top 5 scores P@5 = 1 (with one, P@5 cannot exceed 0.2).
 const minRelevant = Number(values['min-relevant']);
-const questions = allQuestions.filter(q => !q.question_id.endsWith('_abs') && (!manifest || manifest.has(q.question_id))
-  && new Set(q.answer_session_ids).size >= minRelevant);
-const queryIndex = new Map(allQuestions.map((q, i) => [q.question_id, i]));
-const rows = distinctTurns(allQuestions);
-const sessionRows = new Map<string, number[]>();
-rows.forEach((r, i) => {
-  if (!sessionRows.has(r.sessionId)) sessionRows.set(r.sessionId, []);
-  sessionRows.get(r.sessionId)!.push(i);
+const queries = dataset.queries.filter(q => (!manifest || manifest.has(q.id)) && q.relevant.size >= minRelevant);
+const queryIndex = new Map(dataset.queries.map((q, i) => [q.id, i]));
+const docsById = new Map(dataset.docs.map(d => [d.id, d]));
+const docRows = new Map<string, number[]>();
+rowsOf(dataset).forEach((r, i) => {
+  if (!docRows.has(r.doc)) docRows.set(r.doc, []);
+  docRows.get(r.doc)!.push(i);
 });
 
 const admin = new pg.Client({ connectionString: values.db });
@@ -93,106 +93,108 @@ const toLiteral = (v: Float32Array, row: number, dims: number) => {
   return `[${parts.join(',')}]`;
 };
 
-interface Loaded { pool: pg.Pool; teamId: string; projectOf: (questionId: string) => string; observationOf: (questionId: string, sessionId: string) => string }
+/**
+ * Projects to create, each with the documents it holds and the prefix that
+ * makes their observation ids unique, and the project each query searches.
+ */
+function layout(): { projects: Map<string, { docs: Doc[]; prefix: string }>; projectOf: (q: Query) => string } {
+  const projects = new Map<string, { docs: Doc[]; prefix: string }>();
+  if (mode === 'store') {
+    const used = new Set(queries.flatMap(q => q.candidates ?? []));
+    const docs = queries[0].candidates ? dataset.docs.filter(d => used.has(d.id)) : dataset.docs;
+    projects.set('all', { docs, prefix: '' });
+    return { projects, projectOf: () => 'all' };
+  }
+  if (queries[0].candidates) {
+    for (const q of queries) projects.set(q.id, { docs: q.candidates!.map(id => docsById.get(id)!), prefix: `${q.id}:` });
+    return { projects, projectOf: q => q.id };
+  }
+  for (const d of dataset.docs) {
+    if (!projects.has(d.project)) projects.set(d.project, { docs: [], prefix: '' });
+    projects.get(d.project)!.docs.push(d);
+  }
+  return { projects, projectOf: q => q.project! };
+}
 
-async function load(model: EvalModel): Promise<Loaded> {
-  const schema = `cmeval_${mode}_${model.key.replace(/-/g, '_')}`;
+async function load(model: EvalModel, modelId: string) {
+  const schema = `cmeval_${dataset.key}_${mode}_${model.key}`.replace(/-/g, '_');
   await admin.query(`DROP SCHEMA IF EXISTS ${schema} CASCADE`);
   await admin.query(`CREATE SCHEMA ${schema}`);
   const pool = new pg.Pool({ connectionString: values.db, options: `-c search_path=${schema},public`, max: 4 });
   pool.on('error', () => {});
   await bootstrapServerPostgresSchema(pool, model.dims);
   const storage = createPostgresStorageRepositories(pool);
-  const team = await storage.teams.create({ name: 'longmemeval' });
-  const modelId = new LocalEmbedder(claudeMemModel(model)).modelId;
-  const turns = loadVectors(`${values.out}/${model.key}/turns.f16.bin`, model.dims);
+  const team = await storage.teams.create({ name: dataset.key });
+  const rows = loadVectors(`${values.out}/${dataset.key}/${model.key}/rows.f16.bin`, model.dims);
 
   // Load without the HNSW index and build it once at the end, as a restore
   // would; bootstrapping again recreates exactly the server's index.
   await pool.query('DROP INDEX idx_observation_embeddings_hnsw');
 
-  const projects = new Map<string, string>();
-  const insertSessions = async (projectId: string, idPrefix: string, sessionIds: string[]) => {
-    const ids = sessionIds.map(s => idPrefix + s);
-    const contents = sessionIds.map(s => sessionRows.get(s)!.map(r => rows[r].content).join('\n\n'));
-    await pool.query(
-      `INSERT INTO observations (id, project_id, team_id, content)
-       SELECT id, $2, $3, content FROM unnest($1::text[], $4::text[]) AS t(id, content)`,
-      [ids, projectId, team.id, contents],
-    );
-    const obs: string[] = [], partNames: string[] = [], vectors: string[] = [];
-    const flush = async () => {
-      if (obs.length === 0) return;
+  const { projects, projectOf } = layout();
+  const projectIds = new Map<string, string>();
+  for (const [name, { docs, prefix }] of projects) {
+    const project = await storage.projects.create({ teamId: team.id, name });
+    projectIds.set(name, project.id);
+    for (let start = 0; start < docs.length; start += 500) {
+      const batch = docs.slice(start, start + 500);
+      await pool.query(
+        `INSERT INTO observations (id, project_id, team_id, content)
+         SELECT id, $2, $3, content FROM unnest($1::text[], $4::text[]) AS t(id, content)`,
+        [batch.map(d => prefix + d.id), project.id, team.id, batch.map(d => d.parts.join('\n\n'))],
+      );
+      const obs: string[] = [], partNames: string[] = [], vectors: string[] = [];
+      for (const d of batch) {
+        docRows.get(d.id)!.forEach((row, part) => {
+          obs.push(prefix + d.id); partNames.push(`part_${part}`); vectors.push(toLiteral(rows, row, model.dims));
+        });
+      }
       await pool.query(
         `INSERT INTO observation_embeddings (observation_id, project_id, team_id, part, model, embedding)
          SELECT o, $2, $3, p, $4, e::vector FROM unnest($1::text[], $5::text[], $6::text[]) AS t(o, p, e)`,
-        [obs, projectId, team.id, modelId, partNames, vectors],
+        [obs, project.id, team.id, modelId, partNames, vectors],
       );
-      obs.length = partNames.length = vectors.length = 0;
-    };
-    for (const [k, sessionId] of sessionIds.entries()) {
-      sessionRows.get(sessionId)!.forEach((row, turn) => {
-        obs.push(ids[k]); partNames.push(`turn_${turn}`); vectors.push(toLiteral(turns, row, model.dims));
-      });
-      if (obs.length >= 2000) await flush();
     }
-    await flush();
-  };
-
-  if (mode === 'haystack') {
-    for (const q of questions) {
-      const project = await storage.projects.create({ teamId: team.id, name: q.question_id });
-      projects.set(q.question_id, project.id);
-      // A haystack can list a session twice (README, Data); it is stored once.
-      await insertSessions(project.id, `${q.question_id}:`, [...new Set(q.haystack_session_ids)]);
-    }
-  } else {
-    const project = await storage.projects.create({ teamId: team.id, name: 'all' });
-    const sessions = [...new Set(questions.flatMap(q => q.haystack_session_ids))];
-    await insertSessions(project.id, '', sessions);
-    for (const q of questions) projects.set(q.question_id, project.id);
   }
   await bootstrapServerPostgresSchema(pool, model.dims);
   await pool.query('ANALYZE');
-  return {
-    pool,
-    teamId: team.id,
-    projectOf: id => projects.get(id)!,
-    observationOf: (questionId, sessionId) => (mode === 'haystack' ? `${questionId}:${sessionId}` : sessionId),
-  };
+  return { pool, teamId: team.id, projectIdOf: (q: Query) => projectIds.get(projectOf(q))! };
 }
 
 const runs = new Map<string, Metrics[]>();
 const timings: string[] = [];
-const sessionOf = (observationId: string) => observationId.slice(observationId.indexOf(':') + 1);
+const docOf = (observationId: string) => observationId.slice(observationId.indexOf(':') + 1);
 
 for (const key of values.models!.split(',')) {
   const model = modelByKey(key);
-  const modelId = new LocalEmbedder(claudeMemModel(model)).modelId;
-  const queries = loadVectors(`${values.out}/${key}/queries.f16.bin`, model.dims);
+  const modelId = claudeMemModelId(model);
+  const queryVectors = loadVectors(`${values.out}/${dataset.key}/${key}/queries.f16.bin`, model.dims);
+  const vectorOf = (q: Query) => {
+    const i = queryIndex.get(q.id)!;
+    return { vector: queryVectors.subarray(i * model.dims, (i + 1) * model.dims), model: modelId };
+  };
   let started = performance.now();
-  const loaded = await load(model);
+  const loaded = await load(model, modelId);
   const loadSeconds = (performance.now() - started) / 1000;
   const repo = new PostgresObservationRepository(loaded.pool);
 
-  const variants: [string, (q: typeof questions[number]) => object][] = [
-    ['vector', q => ({ query: VECTOR_ONLY_QUERY, queryEmbedding: { vector: queries.subarray(queryIndex.get(q.question_id)! * model.dims, (queryIndex.get(q.question_id)! + 1) * model.dims), model: modelId } })],
-    ['hybrid', q => ({ query: q.question, queryEmbedding: { vector: queries.subarray(queryIndex.get(q.question_id)! * model.dims, (queryIndex.get(q.question_id)! + 1) * model.dims), model: modelId } })],
+  const variants: [string, (q: Query) => object][] = [
+    ['vector', q => ({ query: VECTOR_ONLY_QUERY, queryEmbedding: vectorOf(q) })],
+    ['hybrid', q => ({ query: q.text, queryEmbedding: vectorOf(q) })],
   ];
   // Keyword search does not depend on the model; run it once, on the first.
-  if (runs.size === 0) variants.unshift(['keyword', q => ({ query: q.question })]);
+  if (runs.size === 0) variants.unshift(['keyword', q => ({ query: q.text })]);
 
   started = performance.now();
   for (const [variant, input] of variants) {
     const results: Metrics[] = [];
-    for (const q of questions) {
-      const found = await repo.search({ projectId: loaded.projectOf(q.question_id), teamId: loaded.teamId, limit: LIMIT, ...input(q) });
-      const ranked = found.map((o: { id: string }) => mode === 'haystack' ? sessionOf(o.id) : o.id);
-      results.push(metricsFor(ranked, new Set(q.answer_session_ids)));
+    for (const q of queries) {
+      const found = await repo.search({ projectId: loaded.projectIdOf(q), teamId: loaded.teamId, limit: LIMIT, ...input(q) });
+      results.push(metricsFor(found.map((o: { id: string }) => docOf(o.id)), q.relevant, q.judged));
     }
     runs.set(variant === 'keyword' ? 'keyword only' : `${key} ${variant}`, results);
   }
-  timings.push(`${key}: load and index ${loadSeconds.toFixed(0)}s, ${variants.length * questions.length} searches ${((performance.now() - started) / 1000).toFixed(0)}s`);
+  timings.push(`${key}: load and index ${loadSeconds.toFixed(0)}s, ${variants.length * queries.length} searches ${((performance.now() - started) / 1000).toFixed(0)}s`);
   await loaded.pool.end();
 }
 await admin.end();
@@ -206,20 +208,19 @@ for (const key of keys) {
 for (const key of keys.slice(1)) {
   pairs.push([`${key} vector`, `${keys[0]} vector`], [`${key} hybrid`, `${keys[0]} hybrid`]);
 }
-const md = `# LongMemEval-S through claude-mem's server search (${mode})\n\n` +
-  `Dataset revision ${LME_REVISION}; ${questions.length} answerable questions` +
+const scope = mode === 'store'
+  ? 'every document in one claude-mem project, searched by every query'
+  : queries[0].candidates ? 'each query is its own claude-mem project holding its own haystack' : 'each query searches its claude-mem project';
+const md = resultsHeader(`${dataset.key} through claude-mem's server search (${mode})`, dataset,
+  `${queries.length} queries` +
   (values.manifest ? ` from ${values.manifest}` : '') +
-  (minRelevant > 1 ? ` with at least ${minRelevant} relevant sessions` : '') + '; ' +
-  (mode === 'haystack'
-    ? 'each question is its own claude-mem project holding its own haystack'
-    : `all ${new Set(questions.flatMap(q => q.haystack_session_ids)).size} sessions in one project, searched by every question`) +
-  `; a session is one observation and each turn one embedding part; top ${LIMIT} from ` +
-  `PostgresObservationRepository.search; 95% intervals from ${BOOTSTRAP} bootstrap resamples over questions.\n\n` +
-  `${RELATIVE_ACCURACY_NOTE}\n\n` +
-  renderTables(runs, questions, pairs) +
+  (minRelevant > 1 ? ` with at least ${minRelevant} relevant documents` : '') +
+  `; ${scope}; a document is one observation and each part one embedding part; top ${LIMIT} from ` +
+  `PostgresObservationRepository.search; 95% intervals from ${BOOTSTRAP} bootstrap resamples over queries.`) +
+  renderTables(runs, queries, pairs) +
   `\n## Timing\n\n${timings.map(t => `- ${t}`).join('\n')}\n`;
 mkdirSync(values.results!, { recursive: true });
 const name = (values.manifest ? `-${values.manifest.replace(/^.*\//, '').replace(/\.txt$/, '')}` : '') +
   (minRelevant > 1 ? `-min${minRelevant}` : '');
-writeFileSync(`${values.results}/longmemeval-s-claude-mem-${mode}${name}.md`, md);
+writeFileSync(`${values.results}/${dataset.key}-server-${mode}${name}.md`, md);
 console.log(md);

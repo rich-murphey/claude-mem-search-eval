@@ -1,12 +1,12 @@
-// Embeds LongMemEval-S turns (or its questions) with one model, one shard of
-// rows per process, and writes fp16 vectors in row order.
+// Embeds a dataset's document parts (or its queries) with one model, one
+// shard of rows per process, and writes fp16 vectors in row order.
 //
-//   node src/embed.ts --model minilm-l6 --shard 0/4 [--threads 8]
-//   node src/embed.ts --model minilm-l6 --queries
-//
+//   node src/embed.ts --dataset longmemeval-s --model minilm-l6 --shard 0/4 [--threads 8]
+//   node src/embed.ts --dataset longmemeval-s --model minilm-l6 --queries
+
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { parseArgs } from 'node:util';
-import { distinctTurns, loadLongMemEvalS } from './longmemeval.ts';
+import { loadDataset, rowsOf } from './datasets.ts';
 import { loadEncoder } from './encoder.ts';
 import { modelByKey } from './models.ts';
 
@@ -14,6 +14,7 @@ const BATCH = 32;
 
 const { values } = parseArgs({
   options: {
+    dataset: { type: 'string', default: 'longmemeval-s' },
     model: { type: 'string' },
     shard: { type: 'string', default: '0/1' },
     threads: { type: 'string' },
@@ -42,19 +43,19 @@ async function embedAll(texts: string[], encode: (t: string[]) => Promise<Float3
   return out;
 }
 
-const questions = await loadLongMemEvalS();
+const dataset = await loadDataset(values.dataset!);
 const encode = await loadEncoder(model, values.threads ? Number(values.threads) : undefined);
-const dir = `${values.out}/${model.key}`;
+const dir = `${values.out}/${dataset.key}/${model.key}`;
 mkdirSync(dir, { recursive: true });
 
 if (values.queries) {
-  const texts = questions.map(q => model.queryPrefix + q.question);
-  const vectors = await embedAll(texts, encode, `${model.key} queries`);
+  const texts = dataset.queries.map(q => model.queryPrefix + q.text);
+  const vectors = await embedAll(texts, encode, `${dataset.key} ${model.key} queries`);
   writeFileSync(`${dir}/queries.f16.bin`, new Uint8Array(vectors.buffer));
 } else {
   // Rows i with i % shards === shard, in ascending order.
-  const rows = distinctTurns(questions).filter((_, i) => i % shards === shard);
-  const texts = rows.map(r => model.passagePrefix + r.content);
-  const vectors = await embedAll(texts, encode, `${model.key} shard ${shard}/${shards}`);
-  writeFileSync(`${dir}/turns.shard-${shard}-of-${shards}.f16.bin`, new Uint8Array(vectors.buffer));
+  const rows = rowsOf(dataset).filter((_, i) => i % shards === shard);
+  const texts = rows.map(r => model.passagePrefix + r.text);
+  const vectors = await embedAll(texts, encode, `${dataset.key} ${model.key} shard ${shard}/${shards}`);
+  writeFileSync(`${dir}/rows.shard-${shard}-of-${shards}.f16.bin`, new Uint8Array(vectors.buffer));
 }
