@@ -5,6 +5,47 @@ search by meaning find the right memory? This repo measures precision, recall
 and F1 of that search on public data, with the embeddings precomputed so a
 result can be checked in minutes rather than recomputed in hours.
 
+## Where this stands
+
+<!-- status:begin sha=a0b5159 at=2026-10-18 -->
+_Written 2026-10-18 from commits through a0b5159, plan documents, issues and session summaries._
+
+**Next**
+1. Check the README's plan for the claude-mem server-search phases against what is built. Open
+   the plan section of README.md and mark each phase built or remaining. `server-search.ts`
+   (c7362b0) and `worker-search.ts` (010adf5) exist. Done when every phase in the plan is
+   marked built or remaining, and any remaining phase is written down as its own item. No
+   issue or Linear id exists for this.
+2. Confirm the memsearch and MIRACL runs exist under the new dataset layer. Run `ls out/` and
+   look for `out/memsearch/<model>/` and `out/miracl/<model>/`. The commits add the
+   `--dataset` option but do not say these runs were made. Done when both datasets have
+   merged vectors and a results file, or the missing runs are listed. No issue or Linear id
+   exists for this.
+
+**Waiting on**
+nothing
+
+**Context for the above**
+- 2026-10-18, a0b5159: one dataset layer now covers LongMemEval, memsearch and MIRACL. All
+  harnesses take `--dataset`, and vectors live in `out/<dataset>/<model>/rows.f16.bin`.
+  LongMemEval vectors and results are unchanged, except that MRR is now MRR@10 everywhere.
+- 2026-10-18, a0b5159: MIRACL runs add J@5, the share of each top 5 that was judged at all.
+  Results open with what each dataset answers.
+- 2026-10-18, c7362b0 and 010adf5: claude-mem is now measured through its own search code:
+  server search (keyword, vector, hybrid) and worker search (FTS5, with and without Chroma).
+  On the 100-question sample, server vector-only matches `eval.ts` (R@5 0.937 both).
+- 2026-10-18, 865ed05: `--min-relevant N` keeps only questions with at least N relevant
+  sessions, so P@5 can reach 1. LongMemEval-S has 14 questions with N=5.
+- 2026-10-18, b89a597 and 9ef8e2d: precision against the labels is a lower bound because of
+  label errors. The README explains this and the results files point to it.
+- For item 2, a background run to embed memsearch and MIRACL with all three models was
+  launched via `chain2.sh`, logging to `chain2.log` in the session scratchpad (memory,
+  2026-10-18). Memory shows it started, not that it finished, so check `out/` and that log.
+
+**Open questions**
+none
+<!-- status:end -->
+
 The first question it answers is which embedding model claude-mem should use.
 all-MiniLM-L6-v2, the default, is English-only;
 [thedotmack/claude-mem#3422](https://github.com/thedotmack/claude-mem/pull/3422)
