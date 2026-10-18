@@ -119,9 +119,8 @@ let md = `# LongMemEval-S, vector only\n\n` +
   (values.manifest ? ` from ${values.manifest}` : ' (all answerable)') +
   `; each searches its own haystack; a session scores as its best turn; ` +
   `95% intervals from ${BOOTSTRAP} bootstrap resamples over questions.\n\n` +
-  `Absolute values are estimates against labels with errors in both ` +
-  `directions; see the README's "Caveat on absolute accuracy". Paired ` +
-  `differences between models are the reliable comparison.\n\n` +
+  `Best treated as a measurement of relative accuracy between models, given ` +
+  `the label errors discussed in the README ("Caveat on absolute accuracy").\n\n` +
   `| Model | ${names.join(' | ')} |\n|---|${names.map(() => '---').join('|')}|\n`;
 for (const [key, results] of perModel) {
   md += `| ${key} | ${names.map(n => {
