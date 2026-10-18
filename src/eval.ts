@@ -16,6 +16,7 @@ const { values } = parseArgs({
   options: {
     models: { type: 'string', default: MODELS.map(m => m.key).join(',') },
     manifest: { type: 'string' },
+    'min-relevant': { type: 'string', default: '1' },
     out: { type: 'string', default: 'out' },
     results: { type: 'string', default: 'results' },
   },
@@ -23,7 +24,11 @@ const { values } = parseArgs({
 
 const questions = (await loadLongMemEvalS()).filter(q => !q.question_id.endsWith('_abs'));
 const manifest = values.manifest ? readManifest(values.manifest) : null;
-const evaluated = manifest ? questions.filter(q => manifest.has(q.question_id)) : questions;
+// --min-relevant 5 keeps questions with at least five relevant sessions,
+// where a perfect top 5 scores P@5 = 1 (with one, P@5 cannot exceed 0.2).
+const minRelevant = Number(values['min-relevant']);
+const evaluated = questions.filter(q =>
+  (!manifest || manifest.has(q.question_id)) && new Set(q.answer_session_ids).size >= minRelevant);
 
 const allQuestions = await loadLongMemEvalS();
 const rows = distinctTurns(allQuestions);
@@ -66,11 +71,13 @@ const keys = [...perModel.keys()];
 const md = `# LongMemEval-S, vector only\n\n` +
   `Dataset revision ${LME_REVISION}; ${evaluated.length} questions` +
   (values.manifest ? ` from ${values.manifest}` : ' (all answerable)') +
+  (minRelevant > 1 ? ` with at least ${minRelevant} relevant sessions` : '') +
   `; each searches its own haystack; a session scores as its best turn; ` +
   `95% intervals from ${BOOTSTRAP} bootstrap resamples over questions.\n\n` +
   `${RELATIVE_ACCURACY_NOTE}\n\n` +
   renderTables(perModel, evaluated, keys.slice(1).map(k => [k, keys[0]]));
 mkdirSync(values.results!, { recursive: true });
-const name = values.manifest ? values.manifest.replace(/^.*\//, '').replace(/\.txt$/, '') : 'all';
+const name = (values.manifest ? values.manifest.replace(/^.*\//, '').replace(/\.txt$/, '') : 'all') +
+  (minRelevant > 1 ? `-min${minRelevant}` : '');
 writeFileSync(`${values.results}/longmemeval-s-vector-${name}.md`, md);
 console.log(md);

@@ -41,6 +41,7 @@ const { values } = parseArgs({
     models: { type: 'string', default: MODELS.map(m => m.key).join(',') },
     mode: { type: 'string', default: 'haystack' },
     manifest: { type: 'string' },
+    'min-relevant': { type: 'string', default: '1' },
     out: { type: 'string', default: 'out' },
     results: { type: 'string', default: 'results' },
   },
@@ -69,7 +70,11 @@ function claudeMemModel(model: EvalModel) {
 
 const allQuestions = await loadLongMemEvalS();
 const manifest = values.manifest ? readManifest(values.manifest) : null;
-const questions = allQuestions.filter(q => !q.question_id.endsWith('_abs') && (!manifest || manifest.has(q.question_id)));
+// --min-relevant 5 keeps questions with at least five relevant sessions,
+// where a perfect top 5 scores P@5 = 1 (with one, P@5 cannot exceed 0.2).
+const minRelevant = Number(values['min-relevant']);
+const questions = allQuestions.filter(q => !q.question_id.endsWith('_abs') && (!manifest || manifest.has(q.question_id))
+  && new Set(q.answer_session_ids).size >= minRelevant);
 const queryIndex = new Map(allQuestions.map((q, i) => [q.question_id, i]));
 const rows = distinctTurns(allQuestions);
 const sessionRows = new Map<string, number[]>();
@@ -203,7 +208,8 @@ for (const key of keys.slice(1)) {
 }
 const md = `# LongMemEval-S through claude-mem's server search (${mode})\n\n` +
   `Dataset revision ${LME_REVISION}; ${questions.length} answerable questions` +
-  (values.manifest ? ` from ${values.manifest}; ` : '; ') +
+  (values.manifest ? ` from ${values.manifest}` : '') +
+  (minRelevant > 1 ? ` with at least ${minRelevant} relevant sessions` : '') + '; ' +
   (mode === 'haystack'
     ? 'each question is its own claude-mem project holding its own haystack'
     : `all ${new Set(questions.flatMap(q => q.haystack_session_ids)).size} sessions in one project, searched by every question`) +
@@ -213,6 +219,7 @@ const md = `# LongMemEval-S through claude-mem's server search (${mode})\n\n` +
   renderTables(runs, questions, pairs) +
   `\n## Timing\n\n${timings.map(t => `- ${t}`).join('\n')}\n`;
 mkdirSync(values.results!, { recursive: true });
-const name = values.manifest ? `-${values.manifest.replace(/^.*\//, '').replace(/\.txt$/, '')}` : '';
+const name = (values.manifest ? `-${values.manifest.replace(/^.*\//, '').replace(/\.txt$/, '')}` : '') +
+  (minRelevant > 1 ? `-min${minRelevant}` : '');
 writeFileSync(`${values.results}/longmemeval-s-claude-mem-${mode}${name}.md`, md);
 console.log(md);
