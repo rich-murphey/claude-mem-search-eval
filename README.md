@@ -29,25 +29,61 @@ Face at a pinned revision and checked against its sha256
   not just recall divided by k.
 - 19,195 distinct sessions, 199,509 turns, 198 million characters.
 
-### Label quality
+### Label errors
 
-Checked in this repo's preparation (2026-10-18):
+Checked in this repo's preparation (2026-10-18), over the 470 answerable
+questions. The text is native English, not translated, but much of it is
+machine-generated: UltraChat dialogues, ShareGPT chats and LLM-simulated
+evidence sessions.
 
-- Every non-answer session is free of `has_answer` turns: no session outside
-  `answer_session_ids` is marked as holding the answer.
-- 45 of 890 answer sessions have no turn marked `has_answer`, so turn-level
-  labels are incomplete; scoring is by session.
-- A literal search for each short answer string in non-answer sessions hit
-  64 of 298 questions; a sample of 12 hits were all coincidences ("two",
-  "Tom", "$300" in unrelated text), none an unlabelled answer. The cleaned
-  release exists to remove sessions that interfered with answers.
-- **Caveat: precision measured against these labels is a lower bound.** Some
-  sessions that hold an answer may be unlabelled, in paraphrase that a
-  literal search cannot find, and a retrieved unlabelled answer counts as a
-  miss. Bounding this takes judging (plan step 5).
-- The text is native English, not translated, but much of it is
-  machine-generated: UltraChat dialogues, ShareGPT chats and LLM-simulated
-  evidence sessions.
+**False positives in the labels** (labelled as holding the answer, but do
+not): 45 of 890 answer sessions (5.1%) have no turn marked `has_answer`. They
+fall in 32 questions (22 temporal-reasoning, 8 multi-session, 2
+knowledge-update); no question has only such labels, and in an affected
+question they average 46% of its labels. Of three sampled, none holds the
+answer: two are distractors on a nearby date (a different event "today", for a
+question about "a month ago"), which help a reasoner rule out the wrong event
+but do not contain the answer, and one (for a magazine-subscription count)
+never mentions magazines or subscriptions. At most 45 sessions, assuming
+sessions with marked turns are right; those were not checked.
+
+**False negatives in the labels** (hold the answer, but are not labelled): a
+literal search for each short answer string in unlabelled sessions hit 64 of
+298 questions; a sample of 12 hits were all coincidences ("two", "Tom", "$300"
+in unrelated text), none an unlabelled answer. The cleaned release exists to
+remove sessions that interfered with answers, but paraphrased answers cannot
+be found by literal search, so how many remain is unknown.
+
+No session outside `answer_session_ids` has a turn marked `has_answer`.
+
+### What label errors do to the results
+
+| Label error | Search result | Really | Scored as | Effect |
+|---|---|---|---|---|
+| False positive | Retrieved | False positive | True positive | Precision too high |
+| False positive | Not retrieved | True negative | False negative | Recall too low |
+| False negative | Retrieved | True positive | False positive | Precision too low |
+| False negative | Not retrieved | False negative | True negative (ignored) | Recall too high |
+
+The false positives' effect is bounded: 45 sessions can fill at most 45 of the
+2,350 top-5 slots, so P@5 is overstated by at most 1.9 points, and recall is
+understated by at most 3.1 points if none of them is retrieved. Both
+concentrate in temporal reasoning. The false negatives' effect has no bound
+without judging (plan step 5).
+
+### Caveat on absolute accuracy
+
+Precision and recall here are measured against LongMemEval's labels, which
+contain errors in both directions. About 5% of labelled answer sessions (45 of
+890, mostly temporal-reasoning distractors) do not hold the answer; these can
+raise P@5 by at most 1.9 points and lower recall by at most 3.1. Sessions that
+hold an answer without being labelled could not be counted: a literal search
+found none, but paraphrased ones cannot be ruled out, and each one retrieved
+lowers measured precision while each one missed raises measured recall. The two
+errors partly offset, so neither metric is a strict bound. Differences between
+models on the same questions are affected far less, since both are scored
+against the same labels; per-type results for temporal reasoning are the least
+reliable.
 
 ## Models
 
