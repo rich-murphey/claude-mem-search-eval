@@ -38,6 +38,7 @@ async function embedAll(texts: string[], encode: (t: string[]) => Promise<Float3
       console.error(`${label}: ${b + idx.length}/${texts.length} in ${s.toFixed(0)}s`);
     }
   }
+  console.error(`${label}: done, ${texts.length} in ${((performance.now() - started) / 1000).toFixed(0)}s`);
   return out;
 }
 
