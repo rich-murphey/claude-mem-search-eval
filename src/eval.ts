@@ -60,9 +60,17 @@ function metricsFor(ranked: string[], relevant: Set<string>): Metrics {
   };
 }
 
-function loadVectors(path: string, dims: number): Float16Array {
+/** fp16 rows as fp32, renormalised: fp16 rounding leaves each norm slightly off 1. */
+function loadVectors(path: string, dims: number): Float32Array {
   const buf = readFileSync(path);
-  return new Float16Array(buf.buffer, buf.byteOffset, buf.byteLength / 2);
+  const v = Float32Array.from(new Float16Array(buf.buffer, buf.byteOffset, buf.byteLength / 2));
+  for (let r = 0; r < v.length; r += dims) {
+    let norm = 0;
+    for (let d = 0; d < dims; d++) norm += v[r + d] * v[r + d];
+    norm = Math.sqrt(norm);
+    for (let d = 0; d < dims; d++) v[r + d] /= norm;
+  }
+  return v;
 }
 
 // Deterministic resampling (mulberry32), so intervals are reproducible.

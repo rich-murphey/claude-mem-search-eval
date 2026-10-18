@@ -38,9 +38,15 @@ for (let b = 0; b < sample.length; b += 16) {
   const idx = sample.slice(b, b + 16);
   const fresh = await encode(idx.map(i => model.passagePrefix + rows[i].content));
   idx.forEach((row, k) => {
-    let dot = 0;
-    for (let d = 0; d < model.dims; d++) dot += fresh[k][d] * published[row * model.dims + d];
-    worst = Math.min(worst, dot);
+    // fp16 rounding leaves a published row's norm slightly off 1, so the
+    // dot product is divided by it to give the cosine.
+    let dot = 0, norm = 0;
+    for (let d = 0; d < model.dims; d++) {
+      const p = published[row * model.dims + d];
+      dot += fresh[k][d] * p;
+      norm += p * p;
+    }
+    worst = Math.min(worst, dot / Math.sqrt(norm));
   });
 }
 console.log(`${model.key}: ${sample.length} rows re-embedded, worst cosine ${worst.toFixed(7)}`);
