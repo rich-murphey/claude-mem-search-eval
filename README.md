@@ -7,40 +7,28 @@ result can be checked in minutes rather than recomputed in hours.
 
 ## Where this stands
 
-<!-- status:begin sha=a0b5159 at=2026-10-18 -->
-_Written 2026-10-18 from commits through a0b5159, plan documents, issues and session summaries._
+<!-- status:begin sha=5e92891 at=2026-10-18 -->
+_Written 2026-10-18 from commits through 5e92891 and the session that produced them._
 
 **Next**
-1. Check the README's plan for the claude-mem server-search phases against what is built. Open
-   the plan section of README.md and mark each phase built or remaining. `server-search.ts`
-   (c7362b0) and `worker-search.ts` (010adf5) exist. Done when every phase in the plan is
-   marked built or remaining, and any remaining phase is written down as its own item. No
-   issue or Linear id exists for this.
-2. Confirm the memsearch and MIRACL runs exist under the new dataset layer. Run `ls out/` and
-   look for `out/memsearch/<model>/` and `out/miracl/<model>/`. The commits add the
-   `--dataset` option but do not say these runs were made. Done when both datasets have
-   merged vectors and a results file, or the missing runs are listed. No issue or Linear id
-   exists for this.
+1. Judged precision (plan step 5). First action: run an LLM judge over the top-5 results
+   that are not labelled relevant on the 100-question LongMemEval sample, and hand-check a
+   sample of its verdicts. Done when the README gives a bounded P@5 alongside the
+   label-based one.
 
 **Waiting on**
 nothing
 
 **Context for the above**
-- 2026-10-18, a0b5159: one dataset layer now covers LongMemEval, memsearch and MIRACL. All
-  harnesses take `--dataset`, and vectors live in `out/<dataset>/<model>/rows.f16.bin`.
-  LongMemEval vectors and results are unchanged, except that MRR is now MRR@10 everywhere.
-- 2026-10-18, a0b5159: MIRACL runs add J@5, the share of each top 5 that was judged at all.
-  Results open with what each dataset answers.
-- 2026-10-18, c7362b0 and 010adf5: claude-mem is now measured through its own search code:
-  server search (keyword, vector, hybrid) and worker search (FTS5, with and without Chroma).
-  On the 100-question sample, server vector-only matches `eval.ts` (R@5 0.937 both).
-- 2026-10-18, 865ed05: `--min-relevant N` keeps only questions with at least N relevant
-  sessions, so P@5 can reach 1. LongMemEval-S has 14 questions with N=5.
-- 2026-10-18, b89a597 and 9ef8e2d: precision against the labels is a lower bound because of
-  label errors. The README explains this and the results files point to it.
-- For item 2, a background run to embed memsearch and MIRACL with all three models was
-  launched via `chain2.sh`, logging to `chain2.log` in the session scratchpad (memory,
-  2026-10-18). Memory shows it started, not that it finished, so check `out/` and that log.
+- 2026-10-18, 737b4b4: results for all three models on LongMemEval, memsearch and MIRACL,
+  vector only and through claude-mem's server and worker search; summary tables, timing and
+  `scripts/fetch.sh` in the README. Vectors are published as
+  [release v1](https://github.com/rich-murphey/claude-mem-search-eval/releases/tag/v1).
+- 2026-10-18, 5e92891: on the 100-question sample, worker search with Chroma ranks exactly
+  as the server's MiniLM-L6 vector leg (F1@5 0.489).
+- The worker's keyword search returns nothing for every CJK query. That is a claude-mem
+  bug, reported on [rich-murphey/claude-mem#1](https://github.com/rich-murphey/claude-mem/issues/1)
+  and tracked there, not here.
 
 **Open questions**
 none
@@ -129,6 +117,7 @@ P@5 / R@5 / F1@5:
 | Dataset | Worker keyword | Worker Chroma | Server keyword | Server hybrid, MiniLM-L6 | Server hybrid, MiniLM-L12 | Server hybrid, e5-small |
 |---|---|---|---|---|---|---|
 | LongMemEval (470) | 0.324 / 0.890 / 0.456 | — | 0.287 / 0.793 / 0.405 | 0.345 / 0.935 / 0.483 | 0.346 / 0.934 / 0.485 | 0.349 / 0.942 / 0.489 |
+| LongMemEval, 100-question sample | 0.332 / 0.884 / 0.459 | 0.354 / 0.937 / 0.489 | 0.284 / 0.774 / 0.396 | 0.354 / 0.934 / 0.489 | 0.356 / 0.938 / 0.491 | 0.360 / 0.952 / 0.497 |
 | LongMemEval, ≥5 relevant (14) | 0.743 / 0.712 / 0.726 | 0.829 / 0.798 / 0.812 | 0.629 / 0.605 / 0.616 | 0.829 / 0.798 / 0.812 | 0.871 / 0.840 / 0.855 | 0.857 / 0.829 / 0.842 |
 | memsearch zh | 0.000 / 0.000 / 0.000 | 0.065 / 0.272 / 0.102 | 0.080 / 0.330 / 0.125 | 0.096 / 0.401 / 0.150 | 0.153 / 0.660 / 0.243 | 0.159 / 0.680 / 0.251 |
 | memsearch en | 0.187 / 0.786 / 0.293 | 0.161 / 0.688 / 0.254 | 0.188 / 0.805 / 0.297 | 0.188 / 0.800 / 0.296 | 0.189 / 0.806 / 0.299 | 0.197 / 0.841 / 0.311 |
@@ -379,9 +368,9 @@ Checking the published vectors instead:
   MIRACL language, 2–4 minutes for memsearch.
 - `worker-search.ts`: keyword search alone takes 1–8 minutes; with Chroma,
   chroma-mcp embeds every document part itself, about 6–8 minutes for
-  memsearch and 8 minutes for the 14 LongMemEval questions with five or more
-  relevant sessions. That is why worker search by meaning was not run on the
-  full LongMemEval or MIRACL.
+  memsearch, 8 minutes for the 14 LongMemEval questions with five or more
+  relevant sessions and 53 minutes for the 100-question sample. That is why
+  worker search by meaning was not run on the full LongMemEval or MIRACL.
 
 The published vectors total about 1.5 GB (440 MB LongMemEval, 395 and 410 MB
 MIRACL en and ja, 180 MB zh, 96 MB ko, 7 MB per memsearch language).
