@@ -39,7 +39,8 @@ const { values } = parseArgs({
     'claude-mem': { type: 'string' },
     db: { type: 'string' },
     dataset: { type: 'string', default: 'longmemeval-s' },
-    models: { type: 'string', default: MODELS.map(m => m.key).join(',') },
+    // Default: every eval model that claude-mem's models.ts carries.
+    models: { type: 'string' },
     mode: { type: 'string', default: 'scoped' },
     manifest: { type: 'string' },
     'min-relevant': { type: 'string', default: '1' },
@@ -59,15 +60,21 @@ const { createPostgresStorageRepositories, PostgresObservationRepository } = awa
 const { LocalEmbedder } = await import(`${claudeMem}/src/services/vector/LocalEmbedder.ts`);
 const { EMBEDDING_MODELS } = await import(`${claudeMem}/src/services/vector/models.ts`);
 
+/** claude-mem's models.ts entry describing the same embedding as an eval model, if any. */
+function claudeMemEntry(model: EvalModel): any {
+  return Object.values(EMBEDDING_MODELS as Record<string, any>).find(m => m.repo === model.repo
+    && m.pooling === model.pooling && m.maxTokens === model.maxTokens && m.queryPrefix === model.queryPrefix
+    && m.passagePrefix === model.passagePrefix && m.dims === model.dims);
+}
+
 /** claude-mem's model id for an eval model, whose models.ts entry must describe the same embedding. */
 function claudeMemModelId(model: EvalModel): string {
-  const entry = Object.values(EMBEDDING_MODELS as Record<string, any>).find(m => m.repo === model.repo);
-  if (!entry || entry.maxTokens !== model.maxTokens || entry.queryPrefix !== model.queryPrefix
-    || entry.passagePrefix !== model.passagePrefix || entry.dims !== model.dims) {
-    throw new Error(`claude-mem at ${claudeMem} has no models.ts entry matching ${model.key}`);
-  }
+  const entry = claudeMemEntry(model);
+  if (!entry) throw new Error(`claude-mem at ${claudeMem} has no models.ts entry matching ${model.key}`);
   return new LocalEmbedder(entry).modelId;
 }
+
+const keys = values.models?.split(',') ?? MODELS.filter(m => claudeMemEntry(m)).map(m => m.key);
 
 const dataset = await loadDataset(values.dataset!);
 const manifest = values.manifest ? readManifest(values.manifest) : null;
@@ -165,7 +172,7 @@ const runs = new Map<string, Metrics[]>();
 const timings: string[] = [];
 const docOf = (observationId: string) => observationId.slice(observationId.indexOf(':') + 1);
 
-for (const key of values.models!.split(',')) {
+for (const key of keys) {
   const model = modelByKey(key);
   const modelId = claudeMemModelId(model);
   const queryVectors = loadVectors(`${values.out}/${dataset.key}/${key}/queries.f16.bin`, model.dims);
@@ -199,7 +206,6 @@ for (const key of values.models!.split(',')) {
 }
 await admin.end();
 
-const keys = values.models!.split(',');
 const pairs: [string, string][] = [];
 for (const key of keys) {
   pairs.push([`${key} hybrid`, `${key} vector`]);

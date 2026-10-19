@@ -47,6 +47,14 @@ export const MODELS: EvalModel[] = [
     dtype: 'fp32', pooling: 'cls', dims: 384, maxTokens: 8192,
     queryPrefix: '', passagePrefix: '',
   },
+  {
+    // The same model cut at 512 tokens, as claude-mem's models.ts carries it:
+    // at 8192 one text takes about 10 s and 8 GB on a CPU.
+    key: 'granite-97m-r2-512',
+    repo: 'onnx-community/granite-embedding-97m-multilingual-r2-ONNX',
+    dtype: 'fp32', pooling: 'cls', dims: 384, maxTokens: 512,
+    queryPrefix: '', passagePrefix: '',
+  },
 ];
 
 export function modelByKey(key: string): EvalModel {
