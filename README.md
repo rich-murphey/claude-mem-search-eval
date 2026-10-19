@@ -7,18 +7,16 @@ result can be checked in minutes rather than recomputed in hours.
 
 ## Where this stands
 
-<!-- status:begin sha=3361856 at=2026-10-19 -->
-_Written 2026-10-19 from commits through 3361856, plan documents, issues and session summaries._
+<!-- status:begin sha=9847db2 at=2026-10-19 -->
+_Written 2026-10-19 from commits through 9847db2, the PR draft and this session._
 
 **Next**
-1. <a id="n-bb5243"></a>Finish the granite runs. First action: check the `granite-eval` and `granite-server` jobs, which
-   have about 4 of 7 datasets left at 512 tokens (LongMemEval, MIRACL zh/en/ja). Then run the
-   8192-token pass on 5 datasets. Done when all 7 datasets have 512-token vectors and
-   claude-mem search results, and the 8192-token pass has finished.
-2. <a id="n-7f307e"></a>Write the PR text and publish release v2. First action: once item 1 is done, add the granite
-   rows to the README tables and upload the vectors to a new release. Done when release v2
-   exists, `scripts/fetch.sh` fetches it, and the PR text is written.
-3. <a id="n-6d4b28"></a>Judged precision (plan step 5). First action: run an LLM judge over the
+1. Open the claude-mem PR. First action: Rich reads the draft
+   (`~/wt/claude-mem/upstream-draft/pr.md`, local, not in a repo), then
+   pushes `pr/pgvector-search` (tree `~/wt/claude-mem/granite`, local only) to
+   the fork. Done when the PR is open on thedotmack/claude-mem with release v2
+   linked.
+2. <a id="n-6d4b28"></a>Judged precision (plan step 5). First action: run an LLM judge over the
    top-5 results that are not labelled relevant on the 100-question LongMemEval sample, then
    hand-check a sample of its verdicts. Done when the README gives a bounded P@5 alongside the
    label-based one.
@@ -27,18 +25,17 @@ _Written 2026-10-19 from commits through 3361856, plan documents, issues and ses
 nothing
 
 **Context for the above**
-- 2026-10-19, 0bcd04c: added granite-embedding-97m-multilingual-r2 as the fourth model, with
-  `cls` pooling. On memsearch zh it beats multilingual-e5-small by +0.031 F1@5 and on en it
-  trails by 0.012.
-- 2026-10-19, e3d58c7: the 8192-token granite pass used about 30 GB per shard and four shards ran
-  out of memory. Embedding memory is now capped, and `embed-model.sh` runs in a 64 GB systemd scope.
-- 2026-10-19, 3361856: added `granite-97m-r2-512`, the entry claude-mem's `models.ts` carries.
-  `server-search.ts` now defaults to those entries. On memsearch zh through claude-mem, granite
-  scores F1@5 0.281, +0.178 over MiniLM-L6.
-- 2026-10-19, session: every `granite-server` run had exited at once because the systemd unit
-  could not find `bun`. The chain was restarted with `/home/rich/.bun/bin/bun`, and memsearch en
-  is running. The 512-token embedding is estimated at about 7 more hours, and the 8192-token pass
-  at 10 hours or more after that.
+- 2026-10-19: granite-embedding-97m-multilingual-r2 is measured on every
+  dataset at 512 and 8,192 tokens, vector only and through claude-mem's server
+  search. It leads e5-small on Chinese (MIRACL zh F1@5 +0.052, memsearch zh
+  +0.031) and trails it by 0.012–0.030 elsewhere. The 512-token cut, which
+  claude-mem's models table carries, scores the same as 8,192.
+- 2026-10-19, 9847db2: each vector-only results file pairs granite with
+  e5-small, and 8,192 tokens with 512.
+- 2026-10-19: release v2 holds all five vector sets (2.7 GB). v1 is unchanged,
+  and its files are byte-identical to v2's first three models.
+- Rerunning server search shifted a few existing cells by 0.001 (HNSW is
+  approximate); the README and PR tables are taken from the current files.
 
 **Open questions**
 none
@@ -78,12 +75,20 @@ dataset. All of them are best treated as relative accuracy between models; see
 
 What they show:
 
-- **multilingual-e5-small is the most accurate of the three on every dataset,
-  English included.** On LongMemEval it is slightly ahead of all-MiniLM-L6-v2
+- **multilingual-e5-small is the most accurate of the four on every dataset
+  but the Chinese ones, English included.** On LongMemEval it is slightly ahead of all-MiniLM-L6-v2
   (F1@5 +0.010, paired 95% interval 0.001–0.019); on MIRACL en, +0.087.
 - **all-MiniLM-L6-v2 finds almost nothing in Chinese, Korean or Japanese**
   (MIRACL F1@5 0.001–0.011), and multilingual-MiniLM-L12 recovers less than
   half of what e5-small does there. In English, L12 ties L6.
+- **granite-embedding-97m-multilingual-r2 is the most accurate on Chinese and
+  behind e5-small elsewhere.** Paired against e5-small, vector-only F1@5:
+  +0.052 (0.032–0.070) on MIRACL zh and +0.031 (0.024–0.037) on memsearch zh;
+  −0.012 to −0.030 on memsearch en, LongMemEval and MIRACL en and ja; MIRACL
+  ko −0.019 (−0.041–0.004). Cut at 512 tokens it scores exactly as at its
+  trained 8,192 on five datasets; on MIRACL ko and ja the paired F1@5
+  difference is −0.003 (−0.007–0.000) and +0.000, so the cut costs nothing
+  measurable.
 - **claude-mem's server search ranks exactly as its vectors do.** Vector-only
   search through `PostgresObservationRepository.search` reproduces the exact
   results to the third decimal (HNSW is approximate; a few cells differ by
@@ -100,21 +105,26 @@ What they show:
   runs). The server's English text search does no better on MIRACL zh and ja.
 - **One store per user is much harder than one haystack per question.** With
   all 19,195 LongMemEval sessions in one project, F1@5 falls from about 0.49
-  to 0.15–0.18; the ordering of models stays the same.
+  to 0.13–0.18; e5-small stays ahead, and granite falls to MiniLM-L6's level
+  (0.127 vector only, against 0.163 for e5-small).
 
 Vector only, exact, from the published vectors (`results/*-vector-*.md`).
 Each cell is P@5 / R@5 / F1@5:
 
-| Dataset | MiniLM-L6 | MiniLM-L12 | e5-small |
-|---|---|---|---|
-| LongMemEval (470) | 0.346 / 0.934 / 0.484 | 0.347 / 0.931 / 0.484 | 0.354 / 0.948 / 0.494 |
-| LongMemEval, ≥5 relevant (14) | 0.829 / 0.798 / 0.812 | 0.857 / 0.826 / 0.840 | 0.914 / 0.883 / 0.897 |
-| memsearch zh | 0.065 / 0.272 / 0.102 | 0.143 / 0.616 / 0.226 | 0.159 / 0.673 / 0.250 |
-| memsearch en | 0.161 / 0.688 / 0.254 | 0.158 / 0.676 / 0.249 | 0.181 / 0.767 / 0.285 |
-| MIRACL en | 0.159 / 0.331 / 0.195 | 0.181 / 0.355 / 0.218 | 0.230 / 0.478 / 0.282 |
-| MIRACL zh | 0.001 / 0.003 / 0.001 | 0.132 / 0.281 / 0.164 | 0.208 / 0.481 / 0.267 |
-| MIRACL ko | 0.008 / 0.023 / 0.011 | 0.144 / 0.319 / 0.174 | 0.241 / 0.611 / 0.308 |
-| MIRACL ja | 0.004 / 0.010 / 0.005 | 0.081 / 0.201 / 0.106 | 0.240 / 0.682 / 0.329 |
+| Dataset | MiniLM-L6 | MiniLM-L12 | e5-small | granite (512) |
+|---|---|---|---|---|
+| LongMemEval (470) | 0.346 / 0.934 / 0.484 | 0.347 / 0.931 / 0.484 | 0.354 / 0.948 / 0.494 | 0.339 / 0.921 / 0.475 |
+| LongMemEval, ≥5 relevant (14) | 0.829 / 0.798 / 0.812 | 0.857 / 0.826 / 0.840 | 0.914 / 0.883 / 0.897 | 0.814 / 0.781 / 0.796 |
+| memsearch zh | 0.065 / 0.272 / 0.102 | 0.143 / 0.616 / 0.226 | 0.159 / 0.673 / 0.250 | 0.178 / 0.759 / 0.281 |
+| memsearch en | 0.161 / 0.688 / 0.254 | 0.158 / 0.676 / 0.249 | 0.181 / 0.767 / 0.285 | 0.174 / 0.735 / 0.273 |
+| MIRACL en | 0.159 / 0.331 / 0.195 | 0.181 / 0.355 / 0.218 | 0.230 / 0.478 / 0.282 | 0.212 / 0.444 / 0.260 |
+| MIRACL zh | 0.001 / 0.003 / 0.001 | 0.132 / 0.281 / 0.164 | 0.208 / 0.481 / 0.267 | 0.251 / 0.566 / 0.319 |
+| MIRACL ko | 0.008 / 0.023 / 0.011 | 0.144 / 0.319 / 0.174 | 0.241 / 0.611 / 0.308 | 0.230 / 0.557 / 0.290 |
+| MIRACL ja | 0.004 / 0.010 / 0.005 | 0.081 / 0.201 / 0.106 | 0.240 / 0.682 / 0.329 | 0.218 / 0.622 / 0.300 |
+
+granite at 8,192 tokens differs from these only on MIRACL ko and ja, by at
+most 0.007 in any cell; each results file has both, and their paired
+difference.
 
 MIRACL J@5 (judged share of the top 5) is 0.30 / 0.34 / 0.39 for en and
 0.18–0.57 for zh, ko and ja under the multilingual models, so true P@5 there
@@ -126,17 +136,17 @@ by meaning is Chroma's, which embeds with all-MiniLM-L6-v2; it was run where
 Chroma's own embedding of the documents fits in an hour or so. Each cell is
 P@5 / R@5 / F1@5:
 
-| Dataset | Worker keyword | Worker Chroma | Server keyword | Server hybrid, MiniLM-L6 | Server hybrid, MiniLM-L12 | Server hybrid, e5-small |
-|---|---|---|---|---|---|---|
-| LongMemEval (470) | 0.324 / 0.890 / 0.456 | — | 0.287 / 0.793 / 0.405 | 0.345 / 0.935 / 0.483 | 0.346 / 0.934 / 0.485 | 0.349 / 0.942 / 0.489 |
-| LongMemEval, 100-question sample | 0.332 / 0.884 / 0.459 | 0.354 / 0.937 / 0.489 | 0.284 / 0.774 / 0.396 | 0.354 / 0.934 / 0.489 | 0.356 / 0.938 / 0.491 | 0.360 / 0.952 / 0.497 |
-| LongMemEval, ≥5 relevant (14) | 0.743 / 0.712 / 0.726 | 0.829 / 0.798 / 0.812 | 0.629 / 0.605 / 0.616 | 0.829 / 0.798 / 0.812 | 0.871 / 0.840 / 0.855 | 0.857 / 0.829 / 0.842 |
-| memsearch zh | 0.000 / 0.000 / 0.000 | 0.065 / 0.272 / 0.102 | 0.080 / 0.330 / 0.125 | 0.096 / 0.401 / 0.150 | 0.153 / 0.660 / 0.243 | 0.159 / 0.680 / 0.251 |
-| memsearch en | 0.187 / 0.786 / 0.293 | 0.161 / 0.688 / 0.254 | 0.188 / 0.805 / 0.297 | 0.188 / 0.800 / 0.296 | 0.189 / 0.806 / 0.299 | 0.197 / 0.841 / 0.311 |
-| MIRACL en | 0.108 / 0.214 / 0.129 | — | 0.148 / 0.270 / 0.172 | 0.215 / 0.409 / 0.255 | 0.218 / 0.422 / 0.260 | 0.238 / 0.466 / 0.285 |
-| MIRACL zh | 0.000 / 0.000 / 0.000 | — | 0.000 / 0.000 / 0.000 | 0.001 / 0.003 / 0.001 | 0.132 / 0.281 / 0.164 | 0.208 / 0.481 / 0.267 |
-| MIRACL ko | 0.000 / 0.000 / 0.000 | — | 0.096 / 0.295 / 0.132 | 0.074 / 0.248 / 0.107 | 0.139 / 0.371 / 0.180 | 0.185 / 0.472 / 0.236 |
-| MIRACL ja | 0.000 / 0.000 / 0.000 | — | 0.001 / 0.003 / 0.001 | 0.005 / 0.012 / 0.006 | 0.082 / 0.204 / 0.107 | 0.240 / 0.682 / 0.329 |
+| Dataset | Worker keyword | Worker Chroma | Server keyword | Server hybrid, MiniLM-L6 | Server hybrid, MiniLM-L12 | Server hybrid, e5-small | Server hybrid, granite (512) |
+|---|---|---|---|---|---|---|---|
+| LongMemEval (470) | 0.324 / 0.890 / 0.456 | — | 0.287 / 0.793 / 0.405 | 0.344 / 0.934 / 0.483 | 0.346 / 0.931 / 0.484 | 0.349 / 0.942 / 0.489 | 0.345 / 0.932 / 0.483 |
+| LongMemEval, 100-question sample | 0.332 / 0.884 / 0.459 | 0.354 / 0.937 / 0.489 | 0.284 / 0.774 / 0.396 | 0.354 / 0.934 / 0.489 | 0.356 / 0.938 / 0.491 | 0.360 / 0.952 / 0.497 | 0.352 / 0.931 / 0.486 |
+| LongMemEval, ≥5 relevant (14) | 0.743 / 0.712 / 0.726 | 0.829 / 0.798 / 0.812 | 0.629 / 0.605 / 0.616 | 0.829 / 0.798 / 0.812 | 0.871 / 0.840 / 0.855 | 0.857 / 0.829 / 0.842 | 0.800 / 0.769 / 0.783 |
+| memsearch zh | 0.000 / 0.000 / 0.000 | 0.065 / 0.272 / 0.102 | 0.080 / 0.330 / 0.125 | 0.096 / 0.401 / 0.150 | 0.153 / 0.660 / 0.243 | 0.159 / 0.680 / 0.251 | 0.172 / 0.744 / 0.272 |
+| memsearch en | 0.187 / 0.786 / 0.293 | 0.161 / 0.688 / 0.254 | 0.188 / 0.805 / 0.297 | 0.188 / 0.800 / 0.296 | 0.189 / 0.806 / 0.299 | 0.197 / 0.841 / 0.311 | 0.196 / 0.837 / 0.309 |
+| MIRACL en | 0.108 / 0.214 / 0.129 | — | 0.148 / 0.270 / 0.172 | 0.215 / 0.409 / 0.255 | 0.218 / 0.421 / 0.259 | 0.238 / 0.465 / 0.285 | 0.237 / 0.465 / 0.284 |
+| MIRACL zh | 0.000 / 0.000 / 0.000 | — | 0.000 / 0.000 / 0.000 | 0.001 / 0.003 / 0.001 | 0.132 / 0.281 / 0.164 | 0.208 / 0.481 / 0.267 | 0.251 / 0.566 / 0.319 |
+| MIRACL ko | 0.000 / 0.000 / 0.000 | — | 0.096 / 0.295 / 0.132 | 0.074 / 0.248 / 0.107 | 0.139 / 0.371 / 0.180 | 0.185 / 0.472 / 0.236 | 0.172 / 0.463 / 0.226 |
+| MIRACL ja | 0.000 / 0.000 / 0.000 | — | 0.001 / 0.003 / 0.001 | 0.005 / 0.012 / 0.006 | 0.082 / 0.204 / 0.107 | 0.240 / 0.682 / 0.329 | 0.218 / 0.622 / 0.300 |
 
 Worker Chroma results equal the exact MiniLM-L6 vector results wherever both
 were run, as they should: Chroma embeds with the same model, and the worker
@@ -146,11 +156,11 @@ returns Chroma's ranking. Where the server's keyword leg returns nothing
 One store per user, every document in one project
 (`results/*-server-store.md`; vector only, then hybrid):
 
-| Dataset | Server keyword | MiniLM-L6 | MiniLM-L12 | e5-small |
-|---|---|---|---|---|
-| LongMemEval | 0.079 / 0.264 / 0.118 | 0.086 / 0.289 / 0.128; 0.101 / 0.331 / 0.151 | 0.077 / 0.263 / 0.115; 0.097 / 0.321 / 0.145 | 0.111 / 0.355 / 0.164; 0.122 / 0.387 / 0.180 |
-| memsearch zh | 0.070 / 0.291 / 0.110 | 0.044 / 0.178 / 0.068; 0.073 / 0.303 / 0.114 | 0.119 / 0.513 / 0.189; 0.129 / 0.555 / 0.204 | 0.143 / 0.605 / 0.225; 0.141 / 0.605 / 0.223 |
-| memsearch en | 0.175 / 0.753 / 0.277 | 0.144 / 0.615 / 0.228; 0.176 / 0.751 / 0.278 | 0.141 / 0.602 / 0.222; 0.177 / 0.753 / 0.279 | 0.166 / 0.700 / 0.261; 0.185 / 0.788 / 0.292 |
+| Dataset | Server keyword | MiniLM-L6 | MiniLM-L12 | e5-small | granite (512) |
+|---|---|---|---|---|---|
+| LongMemEval | 0.079 / 0.264 / 0.118 | 0.086 / 0.289 / 0.129; 0.101 / 0.330 / 0.150 | 0.077 / 0.263 / 0.115; 0.098 / 0.321 / 0.146 | 0.110 / 0.354 / 0.163; 0.121 / 0.385 / 0.180 | 0.085 / 0.286 / 0.127; 0.103 / 0.331 / 0.153 |
+| memsearch zh | 0.070 / 0.291 / 0.110 | 0.044 / 0.178 / 0.068; 0.073 / 0.303 / 0.114 | 0.119 / 0.513 / 0.189; 0.129 / 0.555 / 0.204 | 0.143 / 0.605 / 0.225; 0.141 / 0.605 / 0.223 | 0.161 / 0.687 / 0.255; 0.153 / 0.668 / 0.243 |
+| memsearch en | 0.175 / 0.753 / 0.277 | 0.144 / 0.615 / 0.228; 0.176 / 0.751 / 0.278 | 0.141 / 0.602 / 0.222; 0.177 / 0.753 / 0.279 | 0.166 / 0.700 / 0.261; 0.185 / 0.788 / 0.292 | 0.158 / 0.667 / 0.248; 0.186 / 0.795 / 0.294 |
 
 Intervals and the paired differences between models are in each results
 file.
@@ -277,13 +287,16 @@ already found, which is a relative measure of models, but on human labels.
 | `minilm-l6` | `Xenova/all-MiniLM-L6-v2` (claude-mem's and Chroma's default) | 256 | none |
 | `multilingual-minilm-l12` | `Xenova/paraphrase-multilingual-MiniLM-L12-v2` (the #3422 model) | 128 | none |
 | `multilingual-e5-small` | `Xenova/multilingual-e5-small` | 512 | `query: ` / `passage: ` |
+| `granite-97m-r2-512` | `onnx-community/granite-embedding-97m-multilingual-r2-ONNX` (IBM, added 2026-10-19), cut at 512 tokens as claude-mem's models table carries it | 512 | none |
+| `granite-97m-r2` | the same model at its trained length | 8192 | none |
 
-All three produce 384-dimensional vectors, so any of them fits claude-mem's
+All four produce 384-dimensional vectors, so any of them fits claude-mem's
 existing `vector(384)` column.
 
 Each document part (a LongMemEval turn, a memsearch chunk, a MIRACL passage)
 is one vector, as claude-mem embeds each part of an observation:
-transformers.js 4.3.1 with onnxruntime-node 1.21.0, fp32, mean pooling, L2
+transformers.js 4.3.1 with onnxruntime-node 1.21.0, fp32, mean pooling
+(granite: the `[CLS]` token, as its sentence-transformers config pools), L2
 normalised, truncated at the model's trained length with the closing
 `[SEP]`/`</s>` restored (`src/encoder.ts` says why), stored as fp16.
 
@@ -317,7 +330,7 @@ Datasets are `longmemeval-s`, `memsearch-zh`, `memsearch-en`, `miracl-en`,
 ```sh
 npm install
 # Tier 0, about a minute: download the release vectors into out/<dataset>/, then
-scripts/fetch.sh v1 longmemeval-s                              # checks SHA256SUMS
+scripts/fetch.sh v2 longmemeval-s                              # checks SHA256SUMS
 node src/verify.ts --dataset longmemeval-s --model minilm-l6   # re-embeds 200 rows; fails below cosine 0.9999
 node src/eval.ts --dataset longmemeval-s                       # every metric, exactly, from the vectors
 # Tier 1: a 100-question LongMemEval sample
@@ -353,44 +366,53 @@ MIRACL runs), so times are upper bounds.
 Embedding, `scripts/embed-model.sh <dataset> <model> 4 8` (4 shards of 8
 threads; queries included), wall time in seconds:
 
-| Dataset | Rows | MiniLM-L6 | MiniLM-L12 | e5-small |
-|---|---|---|---|---|
-| LongMemEval | 199,509 | 1,593 | 1,996 | 5,852 |
-| memsearch zh | 955 | 30 | 42 | 62 |
-| memsearch en | 955 | 23 | 38 | 60 |
-| MIRACL en | 178,768 | 1,209 | 1,711 | 3,056 |
-| MIRACL zh | 81,309 | 539 | 688 | 1,100 |
-| MIRACL ko | 43,293 | 532 | 447 | 810 |
-| MIRACL ja | 185,319 | 1,562 | 1,815 | 3,335 |
+| Dataset | Rows | MiniLM-L6 | MiniLM-L12 | e5-small | granite (512) | granite (8192) |
+|---|---|---|---|---|---|---|
+| LongMemEval | 199,509 | 1,593 | 1,996 | 5,852 | 8,385 | 12,813 |
+| memsearch zh | 955 | 30 | 42 | 62 | 99 | 81 |
+| memsearch en | 955 | 23 | 38 | 60 | 86 | 76 |
+| MIRACL en | 178,768 | 1,209 | 1,711 | 3,056 | 4,670 | 4,710 |
+| MIRACL zh | 81,309 | 539 | 688 | 1,100 | 2,192 | 2,544 |
+| MIRACL ko | 43,293 | 532 | 447 | 810 | 1,489 | 1,744 |
+| MIRACL ja | 185,319 | 1,562 | 1,815 | 3,335 | 6,591 | 6,865 |
 
-All 21 took 7.4 hours; e5-small, with a 512-token limit, costs two to four
-times MiniLM-L6 per row on long text. Re-embedding only memsearch takes minutes.
+The first 21 took 7.4 hours; e5-small, with a 512-token limit, costs two to four
+times MiniLM-L6 per row on long text. granite ran on 2026-10-19, under the
+same load: 6.5 hours at 512 tokens, 1.6 times e5-small, and 8.0 hours at
+8,192, where one 8,192-token text takes about 10 s and 8 GB (attention grows
+with the square of its length; `src/encoder.ts` batches to a fixed budget,
+and `embed-model.sh` runs in a 64 GB systemd scope). Re-embedding only
+memsearch takes minutes.
 
 Checking the published vectors instead:
 
-- `verify.ts`, 200 rows: 8–46 s per dataset and model (all 21 matched at
+- `verify.ts`, 200 rows: 8–46 s per dataset and model (all 35 matched at
   cosine 1.0000000).
-- `eval.ts`, all three models: about 10 s for LongMemEval and memsearch; 74 s
-  (ko), 279 s (zh), and about 23 minutes each for MIRACL en and ja, whose
-  queries each scan the whole language's corpus.
+- `eval.ts`, all five: about 10 s for LongMemEval and memsearch; 98 s (ko),
+  344 s (zh), and 28–30 minutes each for MIRACL en and ja, whose queries
+  each scan the whole language's corpus (three models: 74 s, 279 s and about
+  23 minutes).
 - `server-search.ts`, all three models: loading and indexing the vectors in
   Postgres dominates, about 3.5 minutes per model for LongMemEval and up to
   10 minutes per model for MIRACL en and ja; searches take seconds to a
   minute. 12 minutes for LongMemEval scoped, 32–40 minutes for each large
-  MIRACL language, 2–4 minutes for memsearch.
+  MIRACL language, 2–4 minutes for memsearch. granite's load and index took
+  14–18 minutes per large dataset, with embedding running alongside.
 - `worker-search.ts`: keyword search alone takes 1–8 minutes; with Chroma,
   chroma-mcp embeds every document part itself, about 6–8 minutes for
   memsearch, 8 minutes for the 14 LongMemEval questions with five or more
   relevant sessions and 53 minutes for the 100-question sample. That is why
   worker search by meaning was not run on the full LongMemEval or MIRACL.
 
-The published vectors total about 1.5 GB (440 MB LongMemEval, 395 and 410 MB
-MIRACL en and ja, 180 MB zh, 96 MB ko, 7 MB per memsearch language).
+Release v1 holds the first three models, about 1.6 GB (440 MB LongMemEval,
+395 and 410 MB MIRACL en and ja, 180 MB zh, 96 MB ko, 7 MB per memsearch
+language). Release v2 adds both granite cuts, 535 MB each, for 2.7 GB; its
+first three models' files are identical to v1's.
 
 ## Plan
 
 1. **Vector-only accuracy**, exact, from the precomputed vectors: done for
-   all three datasets and models.
+   all three datasets and all models.
 2. **Through claude-mem's server search**: done; each dataset in a throwaway
    pgvector Postgres, searched three ways (keyword only, vector only, and the
    shipped hybrid with reciprocal rank fusion), reusing these vectors.
