@@ -7,32 +7,29 @@ result can be checked in minutes rather than recomputed in hours.
 
 ## Where this stands
 
-<!-- status:begin sha=5e92891 at=2026-10-18 -->
-_Written 2026-10-18 from commits through 5e92891 and the session that produced them._
+<!-- status:begin sha=f953890 at=2026-10-19 -->
+_Written 2026-10-19 from commits through f953890, plan documents, issues and session summaries._
 
 **Next**
-1. Judged precision (plan step 5). First action: run an LLM judge over the top-5 results
-   that are not labelled relevant on the 100-question LongMemEval sample, and hand-check a
-   sample of its verdicts. Done when the README gives a bounded P@5 alongside the
-   label-based one.
+1. <a id="n-6d4b28"></a>Judged precision (plan step 5). First action: run an LLM judge over the top-5 results that
+   are not labelled relevant on the 100-question LongMemEval sample, then hand-check a sample
+   of its verdicts. Done when the README gives a bounded P@5 alongside the label-based one.
 
 **Waiting on**
 nothing
 
 **Context for the above**
 - 2026-10-18, 737b4b4: results for all three models on LongMemEval, memsearch and MIRACL,
-  vector only and through claude-mem's server and worker search; summary tables, timing and
-  `scripts/fetch.sh` in the README. Vectors are published as
+  vector only and through claude-mem's server and worker search. The README has the summary
+  tables, timing and `scripts/fetch.sh`. Vectors are published as
   [release v1](https://github.com/rich-murphey/claude-mem-search-eval/releases/tag/v1).
 - 2026-10-18, 5e92891: on the 100-question sample, worker search with Chroma ranks exactly
   as the server's MiniLM-L6 vector leg (F1@5 0.489).
-- The worker's keyword search returns nothing for every CJK query. That is a claude-mem
-  bug, reported on [rich-murphey/claude-mem#1](https://github.com/rich-murphey/claude-mem/issues/1)
-  and tracked there, not here.
 
 **Open questions**
 none
 <!-- status:end -->
+
 
 The first question it answers is which embedding model claude-mem should use.
 all-MiniLM-L6-v2, the default, is English-only;
