@@ -75,7 +75,15 @@ const md = resultsHeader(`${dataset.key}, vector only (exact)`, dataset,
   (minRelevant > 1 ? ` with at least ${minRelevant} relevant documents` : '') +
   `; ${scope}; a document scores as its best part; ` +
   `95% intervals from ${BOOTSTRAP} bootstrap resamples over queries.`) +
-  renderTables(perModel, evaluated, keys.slice(1).map(k => [k, keys[0]]));
+  renderTables(perModel, evaluated, [
+    ...keys.slice(1).map((k): [string, string] => [k, keys[0]]),
+    // granite against the best of the others, and against itself cut at 512.
+    ...(['granite-97m-r2', 'granite-97m-r2-512'] as const)
+      .filter(k => perModel.has(k) && perModel.has('multilingual-e5-small'))
+      .map((k): [string, string] => [k, 'multilingual-e5-small']),
+    ...(perModel.has('granite-97m-r2') && perModel.has('granite-97m-r2-512')
+      ? [['granite-97m-r2', 'granite-97m-r2-512'] as [string, string]] : []),
+  ]);
 mkdirSync(values.results!, { recursive: true });
 const name = (values.manifest ? values.manifest.replace(/^.*\//, '').replace(/\.txt$/, '') : 'all') +
   (minRelevant > 1 ? `-min${minRelevant}` : '');
