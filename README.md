@@ -7,28 +7,43 @@ result can be checked in minutes rather than recomputed in hours.
 
 ## Where this stands
 
-<!-- status:begin sha=f953890 at=2026-10-19 -->
-_Written 2026-10-19 from commits through f953890, plan documents, issues and session summaries._
+<!-- status:begin sha=3361856 at=2026-10-19 -->
+_Written 2026-10-19 from commits through 3361856, plan documents, issues and session summaries._
 
 **Next**
-1. <a id="n-6d4b28"></a>Judged precision (plan step 5). First action: run an LLM judge over the top-5 results that
-   are not labelled relevant on the 100-question LongMemEval sample, then hand-check a sample
-   of its verdicts. Done when the README gives a bounded P@5 alongside the label-based one.
+1. <a id="n-bb5243"></a>Finish the granite runs. First action: check the `granite-eval` and `granite-server` jobs, which
+   have about 4 of 7 datasets left at 512 tokens (LongMemEval, MIRACL zh/en/ja). Then run the
+   8192-token pass on 5 datasets. Done when all 7 datasets have 512-token vectors and
+   claude-mem search results, and the 8192-token pass has finished.
+2. <a id="n-7f307e"></a>Write the PR text and publish release v2. First action: once item 1 is done, add the granite
+   rows to the README tables and upload the vectors to a new release. Done when release v2
+   exists, `scripts/fetch.sh` fetches it, and the PR text is written.
+3. <a id="n-6d4b28"></a>Judged precision (plan step 5). First action: run an LLM judge over the
+   top-5 results that are not labelled relevant on the 100-question LongMemEval sample, then
+   hand-check a sample of its verdicts. Done when the README gives a bounded P@5 alongside the
+   label-based one.
 
 **Waiting on**
 nothing
 
 **Context for the above**
-- 2026-10-18, 737b4b4: results for all three models on LongMemEval, memsearch and MIRACL,
-  vector only and through claude-mem's server and worker search. The README has the summary
-  tables, timing and `scripts/fetch.sh`. Vectors are published as
-  [release v1](https://github.com/rich-murphey/claude-mem-search-eval/releases/tag/v1).
-- 2026-10-18, 5e92891: on the 100-question sample, worker search with Chroma ranks exactly
-  as the server's MiniLM-L6 vector leg (F1@5 0.489).
+- 2026-10-19, 0bcd04c: added granite-embedding-97m-multilingual-r2 as the fourth model, with
+  `cls` pooling. On memsearch zh it beats multilingual-e5-small by +0.031 F1@5 and on en it
+  trails by 0.012.
+- 2026-10-19, e3d58c7: the 8192-token granite pass used about 30 GB per shard and four shards ran
+  out of memory. Embedding memory is now capped, and `embed-model.sh` runs in a 64 GB systemd scope.
+- 2026-10-19, 3361856: added `granite-97m-r2-512`, the entry claude-mem's `models.ts` carries.
+  `server-search.ts` now defaults to those entries. On memsearch zh through claude-mem, granite
+  scores F1@5 0.281, +0.178 over MiniLM-L6.
+- 2026-10-19, session: every `granite-server` run had exited at once because the systemd unit
+  could not find `bun`. The chain was restarted with `/home/rich/.bun/bin/bun`, and memsearch en
+  is running. The 512-token embedding is estimated at about 7 more hours, and the 8192-token pass
+  at 10 hours or more after that.
 
 **Open questions**
 none
 <!-- status:end -->
+
 
 
 The first question it answers is which embedding model claude-mem should use.
