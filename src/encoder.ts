@@ -31,6 +31,12 @@ export async function loadEncoder(model: EvalModel, threads?: number) {
     const h = hidden.data as Float32Array;
     return texts.map((_, r) => {
       const v = new Float32Array(dims);
+      if (model.pooling === 'cls') {
+        v.set(h.subarray(r * width * dims, r * width * dims + dims));
+        const norm = Math.hypot(...v);
+        for (let d = 0; d < dims; d++) v[d] /= norm;
+        return v;
+      }
       let n = 0;
       for (let t = 0; t < width; t++) {
         if (mask[r * width + t] !== 1n) continue;

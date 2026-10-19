@@ -5,7 +5,8 @@ export interface EvalModel {
   key: string;
   repo: string;
   dtype: 'fp32';
-  pooling: 'mean';
+  /** mean: average over tokens; cls: the first token's vector. */
+  pooling: 'mean' | 'cls';
   dims: number;
   /** Tokens per input, [CLS]/[SEP] included; the length the model was trained at. */
   maxTokens: number;
@@ -36,6 +37,15 @@ export const MODELS: EvalModel[] = [
     repo: 'Xenova/multilingual-e5-small',
     dtype: 'fp32', pooling: 'mean', dims: 384, maxTokens: 512,
     queryPrefix: 'query: ', passagePrefix: 'passage: ',
+  },
+  {
+    // IBM's ibm-granite/granite-embedding-97m-multilingual-r2 (ModernBERT,
+    // Apache-2.0); its sentence-transformers config pools the [CLS] token and
+    // sets no prompts; 8192 tokens.
+    key: 'granite-97m-r2',
+    repo: 'onnx-community/granite-embedding-97m-multilingual-r2-ONNX',
+    dtype: 'fp32', pooling: 'cls', dims: 384, maxTokens: 8192,
+    queryPrefix: '', passagePrefix: '',
   },
 ];
 
