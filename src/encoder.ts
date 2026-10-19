@@ -8,15 +8,42 @@
 import { AutoModel, AutoTokenizer } from '@huggingface/transformers';
 import type { EvalModel } from './models.ts';
 
+// Attention memory grows with rows x tokens^2, so a forward pass is bounded by
+// that product rather than by a row count: 32 rows at 512 tokens, one row at
+// 8192. 32 rows of 8192-token texts took about 30 GB per process (2026-10-19).
+const ATTENTION_BUDGET = 32 * 512 * 512;
+
 export async function loadEncoder(model: EvalModel, threads?: number) {
   const tokenizer = await AutoTokenizer.from_pretrained(model.repo);
   const encoder = await AutoModel.from_pretrained(model.repo, {
     dtype: model.dtype,
-    ...(threads ? { session_options: { intraOpNumThreads: threads, interOpNumThreads: 1 } } : {}),
+    // Without the arena, onnxruntime returns a long batch's memory instead of
+    // keeping its peak for the rest of the run.
+    session_options: {
+      enableCpuMemArena: false,
+      ...(threads ? { intraOpNumThreads: threads, interOpNumThreads: 1 } : {}),
+    },
   });
   const sep = BigInt(tokenizer.sep_token_id);
 
   return async function encode(texts: string[]): Promise<Float32Array[]> {
+    const lengths = texts.map(t => Math.min(tokenizer.encode(t).length, model.maxTokens));
+    const out: Float32Array[] = [];
+    for (let start = 0; start < texts.length;) {
+      // A batch pads to its longest row; one row always goes, however long.
+      let end = start + 1, width = lengths[start];
+      while (end < texts.length) {
+        const w = Math.max(width, lengths[end]);
+        if ((end - start + 1) * w * w > ATTENTION_BUDGET) break;
+        width = w; end++;
+      }
+      out.push(...await forward(texts.slice(start, end)));
+      start = end;
+    }
+    return out;
+  };
+
+  async function forward(texts: string[]): Promise<Float32Array[]> {
     const inputs = tokenizer(texts, { padding: true, truncation: true, max_length: model.maxTokens });
     const [rows, width] = inputs.input_ids.dims as number[];
     const ids = inputs.input_ids.data as BigInt64Array;
@@ -50,5 +77,5 @@ export async function loadEncoder(model: EvalModel, threads?: number) {
       for (let d = 0; d < dims; d++) v[d] /= norm;
       return v;
     });
-  };
+  }
 }
