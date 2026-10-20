@@ -7,11 +7,11 @@ result can be checked in minutes rather than recomputed in hours.
 
 ## Where this stands
 
-<!-- status:begin sha=9847db2 at=2026-10-19 -->
-_Written 2026-10-19 from commits through 9847db2, the PR draft and this session._
+<!-- status:begin sha=3963dd5 at=2026-10-20 -->
+_Written 2026-10-20 from commits through 3963dd5, plan documents, issues and session summaries._
 
 **Next**
-1. Open the claude-mem PR. First action: Rich reads the draft
+1. <a id="n-de9865"></a>Open the claude-mem PR. First action: Rich reads the draft
    (`~/wt/claude-mem/upstream-draft/pr.md`, local, not in a repo), then
    pushes `pr/pgvector-search` (tree `~/wt/claude-mem/granite`, local only) to
    the fork. Done when the PR is open on thedotmack/claude-mem with release v2
@@ -25,21 +25,23 @@ _Written 2026-10-19 from commits through 9847db2, the PR draft and this session.
 nothing
 
 **Context for the above**
-- 2026-10-19: granite-embedding-97m-multilingual-r2 is measured on every
-  dataset at 512 and 8,192 tokens, vector only and through claude-mem's server
-  search. It leads e5-small on Chinese (MIRACL zh F1@5 +0.052, memsearch zh
-  +0.031) and trails it by 0.012–0.030 elsewhere. The 512-token cut, which
-  claude-mem's models table carries, scores the same as 8,192.
-- 2026-10-19, 9847db2: each vector-only results file pairs granite with
-  e5-small, and 8,192 tokens with 512.
-- 2026-10-19: release v2 holds all five vector sets (2.7 GB). v1 is unchanged,
-  and its files are byte-identical to v2's first three models.
-- Rerunning server search shifted a few existing cells by 0.001 (HNSW is
-  approximate); the README and PR tables are taken from the current files.
+- 2026-10-19, 3963dd5: the README now has granite-embedding-97m-multilingual-r2 in every table. It
+  leads e5-small on Chinese (MIRACL zh F1@5 +0.052, memsearch zh +0.031) and trails it by
+  0.012–0.030 elsewhere. The 512-token cut, which claude-mem's models table carries, scores the
+  same as 8,192.
+- 2026-10-19, 9847db2: each vector-only results file pairs granite with e5-small, and 8,192
+  tokens with 512.
+- 2026-10-19, 3963dd5: release v2 holds all five vector sets (2.7 GB). v1 is unchanged, and its
+  files are byte-identical to v2's first three models.
+- 2026-10-19, 3963dd5: rerunning server search shifted a few existing cells by 0.001 (HNSW is
+  approximate). The README and PR tables are taken from the current files.
+- The PR draft has gained a "room left for a better model" ceiling table (memory, 2026-10-19). The
+  branch was still unpushed and the draft unfiled at the last check (memory, 2026-10-18).
 
 **Open questions**
 none
 <!-- status:end -->
+
 
 
 
