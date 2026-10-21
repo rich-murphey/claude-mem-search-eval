@@ -1,0 +1,82 @@
+# Builds claude-mem-postgres (docker/postgres) for amd64 and arm64, checks that
+# both extensions load, and pushes ghcr.io/<owner>/claude-mem-postgres with a
+# moving tag (17) and a dated one (17-YYYYMMDD). Weekly, so Postgres, Debian
+# and PGDG updates keep arriving.
+name: postgres-image
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - docker/postgres/**
+      - .github/workflows/postgres-image.yml
+  schedule:
+    - cron: "17 6 * * 1"
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  PG_MAJOR: "17"
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Tags
+        id: tags
+        run: |
+          image="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/claude-mem-postgres"
+          echo "image=$image" >> "$GITHUB_OUTPUT"
+          echo "tags=$image:$PG_MAJOR,$image:$PG_MAJOR-$(date -u +%Y%m%d)" >> "$GITHUB_OUTPUT"
+
+      - name: Build for the smoke test
+        uses: docker/build-push-action@v6
+        with:
+          context: docker/postgres
+          build-args: PG_MAJOR=${{ env.PG_MAJOR }}
+          load: true
+          tags: claude-mem-postgres:test
+
+      - name: Smoke test
+        run: |
+          docker run -d --name pg -e POSTGRES_PASSWORD=pw claude-mem-postgres:test
+          for i in $(seq 30); do docker exec pg pg_isready -U postgres -q && break; sleep 2; done
+          docker exec pg psql -U postgres -v ON_ERROR_STOP=1 -c "
+            CREATE EXTENSION vector; CREATE EXTENSION pg_textsearch;
+            CREATE TABLE t (id int, content text, e vector(3));
+            INSERT INTO t VALUES (1, 'the quick brown fox', '[1,0,0]'), (2, 'a lazy dog', '[0,1,0]');
+            CREATE INDEX ON t USING hnsw (e vector_cosine_ops);
+            CREATE INDEX t_bm25 ON t USING bm25 (content) WITH (text_config = 'english');
+            SELECT id FROM t ORDER BY content <@> to_bm25query('fox', 't_bm25') LIMIT 1;
+            SELECT extname, extversion FROM pg_extension ORDER BY 1;
+            SELECT datlocprovider, datlocale FROM pg_database WHERE datname = 'postgres';"
+          docker exec pg reindex-collation
+          docker rm -f pg
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: docker/postgres
+          build-args: PG_MAJOR=${{ env.PG_MAJOR }}
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.tags.outputs.tags }}
+          labels: |
+            org.opencontainers.image.title=claude-mem-postgres
+            org.opencontainers.image.description=Postgres ${{ env.PG_MAJOR }} with pgvector and pg_textsearch, for claude-mem's server mode. Interim build until thedotmack/claude-mem adopts it.
+            org.opencontainers.image.source=https://github.com/${{ github.repository }}
+            org.opencontainers.image.licenses=PostgreSQL
