@@ -7,8 +7,8 @@ result can be checked in minutes rather than recomputed in hours.
 
 ## Where this stands
 
-<!-- status:begin sha=3963dd5 at=2026-10-20 -->
-_Written 2026-10-20 from commits through 3963dd5, plan documents, issues and session summaries._
+<!-- status:begin sha=f9d88b9 at=2026-10-21 -->
+_Written 2026-10-21 from commits through f9d88b9, plan documents, issues and session summaries._
 
 **Next**
 1. <a id="n-de9865"></a>Open the claude-mem PR. First action: Rich reads the draft
@@ -25,6 +25,12 @@ _Written 2026-10-20 from commits through 3963dd5, plan documents, issues and ses
 nothing
 
 **Context for the above**
+- 2026-10-21, f9d88b9: `docker/postgres` builds claude-mem-postgres (Postgres 17 on trixie with
+  pgvector 0.8.7 and pg_textsearch 1.5.1, plus `reindex-collation`), published publicly as
+  ghcr.io/rich-murphey/claude-mem-postgres:17 and :17-YYYYMMDD for amd64 and arm64, rebuilt
+  weekly. Interim, for testing until upstream adopts it as its own database-image PR.
+- 2026-10-21, f596b38 and cce426a: server keyword ranking. pg_textsearch bm25 matches SQL bm25's
+  F1@5 (store 0.234, against ts_rank's 0.162) at 2 ms a query against 5.2 s.
 - 2026-10-19, 3963dd5: the README now has granite-embedding-97m-multilingual-r2 in every table. It
   leads e5-small on Chinese (MIRACL zh F1@5 +0.052, memsearch zh +0.031) and trails it by
   0.012–0.030 elsewhere. The 512-token cut, which claude-mem's models table carries, scores the
