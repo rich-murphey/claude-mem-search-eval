@@ -1,18 +1,20 @@
-# claude-mem-postgres
+# postgres-pgvector-textsearch
 
-Postgres 17 with [pgvector](https://github.com/pgvector/pgvector) (search by
-meaning) and [pg_textsearch](https://github.com/timescale/pg_textsearch) (bm25
-keyword ranking), for claude-mem's server mode. Both extensions come from the
-PostgreSQL project's apt repository on `postgres:17-trixie`.
+Postgres 17 with [pgvector](https://github.com/pgvector/pgvector) (vector
+search) and [pg_textsearch](https://github.com/timescale/pg_textsearch) (bm25
+keyword ranking), both from the PostgreSQL project's apt repository on
+`postgres:17-trixie`, plus `reindex-collation` for volumes made under another C
+library. Nothing in it is specific to claude-mem; claude-mem's server mode is
+what it was built and measured for.
 
-**Interim.** This is published from rich-murphey/claude-mem-search-eval for
-testing until [thedotmack/claude-mem](https://github.com/thedotmack/claude-mem)
-adopts it; then this image gets a deprecation note and stops being rebuilt, and
-compose switches to upstream's name with the same tags.
+Published from rich-murphey/claude-mem-search-eval for testing until
+[thedotmack/claude-mem](https://github.com/thedotmack/claude-mem) settles on an
+image of its own; then this one gets a deprecation note and stops being
+rebuilt.
 
 ```
-ghcr.io/rich-murphey/claude-mem-postgres:17            # moving, rebuilt weekly
-ghcr.io/rich-murphey/claude-mem-postgres:17-YYYYMMDD   # one per build, for pinning
+ghcr.io/rich-murphey/postgres-pgvector-textsearch:17            # moving, rebuilt weekly
+ghcr.io/rich-murphey/postgres-pgvector-textsearch:17-YYYYMMDD   # one per build, for pinning
 ```
 
 Built for linux/amd64 and linux/arm64 by
@@ -38,10 +40,10 @@ server starts:
 # compose.override.yml beside claude-mem's docker-compose.yml
 services:
   postgres:
-    image: ghcr.io/rich-murphey/claude-mem-postgres:17
+    image: ghcr.io/rich-murphey/postgres-pgvector-textsearch:17
 
   postgres-collation:
-    image: ghcr.io/rich-murphey/claude-mem-postgres:17
+    image: ghcr.io/rich-murphey/postgres-pgvector-textsearch:17
     command: ["reindex-collation"]
     restart: "no"
     environment:

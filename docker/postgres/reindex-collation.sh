@@ -6,7 +6,7 @@
 # collation and are left alone, so this takes seconds where REINDEX DATABASE
 # would rebuild the HNSW index too.
 #
-# claude-mem-postgres installs it as `reindex-collation`. Run it before the
+# postgres-pgvector-textsearch installs it as `reindex-collation`. Run it before the
 # server and worker start, inside the postgres container:
 #
 #   docker compose up -d postgres

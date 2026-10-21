@@ -1,5 +1,5 @@
-# Builds claude-mem-postgres (docker/postgres) for amd64 and arm64, checks that
-# both extensions load, and pushes ghcr.io/<owner>/claude-mem-postgres with a
+# Builds postgres-pgvector-textsearch (docker/postgres) for amd64 and arm64, checks that
+# both extensions load, and pushes ghcr.io/<owner>/postgres-pgvector-textsearch with a
 # moving tag (17) and a dated one (17-YYYYMMDD). Weekly, so Postgres, Debian
 # and PGDG updates keep arriving.
 name: postgres-image
@@ -33,7 +33,7 @@ jobs:
       - name: Tags
         id: tags
         run: |
-          image="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/claude-mem-postgres"
+          image="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/postgres-pgvector-textsearch"
           echo "image=$image" >> "$GITHUB_OUTPUT"
           echo "tags=$image:$PG_MAJOR,$image:$PG_MAJOR-$(date -u +%Y%m%d)" >> "$GITHUB_OUTPUT"
 
@@ -43,11 +43,11 @@ jobs:
           context: docker/postgres
           build-args: PG_MAJOR=${{ env.PG_MAJOR }}
           load: true
-          tags: claude-mem-postgres:test
+          tags: postgres-pgvector-textsearch:test
 
       - name: Smoke test
         run: |
-          docker run -d --name pg -e POSTGRES_PASSWORD=pw claude-mem-postgres:test
+          docker run -d --name pg -e POSTGRES_PASSWORD=pw postgres-pgvector-textsearch:test
           for i in $(seq 30); do docker exec pg pg_isready -U postgres -q && break; sleep 2; done
           docker exec pg psql -U postgres -v ON_ERROR_STOP=1 -c "
             CREATE EXTENSION vector; CREATE EXTENSION pg_textsearch;
@@ -76,7 +76,7 @@ jobs:
           push: true
           tags: ${{ steps.tags.outputs.tags }}
           labels: |
-            org.opencontainers.image.title=claude-mem-postgres
-            org.opencontainers.image.description=Postgres ${{ env.PG_MAJOR }} with pgvector and pg_textsearch, for claude-mem's server mode. Interim build until thedotmack/claude-mem adopts it.
+            org.opencontainers.image.title=postgres-pgvector-textsearch
+            org.opencontainers.image.description=Postgres ${{ env.PG_MAJOR }} with pgvector and pg_textsearch from the PostgreSQL apt repository, plus reindex-collation for volumes from another C library.
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             org.opencontainers.image.licenses=PostgreSQL

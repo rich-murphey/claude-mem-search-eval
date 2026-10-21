@@ -1,8 +1,7 @@
-# claude-mem-postgres: Postgres with pgvector (search by meaning) and
+# postgres-pgvector-textsearch: Postgres with pgvector (search by meaning) and
 # pg_textsearch (bm25 keyword ranking), both from the PostgreSQL project's apt
 # repository (apt.postgresql.org), which the official postgres image already
-# uses. Interim build for testing claude-mem's server mode until
-# thedotmack/claude-mem adopts it.
+# uses. Built for claude-mem's server mode, with nothing specific to it.
 ARG PG_MAJOR=17
 FROM postgres:${PG_MAJOR}-trixie
 ARG PG_MAJOR
