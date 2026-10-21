@@ -14,6 +14,8 @@ Best treated as a measurement of relative accuracy between models, given the lab
 | bm25, any term | 0.352 (0.316–0.388) | 0.929 (0.888–0.964) | 0.486 (0.450–0.521) | 0.964 (0.935–0.987) | 0.839 (0.783–0.888) | 0.950 (0.914–0.981) | 0.923 (0.889–0.952) |
 | pg_textsearch | 0.358 (0.322–0.396) | 0.943 (0.908–0.972) | 0.494 (0.459–0.529) | 0.958 (0.923–0.983) | 0.873 (0.822–0.919) | 0.960 (0.922–0.988) | 0.934 (0.899–0.962) |
 
+**Note.** pg_textsearch reaches the same F1@5 as bm25 computed in SQL over the same any-term matches (0.494 against 0.486, intervals overlapping) at 21 times lower latency: 3 ms a query against 63 ms.
+
 ## R@5 / F1@5 by query type
 
 | Run | knowledge-update (15) | multi-session (26) | single-session-assistant (12) | single-session-preference (6) | single-session-user (14) | temporal-reasoning (27) |

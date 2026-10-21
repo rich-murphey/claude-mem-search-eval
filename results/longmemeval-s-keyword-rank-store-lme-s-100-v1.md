@@ -14,6 +14,8 @@ Best treated as a measurement of relative accuracy between models, given the lab
 | bm25, any term | 0.160 (0.132–0.190) | 0.495 (0.410–0.583) | 0.234 (0.194–0.276) | 0.613 (0.523–0.698) | 0.318 (0.240–0.396) | 0.455 (0.373–0.541) | 0.468 (0.392–0.542) |
 | pg_textsearch | 0.160 (0.132–0.190) | 0.495 (0.410–0.583) | 0.234 (0.194–0.276) | 0.614 (0.526–0.700) | 0.313 (0.235–0.396) | 0.448 (0.366–0.533) | 0.465 (0.389–0.540) |
 
+**Note.** pg_textsearch reaches the same F1@5 as bm25 computed in SQL over the same any-term matches (0.234 both) at about 2,600 times lower latency: 2 ms a query against 5.2 s. The SQL version counts term frequencies across the whole project on every query; pg_textsearch reads them from its index.
+
 ## R@5 / F1@5 by query type
 
 | Run | knowledge-update (15) | multi-session (26) | single-session-assistant (12) | single-session-preference (6) | single-session-user (14) | temporal-reasoning (27) |
