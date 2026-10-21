@@ -129,7 +129,7 @@ async function load(model: EvalModel, modelId: string) {
   await admin.query(`CREATE SCHEMA ${schema}`);
   const pool = new pg.Pool({ connectionString: values.db, options: `-c search_path=${schema},public`, max: 4 });
   pool.on('error', () => {});
-  await bootstrapServerPostgresSchema(pool, model.dims);
+  await bootstrapServerPostgresSchema(pool, 'on', model.dims);
   const storage = createPostgresStorageRepositories(pool);
   const team = await storage.teams.create({ name: dataset.key });
   const rows = loadVectors(`${values.out}/${dataset.key}/${model.key}/rows.f16.bin`, model.dims);
@@ -163,7 +163,7 @@ async function load(model: EvalModel, modelId: string) {
       );
     }
   }
-  await bootstrapServerPostgresSchema(pool, model.dims);
+  await bootstrapServerPostgresSchema(pool, 'on', model.dims);
   await pool.query('ANALYZE');
   return { pool, teamId: team.id, projectIdOf: (q: Query) => projectIds.get(projectOf(q))! };
 }
