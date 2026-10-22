@@ -7,14 +7,15 @@ result can be checked in minutes rather than recomputed in hours.
 
 ## Where this stands
 
-<!-- status:begin sha=bb63dfc at=2026-10-21 -->
-_Written 2026-10-21 from commits through bb63dfc, plan documents, issues and session summaries._
+<!-- status:begin sha=916965d at=2026-10-22 -->
+_Written 2026-10-22 from commits through 916965d, plan documents, issues and session summaries._
 
 **Next**
 1. <a id="n-de9865"></a>Open the claude-mem PR. First action: Rich reads the draft
-   (`~/wt/claude-mem/upstream-draft/pr.md`, local, not in a repo), then pushes
-   `pr/pgvector-search` (tree `~/wt/claude-mem/granite`, local only) to the fork. Done when the
-   PR is open on thedotmack/claude-mem with release v2 linked.
+   (`~/wt/claude-mem/upstream-draft/pr.md`, local, not in a repo) and checks that its base hash
+   (9e4f313a8), commit count, cited hashes and test counts match the rebased branch. Then he
+   pushes `pr/pgvector-search` (tree `~/wt/claude-mem/granite`, local only) to the fork. Done
+   when the PR is open on thedotmack/claude-mem with release v2 linked.
 2. <a id="n-6d4b28"></a>Judged precision (plan step 5). First action: run an LLM judge over the
    top-5 results that are not labelled relevant on the 100-question LongMemEval sample, then
    hand-check a sample of its verdicts. Done when the README gives a bounded P@5 alongside the
@@ -24,34 +25,35 @@ _Written 2026-10-21 from commits through bb63dfc, plan documents, issues and ses
 nothing
 
 **Context for the above**
-- 2026-10-21, bb63dfc: `keyword-compare.ts` runs claude-mem's own `search()` from several
-  checkouts over one store. Results cover LongMemEval, memsearch en and zh, and MIRACL en, zh, ko
-  and ja. Earlier, f596b38 and cce426a: pg_textsearch bm25 matches SQL bm25's F1@5 (store 0.234,
-  against ts_rank's 0.162) at 2 ms a query against 5.2 s.
-- 2026-10-21, cea3540 and f9d88b9: the Docker image is now
-  ghcr.io/rich-murphey/postgres-pgvector-textsearch (:17 and :17-YYYYMMDD, amd64 and arm64,
-  rebuilt weekly). It is Postgres 17 with pgvector 0.8.7, pg_textsearch 1.5.1 and
-  `reindex-collation`. It is interim, for testing until upstream settles on an image in its own
-  database-image PR. The old name `claude-mem-postgres` held one build and is no longer pushed.
+- 2026-10-22, 916965d: server search now has store-mode results, with every document of a
+  dataset in one project, as in a single user's store. They run through `pr/model-choice`'s
+  `search()` and cover keyword only, plus vector only and hybrid for MiniLM-L6, e5-small and
+  granite.
+- 2026-10-21, a211444 and 20fe324: server search with the pg_textsearch bm25 keyword leg now
+  covers all seven datasets in scoped mode, using `pr/model-choice` (4eb42be11). The older
+  `*-server-scoped.md` files (ts_rank keyword leg) are unchanged. 20fe324 fixed the argument
+  order: the vector mode must come before the width, or no vector table is made.
+  These runs use `pr/model-choice`. The PR branch in Next 1 is `pr/pgvector-search`. The
+  inputs do not say how the two relate.
+- 2026-10-21, bb63dfc (also f596b38, cce426a): pg_textsearch bm25 matches SQL bm25's F1@5
+  (store 0.234, against ts_rank's 0.162) at 2 ms a query against 5.2 s. `keyword-compare.ts`
+  shows this through claude-mem's own `search()`.
 - 2026-10-19, 3963dd5: the README has granite-embedding-97m-multilingual-r2 in every table. It
   leads e5-small on Chinese (MIRACL zh F1@5 +0.052, memsearch zh +0.031) and trails it by
-  0.012–0.030 elsewhere. The 512-token cut scores the same as 8,192. Release v2 holds all five
-  vector sets (2.7 GB); v1 is unchanged.
-- 2026-10-19, 3963dd5: rerunning server search shifted a few existing cells by 0.001 (HNSW is
-  approximate). The README and PR tables are taken from the current files.
-- The PR draft has gained a "room left for a better model" ceiling table (memory, 2026-10-19).
-- `pr/pgvector-search` (13 commits) was rebased without conflicts onto upstream 9e4f313a8. tsc is
-  clean and the plugin build succeeds. The tests give 581 pass and 18 fail against upstream's 559
-  pass and the same 18 fail, so the 22 new tests pass. Pushing to the fork
-  (rich-murphey/claude-mem) and opening the PR is Rich's step, and the branch was still local
-  (memory, 2026-10-20). The `pr.md` base hash, commit count, cited hashes and test counts were to
-  be refreshed after the rebase (memory, 2026-10-20). `pr.md` also gained a bm25 vs ts_rank
-  keyword ranking section (memory, 2026-10-21).
-- Judged precision (plan step 5) was still pending in the eval README (memory, 2026-10-18).
+  0.012–0.030 elsewhere. Release v2 holds all five vector sets (2.7 GB); v1 is unchanged.
+- 2026-10-20, upstream 9e4f313a8: `pr/pgvector-search` (13 commits) was rebased onto it without
+  conflicts. tsc is clean and the plugin build succeeds. Tests give 581 pass and 18 fail,
+  against upstream's 559 pass and the same 18 fail. The branch was still local, and pushing it
+  is Rich's step.
+- The draft `pr.md` was found to cite stale hashes and test counts, including 583 pass where the
+  rebased branch gives 581, so it needs refreshing before the PR opens (memory, 2026-10-20).
+- Step 5 (judged precision) was still pending in the README; unlabelled answer sessions cannot
+  be bounded without LLM judging (memory, 2026-10-19).
 
 **Open questions**
 none
 <!-- status:end -->
+
 
 
 
