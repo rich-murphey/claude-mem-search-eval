@@ -181,6 +181,47 @@ One store per user, every document in one project
 Intervals and the paired differences between models are in each results
 file.
 
+Through [chroma-mem](https://github.com/rich-murphey/chroma-mem) (a
+Rust-only spike: fastembed MiniLM-L6 and Chroma 1.4.4's Rust server), with
+the release `minilm-l6` vectors loaded into one collection per dataset
+(`results/*-chroma-mem-*.md`, 2026-10-23). Each query is filtered by a
+Chroma `where` (LongMemEval: `src $in` its haystack; memsearch: its project;
+MIRACL: none), asks for 200 parts and keeps each document's best;
+`node src/eval.ts --rankings` scores the file chroma-mem writes. "Split"
+replaces each row over 254 word pieces with the pieces chroma-mem cuts it
+into, embedded by chroma-mem, where the release truncates it. Each cell is
+R@5 / F1@5 / nDCG@10:
+
+| Dataset | Exact | chroma-mem | chroma-mem, split | Split − unsplit (paired, nDCG@10) |
+|---|---|---|---|---|
+| LongMemEval (470) | 0.934 / 0.484 / 0.908 | 0.934 / 0.484 / 0.908 | 0.931 / 0.483 / 0.915 | +0.007 (0.001–0.014) |
+| memsearch zh | 0.272 / 0.102 / 0.236 | 0.272 / 0.102 / 0.236 | 0.241 / 0.091 / 0.206 | −0.031 (−0.041–−0.019) |
+| memsearch en | 0.688 / 0.254 / 0.603 | 0.688 / 0.254 / 0.603 | 0.680 / 0.251 / 0.595 | −0.008 (−0.014–−0.001) |
+| MIRACL en | 0.331 / 0.195 / 0.336 | 0.331 / 0.195 / 0.336 | 0.332 / 0.196 / 0.339 | +0.003 (−0.000–0.006) |
+| MIRACL zh | 0.003 / 0.001 / 0.003 | 0.003 / 0.001 / 0.003 | 0.004 / 0.002 / 0.003 | −0.000 (−0.003–0.001) |
+| MIRACL ko | 0.023 / 0.011 / 0.021 | 0.014 / 0.008 / 0.014 | 0.009 / 0.006 / 0.010 | −0.003 (−0.012–0.005) |
+| MIRACL ja | 0.010 / 0.005 / 0.011 | 0.010 / 0.005 / 0.011 | 0.010 / 0.005 / 0.010 | −0.001 (−0.003–−0.000) |
+
+- **Chroma's HNSW costs nothing measurable, scoped.** chroma-mem equals the
+  exact results on six datasets, as the server's pgvector search does. On
+  MIRACL ko both lose the same (R@5 0.023 → 0.014; 12 of 213 top tens
+  differ), and asking Chroma for 1,000 parts instead of 200 does not recover
+  it; with MiniLM's near-useless Korean vectors the misses are a handful of
+  queries.
+- **Splitting long rows helps LongMemEval's ranking a little and hurts
+  memsearch zh.** On LongMemEval MRR@10 rises 0.012 (0.003–0.021) and R@5
+  is unchanged; on memsearch zh R@5 falls 0.031 (0.016–0.046): the
+  extra pieces give more documents a chance to be some query's nearest
+  part. Long rows (over 254 word pieces): LongMemEval 68,247 of 199,509
+  (34%), memsearch zh 467 of 955 (49%), en 345 (36%), MIRACL en 6.6%, zh
+  12.5%, ko 56%, ja 23%.
+- **Store mode** (one collection, no filter;
+  `results/*-chroma-mem-store-all.md`) matches the server's vector-only
+  store results on memsearch zh and en exactly. On LongMemEval it is
+  0.278 / 0.123 / 0.258 against the server's 0.289 / 0.129 / 0.273; asking
+  for 1,000 parts, which widens hnswlib's search to at least 1,000
+  candidates, recovers part of it (+0.006 R@5, 0.001–0.013).
+
 ## Data
 
 ### LongMemEval
@@ -357,6 +398,9 @@ scripts/embed-model.sh longmemeval-s minilm-l6 4 8
 # throwaway pgvector Postgres (and, for the worker, chroma-mcp through uvx):
 bun src/server-search.ts --claude-mem <checkout> --db <postgres url> --dataset longmemeval-s
 bun src/worker-search.ts --claude-mem <checkout> --dataset longmemeval-s
+# Through chroma-mem: export rows and scopes, search there, score its rankings
+node src/export-rows.ts --dataset longmemeval-s
+node src/eval.ts --dataset longmemeval-s --models minilm-l6 --rankings chroma-mem=<rankings.tsv>
 ```
 
 `manifests/lme-s-100-v1.txt` and `-v2.txt` are stratified 100-question

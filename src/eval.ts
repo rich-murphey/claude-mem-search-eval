@@ -1,7 +1,7 @@
 // Vector-only retrieval accuracy from precomputed vectors, computed exactly.
 //
 //   node src/eval.ts --dataset longmemeval-s [--models a,b] [--manifest manifests/x.txt] [--min-relevant 5]
-//   node src/eval.ts --dataset longmemeval-s --models minilm-l6 --rankings chroma-mem=x.tsv [--rankings b=y.tsv] [--name chroma-mem]
+//   node src/eval.ts --dataset longmemeval-s --models minilm-l6 --rankings chroma-mem=x.tsv [--rankings b=y.tsv] [--name chroma-mem] [--note text]
 //
 // --rankings scores a search run elsewhere: each line of the file is a query
 // id and its top 10 document ids in order, tab-separated. Each ranking is
@@ -26,6 +26,7 @@ const { values } = parseArgs({
     results: { type: 'string', default: 'results' },
     rankings: { type: 'string', multiple: true, default: [] },
     name: { type: 'string' },
+    note: { type: 'string' },
   },
 });
 
@@ -95,7 +96,8 @@ const md = resultsHeader(`${dataset.key}, vector only (exact${labels.length ? `,
   (values.manifest ? ` from ${values.manifest}` : '') +
   (minRelevant > 1 ? ` with at least ${minRelevant} relevant documents` : '') +
   `; ${scope}; a document scores as its best part; ` +
-  `95% intervals from ${BOOTSTRAP} bootstrap resamples over queries.`) +
+  `95% intervals from ${BOOTSTRAP} bootstrap resamples over queries.` +
+  (values.note ? ` ${values.note}` : '')) +
   renderTables(perModel, evaluated, [
     ...keys.slice(1).map((k): [string, string] => [k, keys[0]]),
     // granite against the best of the others, and against itself cut at 512.
