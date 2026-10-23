@@ -1,11 +1,16 @@
 // Vector-only retrieval accuracy from precomputed vectors, computed exactly.
 //
 //   node src/eval.ts --dataset longmemeval-s [--models a,b] [--manifest manifests/x.txt] [--min-relevant 5]
+//   node src/eval.ts --dataset longmemeval-s --models minilm-l6 --rankings chroma-mem=x.tsv [--rankings b=y.tsv] [--name chroma-mem]
+//
+// --rankings scores a search run elsewhere: each line of the file is a query
+// id and its top 10 document ids in order, tab-separated. Each ranking is
+// paired against the first model, and each after the first against the first.
 //
 // Each query searches its documents: LongMemEval's own haystack, or the
 // query's project. A document scores as its best part, as claude-mem scores
 // an observation by its nearest part.
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { parseArgs } from 'node:util';
 import { loadDataset, rowsOf, searchedDocs } from './datasets.ts';
 import { MODELS, modelByKey } from './models.ts';
@@ -19,6 +24,8 @@ const { values } = parseArgs({
     'min-relevant': { type: 'string', default: '1' },
     out: { type: 'string', default: 'out' },
     results: { type: 'string', default: 'results' },
+    rankings: { type: 'string', multiple: true, default: [] },
+    name: { type: 'string' },
   },
 });
 
@@ -68,8 +75,22 @@ for (const key of values.models!.split(',')) {
 }
 
 const keys = [...perModel.keys()];
+const labels: string[] = [];
+for (const spec of values.rankings!) {
+  const [label, path] = spec.split(/=(.*)/);
+  const ranked = new Map(readFileSync(path, 'utf8').trim().split('\n').map(l => {
+    const [id, ...docs] = l.split('\t');
+    return [id, docs];
+  }));
+  perModel.set(label, evaluated.map(q => {
+    const docs = ranked.get(q.id);
+    if (!docs) throw new Error(`${path}: no ranking for query ${q.id}`);
+    return metricsFor(docs.slice(0, 10), q.relevant, q.judged);
+  }));
+  labels.push(label);
+}
 const scope = dataset.queries[0].candidates ? 'each searches its own haystack' : 'each searches its project';
-const md = resultsHeader(`${dataset.key}, vector only (exact)`, dataset,
+const md = resultsHeader(`${dataset.key}, vector only (exact${labels.length ? `, and ${labels.join(', ')}` : ''})`, dataset,
   `${evaluated.length} queries` +
   (values.manifest ? ` from ${values.manifest}` : '') +
   (minRelevant > 1 ? ` with at least ${minRelevant} relevant documents` : '') +
@@ -83,9 +104,11 @@ const md = resultsHeader(`${dataset.key}, vector only (exact)`, dataset,
       .map((k): [string, string] => [k, 'multilingual-e5-small']),
     ...(perModel.has('granite-97m-r2') && perModel.has('granite-97m-r2-512')
       ? [['granite-97m-r2', 'granite-97m-r2-512'] as [string, string]] : []),
+    ...labels.map((l): [string, string] => [l, keys[0]]),
+    ...labels.slice(1).map((l): [string, string] => [l, labels[0]]),
   ]);
 mkdirSync(values.results!, { recursive: true });
 const name = (values.manifest ? values.manifest.replace(/^.*\//, '').replace(/\.txt$/, '') : 'all') +
   (minRelevant > 1 ? `-min${minRelevant}` : '');
-writeFileSync(`${values.results}/${dataset.key}-vector-${name}.md`, md);
+writeFileSync(`${values.results}/${dataset.key}-${labels.length ? (values.name ?? labels[0]) + '-' : 'vector-'}${name}.md`, md);
 console.log(md);
