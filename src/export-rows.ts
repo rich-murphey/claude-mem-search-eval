@@ -6,9 +6,9 @@
 //
 // out/<dataset>/rows.jsonl: {doc, part, project, text} per row, in the order
 // of rows.tsv and the vector files (checked against rows.tsv's text hashes).
-// out/<dataset>/scope.jsonl: {id, project, candidates} per query, in the order
-// of queries.f16.bin; candidates is the haystack searched, or null when the
-// query searches its project.
+// out/<dataset>/scope.jsonl: {id, project, candidates, text} per query, in the
+// order of queries.f16.bin; candidates is the haystack searched, or null when
+// the query searches its project; text is the query, unprefixed.
 import { closeSync, openSync, readFileSync, writeFileSync, writeSync } from 'node:fs';
 import { parseArgs } from 'node:util';
 import { contentHash, loadDataset, rowsOf } from './datasets.ts';
@@ -37,5 +37,5 @@ const fd = openSync(`${dir}/rows.jsonl`, 'w');
 for (const r of rows) writeSync(fd, JSON.stringify({ doc: r.doc, part: r.part, project: project.get(r.doc), text: r.text }) + '\n');
 closeSync(fd);
 writeFileSync(`${dir}/scope.jsonl`, dataset.queries.map(q =>
-  JSON.stringify({ id: q.id, project: q.project, candidates: q.candidates }) + '\n').join(''));
+  JSON.stringify({ id: q.id, project: q.project, candidates: q.candidates, text: q.text }) + '\n').join(''));
 console.log(`${dir}: ${rows.length} rows, ${dataset.queries.length} queries`);
