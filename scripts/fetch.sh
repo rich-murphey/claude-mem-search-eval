@@ -2,7 +2,7 @@
 # Download a release's vectors and indexes into out/, as embed-model.sh
 # leaves them, and check them against SHA256SUMS:
 #   scripts/fetch.sh <tag> <dataset>...
-# v1 and v2 give out/<dataset>/{rows,queries}.tsv and
+# v1, v2 and v4 give out/<dataset>/{rows,queries}.tsv and
 # out/<dataset>/<model>/{rows,queries}.f16.bin; v3 gives each chroma-mem
 # config as out/<dataset>/<config>/, laid out as chroma-mem's vector cache.
 set -euo pipefail

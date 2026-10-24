@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # Publish merged vectors and indexes as a GitHub release:
-#   scripts/release.sh <tag> <dataset>...
+#   [MODELS="a b"] scripts/release.sh <tag> <dataset>...
 # Each dataset contributes <dataset>.rows.tsv, <dataset>.queries.tsv and, per
 # model, <dataset>.<model>.rows.f16.bin and <dataset>.<model>.queries.f16.bin.
+# MODELS limits the release to those models; without it, every model in out/.
 set -euo pipefail
 tag=$1; shift
 cd "$(dirname "$0")/.."
@@ -12,6 +13,7 @@ for dataset in "$@"; do
   cp "out/$dataset/queries.tsv" "$stage/$dataset.queries.tsv"
   for dir in "out/$dataset"/*/; do
     model=$(basename "$dir")
+    [[ -n ${MODELS:-} && " $MODELS " != *" $model "* ]] && continue
     cp "$dir/rows.f16.bin" "$stage/$dataset.$model.rows.f16.bin"
     cp "$dir/queries.f16.bin" "$stage/$dataset.$model.queries.f16.bin"
   done

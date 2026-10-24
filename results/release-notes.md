@@ -1,21 +1,22 @@
-Split-piece embeddings from [chroma-mem](https://github.com/rich-murphey/chroma-mem)'s vector cache, for measuring claude-mem's search by meaning with long rows split instead of truncated, and with four cheaper or more accurate models than v2's: the seven datasets of v1 and v2, embedded by fastembed 7.5.0 (ONNX Runtime 1.31.0, CPU) in five 384-dimensional configurations.
+Precomputed embeddings of BAAI/bge-small-en-v1.5 in fp32, through this repo's own pipeline (transformers.js 4.3.1, onnxruntime-node 1.21.0, CPU), as claude-mem's `LocalEmbedder` would embed them: every document part and query of four datasets, 384-dimensional, for comparison with v2's `minilm-l6` and `multilingual-e5-small`.
 
-| Config | Model | Quantization | Tokens | Piece budget | Covers |
-|---|---|---|---|---|---|
-| `minilm-l6-split254` | all-MiniLM-L6-v2 | fp32 | 256 | 254 | only rows over 254 word pieces; the rest are v2's `minilm-l6` rows |
-| `minilm-l6-128-split126` | all-MiniLM-L6-v2 (Qdrant ONNX) | fp32 | 128 | 126 | every row, and the queries |
-| `multilingual-minilm-l12-q-split126` | paraphrase-multilingual-MiniLM-L12-v2 (Qdrant ONNX) | int8, static | 128 | 126 | every row, and the queries |
-| `bge-small-en-q-split510` | bge-small-en-v1.5 (Qdrant ONNX), the card's query instruction | int8, static | 512 | 510 | every row, and the queries |
-| `multilingual-e5-small-split508` (memsearch-zh only) | multilingual-e5-small | fp32 | 512 | 508 | the 2 rows over 508 word pieces |
+| Dataset | Rows | Queries | Source |
+|---|---|---|---|
+| `longmemeval-s` | 199,509 | 470 answerable | LongMemEval-S cleaned (MIT) |
+| `memsearch-zh`, `memsearch-en` | 955 each | 2,172 each | memsearch-memory-retrieval (MIT) |
+| `miracl-en` | 178,768 | 799 | MIRACL dev via mteb/MIRACLRetrievalHardNegatives (CC-BY-SA-4.0) |
 
-Datasets and licences as in v1 and v2: LongMemEval-S cleaned (MIT), memsearch-memory-retrieval (MIT), MIRACL dev via mteb/MIRACLRetrievalHardNegatives (CC-BY-SA-4.0); these derived vectors are under the same terms as the dataset each came from. No dataset text is redistributed.
+Model: `bge-small-en` (`Xenova/bge-small-en-v1.5`, `onnx/model.onnx`, fp32): `[CLS]` pooling, L2-normalised, 512 tokens with the closing `[SEP]` restored on truncation, as its sentence-transformers config sets; queries carry the model card's retrieval instruction `Represent this sentence for searching relevant passages: `, passages none. These are not v3's `bge-small-en-q-split510` (Qdrant's static int8 export, split rather than truncated). MIRACL zh, ko and ja were not embedded: bge-small-en is English-only, and memsearch zh already shows the cost.
 
-Files, per dataset and config: `<dataset>.<config>.pieces.tsv` (doc id, release part, piece index, first 16 hex of the sha256 of the piece text; one line per distinct piece text), `<dataset>.<config>.pieces.f16.bin` (little-endian fp16, 384 values per line, L2-normalised), `<dataset>.<config>.config.json` (model, embedder, limits, prefixes, pooling, splitter commit, counts) and, for configs with their own queries, `<dataset>.<config>.queries.tsv` (query id, hash of the unprefixed text; one line per distinct query text) and `.queries.f16.bin`. `SHA256SUMS` covers them all. 129 files and SHA256SUMS, 2.95 GB.
+Against sentence-transformers on `BAAI/bge-small-en-v1.5` (revision `5c38ec7c`), 100 memsearch-en rows and 100 queries match at worst cosine 0.9999999, and 20 texts of 694–919 tokens, truncated, at 1.0000000. `verify.ts` re-embeds 200 rows per dataset: all four at cosine 1.0000000.
 
-`chroma-mem bench verify-cache` re-embeds 200 pieces spaced through a cache, and 200 queries where it has them, and fails below cosine 0.9999. The three whole-dataset configs pass on all seven datasets, pieces and queries (42 checks, worst cosine 0.99999883, bge-small-en-q queries on memsearch zh); `minilm-l6-split254` passes on LongMemEval-S, memsearch zh and MIRACL ko (worst 0.99999997), and `multilingual-e5-small-split508` on both its pieces (0.99999998).
+Files, per dataset: `<dataset>.rows.tsv` and `<dataset>.queries.tsv` (ids, text hashes and the relevant documents; no text; byte-identical to v2's), `<dataset>.bge-small-en.rows.f16.bin` and `<dataset>.bge-small-en.queries.f16.bin` (little-endian fp16, 384 values per row, one row per TSV line). `SHA256SUMS` covers them all. 16 files and `SHA256SUMS`, 309 MB. No dataset text is redistributed; `src/datasets.ts` downloads each dataset from Hugging Face at a pinned revision. The vectors are under the same licence as the dataset each came from.
 
 ```sh
-scripts/fetch.sh v3 memsearch-zh   # out/memsearch-zh/<config>/, laid out as ~/.cache/chroma-mem/vectors/<dataset>/<config>/
+scripts/fetch.sh v2 memsearch-en   # minilm-l6, multilingual-e5-small and the rest
+scripts/fetch.sh v4 memsearch-en   # adds out/memsearch-en/bge-small-en/
+node src/verify.ts --dataset memsearch-en --model bge-small-en
+node src/eval.ts --dataset memsearch-en --models minilm-l6,multilingual-e5-small,bge-small-en
 ```
 
-Results from these vectors are the README's chroma-mem tables and `results/*-chroma-mem-*.md`; results are best treated as relative accuracy between models.
+Results (`results/*-vector-bge-small-en-*.md`), timing and caveats are in the README; results are best treated as relative accuracy between models.
