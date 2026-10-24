@@ -1,21 +1,21 @@
-Precomputed embeddings for measuring claude-mem's search by meaning: every document part and query of seven datasets, embedded by five 384-dimensional model configurations, as claude-mem's `LocalEmbedder` embeds them.
+Split-piece embeddings from [chroma-mem](https://github.com/rich-murphey/chroma-mem)'s vector cache, for measuring claude-mem's search by meaning with long rows split instead of truncated, and with four cheaper or more accurate models than v2's: the seven datasets of v1 and v2, embedded by fastembed 7.5.0 (ONNX Runtime 1.31.0, CPU) in five 384-dimensional configurations.
 
-| Dataset | Rows | Queries | Source |
-|---|---|---|---|
-| `longmemeval-s` | 199,509 | 470 answerable | LongMemEval-S cleaned (MIT) |
-| `memsearch-zh`, `memsearch-en` | 955 each | 2,172 each | memsearch-memory-retrieval (MIT) |
-| `miracl-en`, `-zh`, `-ko`, `-ja` | 178,768 / 81,309 / 43,293 / 185,319 | 799 / 393 / 213 / 860 | MIRACL dev via mteb/MIRACLRetrievalHardNegatives (CC-BY-SA-4.0) |
+| Config | Model | Quantization | Tokens | Piece budget | Covers |
+|---|---|---|---|---|---|
+| `minilm-l6-split254` | all-MiniLM-L6-v2 | fp32 | 256 | 254 | only rows over 254 word pieces; the rest are v2's `minilm-l6` rows |
+| `minilm-l6-128-split126` | all-MiniLM-L6-v2 (Qdrant ONNX) | fp32 | 128 | 126 | every row, and the queries |
+| `multilingual-minilm-l12-q-split126` | paraphrase-multilingual-MiniLM-L12-v2 (Qdrant ONNX) | int8, static | 128 | 126 | every row, and the queries |
+| `bge-small-en-q-split510` | bge-small-en-v1.5 (Qdrant ONNX), the card's query instruction | int8, static | 512 | 510 | every row, and the queries |
+| `multilingual-e5-small-split508` (memsearch-zh only) | multilingual-e5-small | fp32 | 512 | 508 | the 2 rows over 508 word pieces |
 
-Models: `minilm-l6` (Xenova/all-MiniLM-L6-v2, claude-mem's and Chroma's default), `multilingual-minilm-l12` (Xenova/paraphrase-multilingual-MiniLM-L12-v2), `multilingual-e5-small` (Xenova/multilingual-e5-small), and IBM's granite-embedding-97m-multilingual-r2 (onnx-community/granite-embedding-97m-multilingual-r2-ONNX, `[CLS]` pooling) twice: `granite-97m-r2-512`, cut at 512 tokens as claude-mem's models table carries it, and `granite-97m-r2` at its trained 8,192. The two granite cuts score identically on five datasets and within 0.007 on MIRACL ko and ja.
+Datasets and licences as in v1 and v2: LongMemEval-S cleaned (MIT), memsearch-memory-retrieval (MIT), MIRACL dev via mteb/MIRACLRetrievalHardNegatives (CC-BY-SA-4.0); these derived vectors are under the same terms as the dataset each came from. No dataset text is redistributed.
 
-v2 adds the granite vectors; the other three models' files are byte-identical to v1's.
+Files, per dataset and config: `<dataset>.<config>.pieces.tsv` (doc id, release part, piece index, first 16 hex of the sha256 of the piece text; one line per distinct piece text), `<dataset>.<config>.pieces.f16.bin` (little-endian fp16, 384 values per line, L2-normalised), `<dataset>.<config>.config.json` (model, embedder, limits, prefixes, pooling, splitter commit, counts) and, for configs with their own queries, `<dataset>.<config>.queries.tsv` (query id, hash of the unprefixed text; one line per distinct query text) and `.queries.f16.bin`. `SHA256SUMS` covers them all. 129 files and SHA256SUMS, 2.95 GB.
 
-Files, per dataset: `<dataset>.rows.tsv` and `<dataset>.queries.tsv` (ids, text hashes and the relevant documents; no text), and per model `<dataset>.<model>.rows.f16.bin` and `<dataset>.<model>.queries.f16.bin` (little-endian fp16, 384 values per row, one row per TSV line). `SHA256SUMS` covers them all. No dataset text is redistributed; `src/datasets.ts` downloads each dataset from Hugging Face at a pinned revision.
+`chroma-mem bench verify-cache` re-embeds 200 pieces spaced through a cache, and 200 queries where it has them, and fails below cosine 0.9999. The three whole-dataset configs pass on all seven datasets, pieces and queries (42 checks, worst cosine 0.99999883, bge-small-en-q queries on memsearch zh); `minilm-l6-split254` passes on LongMemEval-S, memsearch zh and MIRACL ko (worst 0.99999997), and `multilingual-e5-small-split508` on both its pieces (0.99999998).
 
 ```sh
-scripts/fetch.sh v2 longmemeval-s
-node src/verify.ts --dataset longmemeval-s --model minilm-l6
-node src/eval.ts --dataset longmemeval-s
+scripts/fetch.sh v3 memsearch-zh   # out/memsearch-zh/<config>/, laid out as ~/.cache/chroma-mem/vectors/<dataset>/<config>/
 ```
 
-Results, timing and caveats are in the README; results are best treated as relative accuracy between models.
+Results from these vectors are the README's chroma-mem tables and `results/*-chroma-mem-*.md`; results are best treated as relative accuracy between models.

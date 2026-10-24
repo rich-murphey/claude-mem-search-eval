@@ -449,6 +449,73 @@ one row per line of `<dataset>.queries.tsv`. `rows.tsv` carries each row's
 document id, part number and the first 16 hex digits of its text's sha256,
 which `verify.ts` checks against the dataset. `SHA256SUMS` covers every file.
 
+#### v3: chroma-mem's split pieces
+
+Release v3 (2026-10-24) is
+[chroma-mem](https://github.com/rich-murphey/chroma-mem)'s vector cache, the
+vectors behind the chroma-mem tables above: rows cut into pieces at a word-piece
+budget instead of truncated, embedded by fastembed 7.5.0 (`ort` 2.0.0-rc.15,
+ONNX Runtime 1.31.0, CPU, mean pooling but bge's `[CLS]`, L2-normalised).
+`bench load --split` made `minilm-l6-split254` and the e5-small pieces from
+the release rows' text; `bench load --embed` and `bench query --embed` made
+the other three from every row and query. Each `config.json` names the
+splitter's chroma-mem commit (`ac03f61` for `minilm-l6-split254`, `976e255`
+for the three whole-dataset configs; the two e5-small pieces predate the
+stamp and still hash to `976e255`'s pieces).
+
+| Config | Model | Weights | Tokens / piece budget | Query prefix | Covers |
+|---|---|---|---|---|---|
+| `minilm-l6-split254` | `Xenova/all-MiniLM-L6-v2` | fp32 | 256 / 254 | none | rows over 254 word pieces; shorter rows are v2's `minilm-l6` rows |
+| `minilm-l6-128-split126` | `Qdrant/all-MiniLM-L6-v2-onnx` | fp32 | 128 / 126 | none | every row, and the queries |
+| `multilingual-minilm-l12-q-split126` | `Qdrant/paraphrase-multilingual-MiniLM-L12-v2-onnx-Q` | int8, static | 128 / 126 | none | every row, and the queries |
+| `bge-small-en-q-split510` | `Qdrant/bge-small-en-v1.5-onnx-Q` | int8, static | 512 / 510 | `Represent this sentence for searching relevant passages: ` | every row, and the queries |
+| `multilingual-e5-small-split508` | `intfloat/multilingual-e5-small` | fp32 | 512 / 508 | v2's (`passage: ` on pieces) | memsearch zh only: its 2 rows over 508 word pieces |
+
+Pieces, then distinct queries, per dataset:
+
+| Dataset | `minilm-l6-split254` | `minilm-l6-128-split126` | `multilingual-minilm-l12-q-split126` | `bge-small-en-q-split510` | Size |
+|---|---|---|---|---|---|
+| `longmemeval-s` | 174,309 | 438,500 / 470 | 461,640 / 470 | 220,868 / 470 | 1,041 MB |
+| `memsearch-zh` | 936 | 2,400 / 2,162 | 2,242 / 2,162 | 956 / 2,162 | 10 MB |
+| `memsearch-en` | 690 | 2,197 / 2,154 | 2,331 / 2,154 | 955 / 2,154 | 10 MB |
+| `miracl-en` | 24,537 | 257,697 / 799 | 279,576 / 799 | 178,321 / 799 | 594 MB |
+| `miracl-zh` | 22,181 | 131,573 / 390 | 112,918 / 390 | 82,424 / 390 | 280 MB |
+| `miracl-ko` | 62,562 | 143,223 / 213 | 72,657 / 213 | 53,113 / 213 | 265 MB |
+| `miracl-ja` | 94,290 | 364,644 / 860 | 290,759 / 860 | 192,107 / 860 | 754 MB |
+
+Per dataset and config, `<dataset>.<config>.pieces.tsv` has a header, then
+one line per distinct piece text: doc id, release part, piece index and the
+first 16 hex digits of the piece text's sha256. A piece shared by several
+rows appears once, under the first, so a row's vectors are found by
+splitting its text and looking each piece up by hash, as chroma-mem does.
+`<dataset>.<config>.pieces.f16.bin` holds one little-endian fp16 row of 384
+values per tsv line, L2-normalised before conversion.
+`<dataset>.<config>.config.json` records model, embedder, token limit,
+prefixes, budget, splitter, pooling, which rows it covers and the counts.
+The three whole-dataset configs add `<dataset>.<config>.queries.tsv` (query
+id and the hash of the unprefixed text, one line per distinct text) and
+`.queries.f16.bin`, embedded behind the query prefix; the other two use v2's
+query vectors. 129 files and `SHA256SUMS`, 2.95 GB; the largest is 355 MB.
+
+`chroma-mem bench verify-cache <dir> <config>` re-embeds 200 pieces spaced
+through a cache, and 200 queries where it has them, and fails below cosine
+0.9999. The three whole-dataset configs pass on all seven datasets, pieces
+and queries (42 checks, worst cosine 0.99999883: bge-small-en-q's queries on
+memsearch zh); `minilm-l6-split254` passes on LongMemEval-S, memsearch zh and
+MIRACL ko (worst 0.99999997), and the e5-small pieces at 0.99999998.
+
+The vectors are derived from the datasets above and are under the same
+licence as the dataset each came from.
+
+```sh
+scripts/fetch.sh v3 memsearch-zh   # out/memsearch-zh/<config>/{pieces,queries}.{tsv,f16.bin}, config.json
+cp -r out/memsearch-zh ~/.cache/chroma-mem/vectors/   # the same layout, for chroma-mem's bench
+```
+
+`scripts/release-cache.sh v3 <dataset>...` rebuilds the release from
+`~/.cache/chroma-mem/vectors` (or `$CACHE`), leaving out timing by-products,
+and uploads only what is missing when run again.
+
 ## Timing
 
 So others can estimate what checking these results costs. Everything ran on
