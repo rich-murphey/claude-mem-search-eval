@@ -214,6 +214,47 @@ R@5 / F1@5 / nDCG@10:
   for 1,000 parts, which widens hnswlib's search to at least 1,000
   candidates, recovers part of it (+0.006 R@5, 0.001–0.013).
 
+Cheaper embedding configurations through chroma-mem (2026-10-24,
+`results/*-chroma-mem-<config>-*.md`): every row and query embedded by
+chroma-mem (fastembed 7.5.0 on `dv`'s AMD EPYC 7351P), split at each
+config's piece budget, searched as above; `src/export-rows.ts` now writes
+each query's text into `scope.jsonl` for this. `minilm-l6-128` is
+all-MiniLM-L6-v2 run at 128 tokens (pieces of 126); `bge-small-en-q` and
+`multilingual-minilm-l12-q` are Qdrant's static int8 exports of
+bge-small-en-v1.5 (512 tokens, the card's query instruction) and
+paraphrase-multilingual-MiniLM-L12-v2 (128 tokens). Each cell is R@5 /
+F1@5 / nDCG@10, then the paired R@5 difference against minilm-l6 split
+(the release vectors with rows over 254 word pieces replaced by
+chroma-mem's pieces); each file also pairs against the unsplit release
+vectors, and the `-store` files give store mode for LongMemEval and
+memsearch.
+
+| Dataset | minilm-l6, split | `minilm-l6-128` | `multilingual-minilm-l12-q` | `bge-small-en-q` |
+|---|---|---|---|---|
+| LongMemEval (470) | 0.931 / 0.483 / 0.915 | 0.933 / 0.484 / 0.919; +0.002 (−0.008–0.012) | 0.933 / 0.486 / 0.910; +0.002 (−0.015–0.017) | 0.958 / 0.498 / 0.930; +0.026 (0.014–0.039) |
+| memsearch en | 0.680 / 0.251 / 0.595 | 0.702 / 0.260 / 0.616; +0.022 (0.008–0.037) | 0.717 / 0.264 / 0.632; +0.037 (0.018–0.056) | 0.761 / 0.282 / 0.685; +0.082 (0.065–0.099) |
+| memsearch zh | 0.241 / 0.091 / 0.206 | 0.297 / 0.112 / 0.262; +0.056 (0.041–0.072) | 0.647 / 0.238 / 0.557; +0.406 (0.384–0.428) | 0.469 / 0.175 / 0.407; +0.229 (0.208–0.249) |
+| MIRACL en | 0.333 / 0.196 / 0.339 | 0.322 / 0.189 / 0.327; −0.011 (−0.026–0.003) | 0.348 / 0.213 / 0.372; +0.015 (−0.010–0.042) | 0.479 / 0.281 / 0.480; +0.146 (0.121–0.173) |
+| MIRACL zh | 0.004 / 0.002 / 0.003 | 0.011 / 0.005 / 0.011; +0.007 (0.001–0.016) | 0.264 / 0.154 / 0.272; +0.260 (0.222–0.297) | 0.030 / 0.017 / 0.033; +0.026 (0.013–0.041) |
+| MIRACL ko | 0.009 / 0.006 / 0.009 | 0.055 / 0.021 / 0.051; +0.045 (0.019–0.075) | 0.311 / 0.169 / 0.296; +0.301 (0.250–0.353) | 0.058 / 0.026 / 0.054; +0.049 (0.022–0.078) |
+| MIRACL ja | 0.010 / 0.005 / 0.010 | 0.012 / 0.006 / 0.012; +0.002 (−0.001–0.006) | 0.202 / 0.106 / 0.196; +0.192 (0.169–0.217) | 0.066 / 0.034 / 0.071; +0.056 (0.042–0.070) |
+
+- **Only minilm-l6-128 is both faster and not worse,** and chroma-mem now
+  defaults to it. Indexing claude-mem's docs (median of 3): minilm-l6
+  32.1 s, minilm-l6-128 29.5 s, bge-small-en-q 74.7 s,
+  multilingual-minilm-l12-q 73.1 s; all of LongMemEval, minilm-l6 2,891 s
+  against minilm-l6-128's 2,664 s. Its one significant loss is MIRACL en
+  nDCG@10 −0.011 (−0.021–−0.002).
+- **The int8 models are more accurate but slower on this CPU** (AVX2, no
+  VNNI): whole-dataset embedding took 2.1–2.5× minilm-l6-128's time on
+  the English datasets (LongMemEval 6,091 s and 5,895 s). bge-small-en-q,
+  though English-only, beats minilm-l6 on every dataset; the multilingual
+  model is the only one usable on MIRACL zh, ko and ja.
+- **Store mode** (paired against minilm-l6 split, store): LongMemEval R@5
+  minilm-l6-128 +0.004 (−0.014–0.021), multilingual −0.019
+  (−0.048–0.007), bge +0.046 (0.021–0.070); memsearch en +0.020, +0.031,
+  +0.093; zh +0.060, +0.393, +0.222.
+
 ## Data
 
 ### LongMemEval
