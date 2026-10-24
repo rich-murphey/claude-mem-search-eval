@@ -115,20 +115,46 @@ What they show:
   all 19,195 LongMemEval sessions in one project, F1@5 falls from about 0.49
   to 0.13–0.18; e5-small stays ahead, and granite falls to MiniLM-L6's level
   (0.127 vector only, against 0.163 for e5-small).
+- **bge-small-en-v1.5 (fp32, through this repo's pipeline) ties e5-small in
+  English and loses badly in Chinese.** Paired against e5-small, R@5:
+  LongMemEval +0.010 (−0.003–0.023), memsearch en −0.005 (−0.021–0.011),
+  MIRACL en +0.000 (−0.023–0.023); memsearch zh −0.202 (−0.223–−0.180).
+  Its rank metrics trail e5-small slightly on MIRACL en (nDCG@10 −0.014,
+  −0.033–0.004).
+
+**For claude-mem's model choice:** bge-small-en buys nothing over
+multilingual-e5-small. On English-only stores the two are
+indistinguishable on all three English datasets (every paired R@5 and
+F1@5 interval spans zero, and point differences are at most 0.010), with
+the same 384 dimensions, 512 tokens and about the same embedding cost
+(LongMemEval 6,130 s against 5,852 s). On mixed-language stores e5-small
+keeps 0.673 R@5 on memsearch zh where bge-small-en falls to 0.471, and
+bge-small-en was not run on MIRACL zh, ko and ja because its vocabulary is
+English-only. So e5-small is the default for both; bge-small-en would be
+worth carrying only if an English-only setting needed a model without
+e5-small's `query: `/`passage: ` prefixes, and it brings its own
+instruction prefix instead. chroma-mem's int8 `bge-small-en-q` results
+below agree within 0.002 R@5 on LongMemEval, memsearch and MIRACL en.
 
 Vector only, exact, from the published vectors (`results/*-vector-*.md`).
 Each cell is P@5 / R@5 / F1@5:
 
-| Dataset | MiniLM-L6 | MiniLM-L12 | e5-small | granite (512) |
-|---|---|---|---|---|
-| LongMemEval (470) | 0.346 / 0.934 / 0.484 | 0.347 / 0.931 / 0.484 | 0.354 / 0.948 / 0.494 | 0.339 / 0.921 / 0.475 |
-| LongMemEval, ≥5 relevant (14) | 0.829 / 0.798 / 0.812 | 0.857 / 0.826 / 0.840 | 0.914 / 0.883 / 0.897 | 0.814 / 0.781 / 0.796 |
-| memsearch zh | 0.065 / 0.272 / 0.102 | 0.143 / 0.616 / 0.226 | 0.159 / 0.673 / 0.250 | 0.178 / 0.759 / 0.281 |
-| memsearch en | 0.161 / 0.688 / 0.254 | 0.158 / 0.676 / 0.249 | 0.181 / 0.767 / 0.285 | 0.174 / 0.735 / 0.273 |
-| MIRACL en | 0.159 / 0.331 / 0.195 | 0.181 / 0.355 / 0.218 | 0.230 / 0.478 / 0.282 | 0.212 / 0.444 / 0.260 |
-| MIRACL zh | 0.001 / 0.003 / 0.001 | 0.132 / 0.281 / 0.164 | 0.208 / 0.481 / 0.267 | 0.251 / 0.566 / 0.319 |
-| MIRACL ko | 0.008 / 0.023 / 0.011 | 0.144 / 0.319 / 0.174 | 0.241 / 0.611 / 0.308 | 0.230 / 0.557 / 0.290 |
-| MIRACL ja | 0.004 / 0.010 / 0.005 | 0.081 / 0.201 / 0.106 | 0.240 / 0.682 / 0.329 | 0.218 / 0.622 / 0.300 |
+| Dataset | MiniLM-L6 | MiniLM-L12 | e5-small | granite (512) | bge-small-en |
+|---|---|---|---|---|---|
+| LongMemEval (470) | 0.346 / 0.934 / 0.484 | 0.347 / 0.931 / 0.484 | 0.354 / 0.948 / 0.494 | 0.339 / 0.921 / 0.475 | 0.357 / 0.958 / 0.499 |
+| LongMemEval, ≥5 relevant (14) | 0.829 / 0.798 / 0.812 | 0.857 / 0.826 / 0.840 | 0.914 / 0.883 / 0.897 | 0.814 / 0.781 / 0.796 | 0.886 / 0.852 / 0.868 |
+| memsearch zh | 0.065 / 0.272 / 0.102 | 0.143 / 0.616 / 0.226 | 0.159 / 0.673 / 0.250 | 0.178 / 0.759 / 0.281 | 0.111 / 0.471 / 0.175 |
+| memsearch en | 0.161 / 0.688 / 0.254 | 0.158 / 0.676 / 0.249 | 0.181 / 0.767 / 0.285 | 0.174 / 0.735 / 0.273 | 0.179 / 0.761 / 0.282 |
+| MIRACL en | 0.159 / 0.331 / 0.195 | 0.181 / 0.355 / 0.218 | 0.230 / 0.478 / 0.282 | 0.212 / 0.444 / 0.260 | 0.229 / 0.478 / 0.281 |
+| MIRACL zh | 0.001 / 0.003 / 0.001 | 0.132 / 0.281 / 0.164 | 0.208 / 0.481 / 0.267 | 0.251 / 0.566 / 0.319 | — |
+| MIRACL ko | 0.008 / 0.023 / 0.011 | 0.144 / 0.319 / 0.174 | 0.241 / 0.611 / 0.308 | 0.230 / 0.557 / 0.290 | — |
+| MIRACL ja | 0.004 / 0.010 / 0.005 | 0.081 / 0.201 / 0.106 | 0.240 / 0.682 / 0.329 | 0.218 / 0.622 / 0.300 | — |
+
+bge-small-en (2026-10-24) is in its own files,
+`results/*-vector-bge-small-en-*.md`, scored with MiniLM-L6 and e5-small and
+paired against both; it was not run through claude-mem's server search,
+whose models table does not carry it, nor in store mode, which `eval.ts`
+does not do from vectors.
 
 granite at 8,192 tokens differs from these only on MIRACL ko and ja, by at
 most 0.007 in any cell; each results file has both, and their paired
@@ -379,8 +405,9 @@ already found, which is a relative measure of models, but on human labels.
 | `multilingual-e5-small` | `Xenova/multilingual-e5-small` | 512 | `query: ` / `passage: ` |
 | `granite-97m-r2-512` | `onnx-community/granite-embedding-97m-multilingual-r2-ONNX` (IBM, added 2026-10-19), cut at 512 tokens as claude-mem's models table carries it | 512 | none |
 | `granite-97m-r2` | the same model at its trained length | 8192 | none |
+| `bge-small-en` | `Xenova/bge-small-en-v1.5` (BAAI, English-only, added 2026-10-24) | 512 | `Represent this sentence for searching relevant passages: ` on queries, none on passages |
 
-All four produce 384-dimensional vectors, so any of them fits claude-mem's
+All of them produce 384-dimensional vectors, so any of them fits claude-mem's
 existing `vector(384)` column.
 
 Each document part (a LongMemEval turn, a memsearch chunk, a MIRACL passage)
@@ -389,6 +416,10 @@ transformers.js 4.3.1 with onnxruntime-node 1.21.0, fp32, mean pooling
 (granite: the `[CLS]` token, as its sentence-transformers config pools), L2
 normalised, truncated at the model's trained length with the closing
 `[SEP]`/`</s>` restored (`src/encoder.ts` says why), stored as fp16.
+bge-small-en also pools `[CLS]`, as its sentence-transformers config does;
+against sentence-transformers on `BAAI/bge-small-en-v1.5` (revision
+`5c38ec7c`), 100 memsearch-en rows and 100 queries matched at worst cosine
+0.9999999, and 20 texts of 694–919 tokens, truncated, at 1.0000000.
 
 ## Metrics
 
@@ -526,15 +557,15 @@ MIRACL runs), so times are upper bounds.
 Embedding, `scripts/embed-model.sh <dataset> <model> 4 8` (4 shards of 8
 threads; queries included), wall time in seconds:
 
-| Dataset | Rows | MiniLM-L6 | MiniLM-L12 | e5-small | granite (512) | granite (8192) |
-|---|---|---|---|---|---|---|
-| LongMemEval | 199,509 | 1,593 | 1,996 | 5,852 | 8,385 | 12,813 |
-| memsearch zh | 955 | 30 | 42 | 62 | 99 | 81 |
-| memsearch en | 955 | 23 | 38 | 60 | 86 | 76 |
-| MIRACL en | 178,768 | 1,209 | 1,711 | 3,056 | 4,670 | 4,710 |
-| MIRACL zh | 81,309 | 539 | 688 | 1,100 | 2,192 | 2,544 |
-| MIRACL ko | 43,293 | 532 | 447 | 810 | 1,489 | 1,744 |
-| MIRACL ja | 185,319 | 1,562 | 1,815 | 3,335 | 6,591 | 6,865 |
+| Dataset | Rows | MiniLM-L6 | MiniLM-L12 | e5-small | granite (512) | granite (8192) | bge-small-en |
+|---|---|---|---|---|---|---|---|
+| LongMemEval | 199,509 | 1,593 | 1,996 | 5,852 | 8,385 | 12,813 | 6,130 |
+| memsearch zh | 955 | 30 | 42 | 62 | 99 | 81 | 86 |
+| memsearch en | 955 | 23 | 38 | 60 | 86 | 76 | 74 |
+| MIRACL en | 178,768 | 1,209 | 1,711 | 3,056 | 4,670 | 4,710 | 2,974 |
+| MIRACL zh | 81,309 | 539 | 688 | 1,100 | 2,192 | 2,544 | — |
+| MIRACL ko | 43,293 | 532 | 447 | 810 | 1,489 | 1,744 | — |
+| MIRACL ja | 185,319 | 1,562 | 1,815 | 3,335 | 6,591 | 6,865 | — |
 
 The first 21 took 7.4 hours; e5-small, with a 512-token limit, costs two to four
 times MiniLM-L6 per row on long text. granite ran on 2026-10-19, under the
@@ -542,13 +573,19 @@ same load: 6.5 hours at 512 tokens, 1.6 times e5-small, and 8.0 hours at
 8,192, where one 8,192-token text takes about 10 s and 8 GB (attention grows
 with the square of its length; `src/encoder.ts` batches to a fixed budget,
 and `embed-model.sh` runs in a 64 GB systemd scope). Re-embedding only
-memsearch takes minutes.
+memsearch takes minutes. bge-small-en ran on 2026-10-24 with nothing else
+on the host but its own four shards (load average 25–39 from them, 8–12
+before): 2.6 hours for the four datasets, about e5-small's cost, which has
+the same size and token limit. MIRACL zh, ko and ja were left out: at
+e5-small's times they would add about 1.5 hours, and an English-only
+vocabulary has nothing to show there that memsearch zh does not.
 
 Checking the published vectors instead:
 
 - `verify.ts`, 200 rows: 8–46 s per dataset and model (all 35 matched at
-  cosine 1.0000000).
-- `eval.ts`, all five: about 10 s for LongMemEval and memsearch; 98 s (ko),
+  cosine 1.0000000; bge-small-en's four also).
+- `eval.ts`, all five (MIRACL en with MiniLM-L6, e5-small and bge-small-en:
+  17.5 minutes): about 10 s for LongMemEval and memsearch; 98 s (ko),
   344 s (zh), and 28–30 minutes each for MIRACL en and ja, whose queries
   each scan the whole language's corpus (three models: 74 s, 279 s and about
   23 minutes).
@@ -567,7 +604,9 @@ Checking the published vectors instead:
 Release v1 holds the first three models, about 1.6 GB (440 MB LongMemEval,
 395 and 410 MB MIRACL en and ja, 180 MB zh, 96 MB ko, 7 MB per memsearch
 language). Release v2 adds both granite cuts, 535 MB each, for 2.7 GB; its
-first three models' files are identical to v1's.
+first three models' files are identical to v1's. Release v4 (2026-10-24)
+adds bge-small-en for LongMemEval, memsearch zh and en and MIRACL en, 309 MB
+(`scripts/fetch.sh v4 <dataset>`, alongside v2's for the other models).
 
 ## Plan
 
