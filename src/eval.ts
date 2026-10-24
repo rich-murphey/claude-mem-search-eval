@@ -106,6 +106,9 @@ const md = resultsHeader(`${dataset.key}, vector only (exact${labels.length ? `,
       .map((k): [string, string] => [k, 'multilingual-e5-small']),
     ...(perModel.has('granite-97m-r2') && perModel.has('granite-97m-r2-512')
       ? [['granite-97m-r2', 'granite-97m-r2-512'] as [string, string]] : []),
+    // bge-small-en against e5-small, the multilingual model it would replace.
+    ...(perModel.has('bge-small-en') && perModel.has('multilingual-e5-small') && keys[0] !== 'multilingual-e5-small'
+      ? [['bge-small-en', 'multilingual-e5-small'] as [string, string]] : []),
     ...labels.map((l): [string, string] => [l, keys[0]]),
     ...labels.slice(1).map((l): [string, string] => [l, labels[0]]),
   ]);

@@ -55,6 +55,17 @@ export const MODELS: EvalModel[] = [
     dtype: 'fp32', pooling: 'cls', dims: 384, maxTokens: 512,
     queryPrefix: '', passagePrefix: '',
   },
+  {
+    // BAAI/bge-small-en-v1.5 (MIT, English); Xenova's export of it carries
+    // the fp32 onnx/model.onnx. Its sentence-transformers config pools the
+    // [CLS] token (1_Pooling/config.json), normalises (2_Normalize) and sets
+    // max_seq_length 512. The model card's instruction for short-query
+    // retrieval goes on queries; passages get none.
+    key: 'bge-small-en',
+    repo: 'Xenova/bge-small-en-v1.5',
+    dtype: 'fp32', pooling: 'cls', dims: 384, maxTokens: 512,
+    queryPrefix: 'Represent this sentence for searching relevant passages: ', passagePrefix: '',
+  },
 ];
 
 export function modelByKey(key: string): EvalModel {
