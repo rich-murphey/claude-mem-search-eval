@@ -7,12 +7,12 @@ result can be checked in minutes rather than recomputed in hours.
 
 ## Where this stands
 
-<!-- status:begin sha=916965d at=2026-10-22 -->
-_Written 2026-10-22 from commits through 916965d, plan documents, issues and session summaries._
+<!-- status:begin sha=c38bf58 at=2026-10-24 -->
+_Written 2026-10-24 from commits through c38bf58, plan documents, issues and session summaries._
 
 **Next**
 1. <a id="n-de9865"></a>Open the claude-mem PR. First action: Rich reads the draft
-   (`~/wt/claude-mem/upstream-draft/pr.md`, local, not in a repo) and checks that its base hash
+   (`~/wt/claude-mem/upstream-draft/pr.md`, local, not in a repo). He checks that its base hash
    (9e4f313a8), commit count, cited hashes and test counts match the rebased branch. Then he
    pushes `pr/pgvector-search` (tree `~/wt/claude-mem/granite`, local only) to the fork. Done
    when the PR is open on thedotmack/claude-mem with release v2 linked.
@@ -25,34 +25,26 @@ _Written 2026-10-22 from commits through 916965d, plan documents, issues and ses
 nothing
 
 **Context for the above**
-- 2026-10-22, 916965d: server search now has store-mode results, with every document of a
-  dataset in one project, as in a single user's store. They run through `pr/model-choice`'s
-  `search()` and cover keyword only, plus vector only and hybrid for MiniLM-L6, e5-small and
-  granite.
-- 2026-10-21, a211444 and 20fe324: server search with the pg_textsearch bm25 keyword leg now
-  covers all seven datasets in scoped mode, using `pr/model-choice` (4eb42be11). The older
-  `*-server-scoped.md` files (ts_rank keyword leg) are unchanged. 20fe324 fixed the argument
-  order: the vector mode must come before the width, or no vector table is made.
-  These runs use `pr/model-choice`. The PR branch in Next 1 is `pr/pgvector-search`. The
-  inputs do not say how the two relate.
-- 2026-10-21, bb63dfc (also f596b38, cce426a): pg_textsearch bm25 matches SQL bm25's F1@5
-  (store 0.234, against ts_rank's 0.162) at 2 ms a query against 5.2 s. `keyword-compare.ts`
-  shows this through claude-mem's own `search()`.
-- 2026-10-19, 3963dd5: the README has granite-embedding-97m-multilingual-r2 in every table. It
-  leads e5-small on Chinese (MIRACL zh F1@5 +0.052, memsearch zh +0.031) and trails it by
-  0.012–0.030 elsewhere. Release v2 holds all five vector sets (2.7 GB); v1 is unchanged.
-- 2026-10-20, upstream 9e4f313a8: `pr/pgvector-search` (13 commits) was rebased onto it without
-  conflicts. tsc is clean and the plugin build succeeds. Tests give 581 pass and 18 fail,
-  against upstream's 559 pass and the same 18 fail. The branch was still local, and pushing it
-  is Rich's step.
-- The draft `pr.md` was found to cite stale hashes and test counts, including 583 pass where the
-  rebased branch gives 581, so it needs refreshing before the PR opens (memory, 2026-10-20).
-- Step 5 (judged precision) was still pending in the README; unlabelled answer sessions cannot
-  be bounded without LLM judging (memory, 2026-10-19).
+- 2026-10-23 and 2026-10-24, 743dcbb, f40643b, aa3da0a, c38bf58: `eval.ts --rankings` now
+  scores a ranking produced elsewhere, and the release minilm-l6 vectors were searched through
+  chroma-mem's bench (Chroma 1.4.4) on all seven datasets. Three more models were also run
+  through it: minilm-l6-128, multilingual-minilm-l12-q and bge-small-en-q. These results are
+  in the repo. The inputs do not say whether the README reports them.
+- 2026-10-20, upstream 9e4f313a8: `pr/pgvector-search` (13 commits) was rebased onto it
+  without conflicts. tsc is clean and the plugin build succeeds. Tests give 581 pass and
+  18 fail, against upstream's 559 pass and the same 18 fail. The draft `pr.md` still cites
+  stale hashes and test counts (583 pass), so it needs refreshing before the PR opens.
+- 2026-10-19: step 5 (judged precision) was still pending in the README. Unlabelled answer
+  sessions cannot be bounded without LLM judging.
+- 2026-10-22, 916965d: the store-mode and scoped bm25 runs use `pr/model-choice`, while the
+  PR branch in Next 1 is `pr/pgvector-search`. The inputs do not say how the two relate.
+- 2026-10-24: a session was left with uncommitted changes (last activity 03:38 UTC). The
+  inputs do not say what they are, so check the working tree before starting.
 
 **Open questions**
 none
 <!-- status:end -->
+
 
 
 
