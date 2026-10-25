@@ -7,8 +7,8 @@ result can be checked in minutes rather than recomputed in hours.
 
 ## Where this stands
 
-<!-- status:begin sha=c38bf58 at=2026-10-24 -->
-_Written 2026-10-24 from commits through c38bf58, plan documents, issues and session summaries._
+<!-- status:begin sha=02cfd37 at=2026-10-25 -->
+_Written 2026-10-25 from commits through 02cfd37, plan documents, issues and session summaries._
 
 **Next**
 1. <a id="n-de9865"></a>Open the claude-mem PR. First action: Rich reads the draft
@@ -25,11 +25,11 @@ _Written 2026-10-24 from commits through c38bf58, plan documents, issues and ses
 nothing
 
 **Context for the above**
-- 2026-10-23 and 2026-10-24, 743dcbb, f40643b, aa3da0a, c38bf58: `eval.ts --rankings` now
-  scores a ranking produced elsewhere, and the release minilm-l6 vectors were searched through
-  chroma-mem's bench (Chroma 1.4.4) on all seven datasets. Three more models were also run
-  through it: minilm-l6-128, multilingual-minilm-l12-q and bge-small-en-q. These results are
-  in the repo. The inputs do not say whether the README reports them.
+- 2026-10-24, 01c280d, 4613cad, 54b1e03, 0eb450b, 02cfd37, 64de872: the README now reports
+  R@5, F1@5 and nDCG@10 for all seven datasets, with paired differences against minilm-l6.
+  The new bge-small-en ties e5-small in English but trails it by 0.202 R@5 on memsearch zh,
+  so e5-small stays the choice. chroma-mem defaults to minilm-l6-128. Releases v3 (chroma-mem
+  vector cache) and v4 (bge-small-en vectors) are published. None of this is judged precision.
 - 2026-10-20, upstream 9e4f313a8: `pr/pgvector-search` (13 commits) was rebased onto it
   without conflicts. tsc is clean and the plugin build succeeds. Tests give 581 pass and
   18 fail, against upstream's 559 pass and the same 18 fail. The draft `pr.md` still cites
@@ -38,12 +38,14 @@ nothing
   sessions cannot be bounded without LLM judging.
 - 2026-10-22, 916965d: the store-mode and scoped bm25 runs use `pr/model-choice`, while the
   PR branch in Next 1 is `pr/pgvector-search`. The inputs do not say how the two relate.
-- 2026-10-24: a session was left with uncommitted changes (last activity 03:38 UTC). The
-  inputs do not say what they are, so check the working tree before starting.
+- 2026-10-24: a session was left with uncommitted changes (last activity 03:38 UTC). Later
+  commits that day exist, but the inputs do not show whether they included those changes.
+  Run `git status` before starting.
 
 **Open questions**
 none
 <!-- status:end -->
+
 
 
 
