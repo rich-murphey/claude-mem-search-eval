@@ -7,8 +7,8 @@ result can be checked in minutes rather than recomputed in hours.
 
 ## Where this stands
 
-<!-- status:begin sha=02cfd37 at=2026-10-25 -->
-_Written 2026-10-25 from commits through 02cfd37, plan documents, issues and session summaries._
+<!-- status:begin sha=418c93e at=2026-10-31 -->
+_Written 2026-10-31 from commits through 418c93e, claude-mem memory and results/model-agnostic.md._
 
 **Next**
 1. <a id="n-de9865"></a>Open the claude-mem PR. First action: Rich reads the draft
@@ -16,7 +16,12 @@ _Written 2026-10-25 from commits through 02cfd37, plan documents, issues and ses
    (9e4f313a8), commit count, cited hashes and test counts match the rebased branch. Then he
    pushes `pr/pgvector-search` (tree `~/wt/claude-mem/granite`, local only) to the fork. Done
    when the PR is open on thedotmack/claude-mem with release v2 linked.
-2. <a id="n-6d4b28"></a>Judged precision (plan step 5). First action: run an LLM judge over the
+2. Set claude-mem's RRF k to 5. First action: change `const RRF_K = 60` in
+   `src/storage/postgres/observations.ts` on the branch whose hybrid has the bm25 leg
+   (`int/docs-semantic-inject`), then rerun `bun src/server-search.ts --mode store` on
+   LongMemEval and memsearch. Done when the server's own store-mode R@5 matches
+   results/model-agnostic.md (MiniLM-L6 macro +0.014) within its interval.
+3. <a id="n-6d4b28"></a>Judged precision (plan step 5). First action: run an LLM judge over the
    top-5 results that are not labelled relevant on the 100-question LongMemEval sample, then
    hand-check a sample of its verdicts. Done when the README gives a bounded P@5 alongside the
    label-based one.
@@ -25,22 +30,19 @@ _Written 2026-10-25 from commits through 02cfd37, plan documents, issues and ses
 nothing
 
 **Context for the above**
-- 2026-10-24, 01c280d, 4613cad, 54b1e03, 0eb450b, 02cfd37, 64de872: the README now reports
-  R@5, F1@5 and nDCG@10 for all seven datasets, with paired differences against minilm-l6.
-  The new bge-small-en ties e5-small in English but trails it by 0.202 R@5 on memsearch zh,
-  so e5-small stays the choice. chroma-mem defaults to minilm-l6-128. Releases v3 (chroma-mem
-  vector cache) and v4 (bge-small-en vectors) are published. None of this is judged precision.
+- 2026-10-31, c8a3bec, ad0a139, 418c93e, [#1](https://github.com/rich-murphey/claude-mem-search-eval/issues/1): results/model-agnostic.md measures what works on top of any
+  stored vectors, cross-validated, on all seven datasets with MiniLM-L6 and e5-small. RRF
+  k = 5 is the one free change that both models choose and no dataset loses (store R@5 macro
+  +0.014 MiniLM, +0.038 e5). Convex score fusion gains more but its weight is per model and
+  reading pg_textsearch bm25 scores costs up to 0.4 s a query. Whitening, all-but-the-top and
+  centring hurt e5; MMR, part aggregation and vector PRF gain nothing. A cross-encoder over
+  the hybrid top 50 gives MIRACL en R@5 +0.135 but takes seconds a query on `dv`.
 - 2026-10-20, upstream 9e4f313a8: `pr/pgvector-search` (13 commits) was rebased onto it
-  without conflicts. tsc is clean and the plugin build succeeds. Tests give 581 pass and
-  18 fail, against upstream's 559 pass and the same 18 fail. The draft `pr.md` still cites
-  stale hashes and test counts (583 pass), so it needs refreshing before the PR opens.
-- 2026-10-19: step 5 (judged precision) was still pending in the README. Unlabelled answer
-  sessions cannot be bounded without LLM judging.
+  without conflicts; tests 581 pass, 18 fail (upstream's same 18). The draft `pr.md` cites
+  stale hashes and test counts. claude-mem memory shows no PR opened since.
 - 2026-10-22, 916965d: the store-mode and scoped bm25 runs use `pr/model-choice`, while the
-  PR branch in Next 1 is `pr/pgvector-search`. The inputs do not say how the two relate.
-- 2026-10-24: a session was left with uncommitted changes (last activity 03:38 UTC). Later
-  commits that day exist, but the inputs do not show whether they included those changes.
-  Run `git status` before starting.
+  PR branch in Next 1 is `pr/pgvector-search`; only `int/docs-semantic-inject` carries the
+  bm25 hybrid leg that Next 2 changes.
 
 **Open questions**
 none
@@ -117,6 +119,10 @@ What they show:
   all 19,195 LongMemEval sessions in one project, F1@5 falls from about 0.49
   to 0.13–0.18; e5-small stays ahead, and granite falls to MiniLM-L6's level
   (0.127 vector only, against 0.163 for e5-small).
+- **Model-agnostic improvements** ([results/model-agnostic.md](results/model-agnostic.md),
+  2026-10-31): changing claude-mem's RRF k from 60 to 5 raises store-mode R@5 for both
+  MiniLM-L6 and e5-small at no cost; transforming stored vectors does not transfer between
+  models.
 - **bge-small-en-v1.5 (fp32, through this repo's pipeline) ties e5-small in
   English and loses badly in Chinese.** Paired against e5-small, R@5:
   LongMemEval +0.010 (−0.003–0.023), memsearch en −0.005 (−0.021–0.011),
