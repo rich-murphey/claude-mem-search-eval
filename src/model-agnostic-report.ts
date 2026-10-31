@@ -174,7 +174,7 @@ for (const model of models) {
 // the same queries' current hybrid ranking.
 const rerankRows: string[] = [];
 for (const [dataset, mode] of [...SETS.store, ...SETS.scoped]) {
-  for (const depth of [50]) {
+  for (const depth of [50, 20]) {
     const path = `${values.out}/${dataset}/ma/rerank-${mode}-${depth}.json`;
     if (!existsSync(path) || rerankRows.some(r => r.startsWith(`| ${SHORT[dataset]} ${mode} `))) continue;
     const r = JSON.parse(readFileSync(path, 'utf8'));
@@ -184,10 +184,10 @@ for (const [dataset, mode] of [...SETS.store, ...SETS.scoped]) {
       return `${mean(res.map(x => x.base[m])).toFixed(3)} → ${mean(res.map(x => x.rerank[m])).toFixed(3)}, ${ci([mean(d), lo, hi])}`;
     };
     const ms = res.map(x => x.ms).sort((a, b) => a - b);
-    rerankRows.push(`| ${SHORT[dataset]} ${mode} | ${res.length} | ${col(1)} | ${col(3)} | ${col(0)} | ${mean(res.map(x => x.pairs)).toFixed(0)} | ${ms[Math.floor(ms.length / 2)].toFixed(0)} / ${ms[Math.floor(ms.length * 0.95)].toFixed(0)} |`);
+    rerankRows.push(`| ${SHORT[dataset]} ${mode} | ${depth} | ${res.length} | ${col(1)} | ${col(3)} | ${col(0)} | ${mean(res.map(x => x.pairs)).toFixed(0)} | ${ms[Math.floor(ms.length / 2)].toFixed(0)} / ${ms[Math.floor(ms.length * 0.95)].toFixed(0)} |`);
   }
 }
 if (rerankRows.length) {
-  console.log(`\n### Cross-encoder rerank of the hybrid top 50 (minilm-l6)\n\n| Dataset | Queries | R@5 (Δ, 95%) | nDCG@10 (Δ, 95%) | hit@5 (Δ, 95%) | Pairs/query | ms p50 / p95 |\n|---|---|---|---|---|---|---|`);
+  console.log(`\n### Cross-encoder rerank of the hybrid top N (minilm-l6)\n\n| Dataset | N | Queries | R@5 (Δ, 95%) | nDCG@10 (Δ, 95%) | hit@5 (Δ, 95%) | Pairs/query | ms p50 / p95 |\n|---|---|---|---|---|---|---|---|`);
   for (const row of rerankRows) console.log(row);
 }

@@ -18,8 +18,9 @@ which cost 20–400 ms a query to read. Embedding post-processing
 (centring, all-but-the-top, whitening) is not model-agnostic: small gains on
 MiniLM, losses on e5. Part aggregation other than max, MMR, and vector PRF
 from the vector leg alone gain nothing. A small cross-encoder over the
-hybrid top 50 is the largest lever measured (MIRACL en R@5 +0.135), but it
-is a model and costs seconds a query on `dv`'s CPU.
+hybrid top 50 is the largest lever measured (R@5 +0.135 MIRACL en, +0.073
+memsearch en, +0.142 LongMemEval store at depth 20), but it is a model and
+costs 2–24 s a query on `dv`'s CPU.
 
 ## Method
 
@@ -140,17 +141,26 @@ the top 50 are reordered by it (`src/rerank.ts`). Latency is the reranking
 alone, per query, on `dv`'s EPYC 7351P while the host ran other work (load
 average 25–40), so it is an upper bound; the model card's 1,800 docs/s is
 on a GPU. memsearch en is a fixed sample of 400 queries (smallest sha256 of
-the id); LongMemEval is the 100-question manifest `lme-s-100-v1`.
+the id). LongMemEval store is 40 queries of the `lme-s-100-v1` manifest
+(smallest sha256) at depth 20: its observations are whole sessions of
+about ten turns each, so depth 50 meant about 530 pairs a query, and the
+100-query run was stopped after 50 minutes.
 
-| Dataset | Queries | R@5 (Δ, 95%) | nDCG@10 (Δ, 95%) | hit@5 (Δ, 95%) | Pairs/query | ms p50 / p95 |
-|---|---|---|---|---|---|---|
-| ms-en store | 400 | 0.799 → 0.872, +0.073 (+0.040…+0.109) | 0.700 → 0.797, +0.097 (+0.068…+0.127) | 0.835 → 0.910, +0.075 (+0.040…+0.110) | 50 | 4126 / 5888 |
-| M-en scoped | 799 | 0.403 → 0.538, +0.135 (+0.111…+0.160) | 0.425 → 0.559, +0.134 (+0.112…+0.154) | 0.680 → 0.796, +0.116 (+0.085…+0.148) | 50 | 2330 / 4734 |
+| Dataset | N | Queries | R@5 (Δ, 95%) | nDCG@10 (Δ, 95%) | hit@5 (Δ, 95%) | Pairs/query | ms p50 / p95 |
+|---|---|---|---|---|---|---|---|
+| LME store | 20 | 40 | 0.379 → 0.520, +0.142 (+0.050…+0.258) | 0.327 → 0.484, +0.157 (+0.072…+0.256) | 0.500 → 0.675, +0.175 (+0.050…+0.300) | 234 | 23823 / 27396 |
+| ms-en store | 50 | 400 | 0.799 → 0.872, +0.073 (+0.040…+0.109) | 0.700 → 0.797, +0.097 (+0.068…+0.127) | 0.835 → 0.910, +0.075 (+0.040…+0.110) | 50 | 4126 / 5888 |
+| M-en scoped | 50 | 799 | 0.403 → 0.538, +0.135 (+0.111…+0.160) | 0.425 → 0.559, +0.134 (+0.112…+0.154) | 0.680 → 0.796, +0.116 (+0.085…+0.148) | 50 | 2330 / 4734 |
 
-- **The largest gain measured here**, on both English datasets where it
-  ran, and on top of the current hybrid rather than instead of it.
-- **Too slow for claude-mem's per-prompt injection on this CPU:** seconds a
-  query against the server's tens of milliseconds. It fits an explicit
+- **The largest gain measured here**, on all three English datasets where
+  it ran (R@5 +0.07 to +0.14, LongMemEval store included), and on top of
+  the current hybrid rather than instead of it.
+- **Too slow for claude-mem's per-prompt injection on this CPU:** 2–4 s a
+  query for 50 short passages, 24 s for 20 multi-turn sessions (234 pairs),
+  against the server's tens to hundreds of milliseconds. Cost scales with
+  parts scored, so on the live store (narrative and short facts per
+  observation) scoring only each candidate's nearest part or narrative
+  would bound it. It fits an explicit
   search (the `search` tool, a user waiting on results), a smaller depth
   (top 20), or a GPU. English only: the MS MARCO model has an English
   vocabulary; a multilingual reranker would be its own measurement.
