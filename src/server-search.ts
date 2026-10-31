@@ -4,7 +4,11 @@
 //
 //   bun src/server-search.ts --claude-mem ~/wt/claude-mem/<tree> \
 //     --db postgres://postgres:t@127.0.0.1:55480/postgres --dataset longmemeval-s \
-//     [--models a,b] [--mode scoped|store] [--manifest manifests/x.txt] [--min-relevant 5]
+//     [--models a,b] [--mode scoped|store] [--manifest manifests/x.txt] [--min-relevant 5] \
+//     [--rankings-out dir]
+//
+// --rankings-out writes each run's top 10 per query as <dir>/<dataset>-<mode>-<run>.tsv,
+// the form eval.ts --rankings reads, and each search's milliseconds beside it as .ms.
 //
 // Runs under bun because it imports claude-mem's TypeScript source. The
 // database must be a throwaway pgvector Postgres: each dataset, mode and model
@@ -46,6 +50,7 @@ const { values } = parseArgs({
     'min-relevant': { type: 'string', default: '1' },
     out: { type: 'string', default: 'out' },
     results: { type: 'string', default: 'results' },
+    'rankings-out': { type: 'string' },
   },
 });
 const claudeMem = resolve(values['claude-mem'] ?? '');
@@ -194,12 +199,23 @@ for (const key of keys) {
 
   started = performance.now();
   for (const [variant, input] of variants) {
-    const results: Metrics[] = [];
+    const results: Metrics[] = [], ranked: string[] = [], ms: string[] = [];
     for (const q of queries) {
+      const t0 = performance.now();
       const found = await repo.search({ projectId: loaded.projectIdOf(q), teamId: loaded.teamId, limit: LIMIT, ...input(q) });
-      results.push(metricsFor(found.map((o: { id: string }) => docOf(o.id)), q.relevant, q.judged));
+      ms.push(`${q.id}\t${(performance.now() - t0).toFixed(3)}`);
+      const docs = found.map((o: { id: string }) => docOf(o.id));
+      ranked.push([q.id, ...docs].join('\t'));
+      results.push(metricsFor(docs, q.relevant, q.judged));
     }
-    runs.set(variant === 'keyword' ? 'keyword only' : `${key} ${variant}`, results);
+    const label = variant === 'keyword' ? 'keyword only' : `${key} ${variant}`;
+    runs.set(label, results);
+    if (values['rankings-out']) {
+      mkdirSync(values['rankings-out'], { recursive: true });
+      const base = `${values['rankings-out']}/${dataset.key}-${mode}-${label.replace(/ /g, '-')}`;
+      writeFileSync(`${base}.tsv`, ranked.join('\n') + '\n');
+      writeFileSync(`${base}.ms`, ms.join('\n') + '\n');
+    }
   }
   timings.push(`${key}: load and index ${loadSeconds.toFixed(0)}s, ${variants.length * queries.length} searches ${((performance.now() - started) / 1000).toFixed(0)}s`);
   await loaded.pool.end();
