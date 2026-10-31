@@ -81,15 +81,16 @@ const VECTOR: Family[] = [
   fam('MMR over top 50', 'mmr', /^base\|max\|-\|vec\|mmr[\d.]+$/, BASE_V, [BASE_V]),
 ];
 
-function evaluate(runs: Run[], f: Family) {
-  const cands = f.candidates([...runs[0].configs.keys()]).filter(c => runs.every(r => r.configs.has(c)));
+/** Choose on `selectOn`'s training folds (default: the scored runs themselves), score `runs`' other folds. */
+function evaluate(runs: Run[], f: Family, selectOn: Run[] = runs) {
+  const cands = f.candidates([...runs[0].configs.keys()]).filter(c => runs.every(r => r.configs.has(c)) && selectOn.every(r => r.configs.has(c)));
   const sel = runs[0].metrics.indexOf(SELECT);
   const chosen: string[] = [];
   for (const train of [0, 1]) {
     let best = '', bestV = -Infinity;
     for (const c of cands) {
       let macro = 0;
-      for (const r of runs) {
+      for (const r of selectOn) {
         let s = 0, n = 0;
         for (let q = 0; q < r.nQ; q++) if (r.fold[q] === train) { s += metricOf(r, c, q, sel); n++; }
         macro += s / n;
@@ -125,9 +126,14 @@ const f3 = (x: number) => `${x >= 0 ? '+' : '−'}${Math.abs(x).toFixed(3)}`;
 const ci = ([m, lo, hi]: [number, number, number]) => `${f3(m)} (${f3(lo)}…${f3(hi)})`;
 const short = (c: string) => c.split('|').filter(x => x !== '-' && x !== 'base' && x !== 'max').join(' ') || 'baseline';
 
-for (const model of values.models!.split(',')) {
+const models = values.models!.split(',');
+for (const model of models) {
   for (const [setName, members] of Object.entries(SETS)) {
     const runs = members.map(([d, m]) => load(d, model, m)).filter((r): r is Run => r !== null);
+    // The other model's runs, to score a setting chosen on it: does the constant transfer?
+    const other = models.find(m => m !== model);
+    const otherRuns = other ? members.map(([d, m]) => load(d, other, m)).filter((r): r is Run => r !== null) : [];
+    const transfer = otherRuns.length === runs.length;
     if (runs.length === 0) continue;
     const names = runs.map(r => SHORT[r.dataset]);
     console.log(`\n### ${model}, ${setName} mode (${names.join(', ')})\n`);
@@ -150,15 +156,38 @@ for (const model of values.models!.split(',')) {
         const helps = runs.map((r, i) => (tags[i] && mean(perDataset[i][mi('R@5')]) > 0 ? tags[i] : null)).filter(Boolean).join(', ') || '—';
         const hurts = runs.map((r, i) => (tags[i] && mean(perDataset[i][mi('R@5')]) < 0 ? tags[i] : null)).filter(Boolean).join(', ') || '—';
         const perDs = runs.map((r, i) => `${f3(mean(perDataset[i][mi('R@5')]))}`).join(' / ');
+        const moved = transfer ? macroInterval(evaluate(runs, f, otherRuns).perDataset.map(p => p[mi('R@5')])) : null;
         rowsOut.push({
           key: r5[0],
-          line: `| ${f.name} | ${[...new Set(chosen.map(short))].join('; ')} | ${ci(r5)} | ${ci(macro('nDCG@10'))} | ${ci(macro('hit@5'))} | ${perDs} | ${helps} | ${hurts} |`,
+          line: `| ${f.name} | ${[...new Set(chosen.map(short))].join('; ')} | ${ci(r5)} | ${ci(macro('nDCG@10'))} | ${ci(macro('hit@5'))} | ${perDs} | ${helps} | ${hurts} |${moved ? ` ${ci(moved)} |` : ''}`,
         });
       }
       rowsOut.sort((a, b) => b.key - a.key);
-      console.log(`#### ${view}\n\n| Technique | Setting chosen (fold A; fold B) | ΔR@5 macro (95%) | ΔnDCG@10 macro | Δhit@5 macro | ΔR@5 ${names.join(' / ')} | Helps (R@5, 95% > 0) | Hurts (R@5, 95% < 0) |\n|---|---|---|---|---|---|---|---|`);
+      console.log(`#### ${view}\n\n| Technique | Setting chosen (fold A; fold B) | ΔR@5 macro (95%) | ΔnDCG@10 macro | Δhit@5 macro | ΔR@5 ${names.join(' / ')} | Helps (R@5, 95% > 0) | Hurts (R@5, 95% < 0) |${transfer ? ` ΔR@5 macro, setting chosen on ${other} |` : ''}\n|---|---|---|---|---|---|---|---|${transfer ? '---|' : ''}`);
       for (const r of rowsOut) console.log(r.line);
       console.log('');
     }
   }
+}
+
+// Cross-encoder reranking (src/rerank.ts), where it was run: paired against
+// the same queries' current hybrid ranking.
+const rerankRows: string[] = [];
+for (const [dataset, mode] of [...SETS.store, ...SETS.scoped]) {
+  for (const depth of [50]) {
+    const path = `${values.out}/${dataset}/ma/rerank-${mode}-${depth}.json`;
+    if (!existsSync(path) || rerankRows.some(r => r.startsWith(`| ${SHORT[dataset]} ${mode} `))) continue;
+    const r = JSON.parse(readFileSync(path, 'utf8'));
+    const res: { base: number[]; rerank: number[]; ms: number; pairs: number }[] = r.results;
+    const col = (m: number) => {
+      const d = res.map(x => x.rerank[m] - x.base[m]); const [lo, hi] = interval(d);
+      return `${mean(res.map(x => x.base[m])).toFixed(3)} → ${mean(res.map(x => x.rerank[m])).toFixed(3)}, ${ci([mean(d), lo, hi])}`;
+    };
+    const ms = res.map(x => x.ms).sort((a, b) => a - b);
+    rerankRows.push(`| ${SHORT[dataset]} ${mode} | ${res.length} | ${col(1)} | ${col(3)} | ${col(0)} | ${mean(res.map(x => x.pairs)).toFixed(0)} | ${ms[Math.floor(ms.length / 2)].toFixed(0)} / ${ms[Math.floor(ms.length * 0.95)].toFixed(0)} |`);
+  }
+}
+if (rerankRows.length) {
+  console.log(`\n### Cross-encoder rerank of the hybrid top 50 (minilm-l6)\n\n| Dataset | Queries | R@5 (Δ, 95%) | nDCG@10 (Δ, 95%) | hit@5 (Δ, 95%) | Pairs/query | ms p50 / p95 |\n|---|---|---|---|---|---|---|`);
+  for (const row of rerankRows) console.log(row);
 }
