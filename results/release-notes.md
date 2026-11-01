@@ -1,22 +1,21 @@
-Precomputed embeddings of BAAI/bge-small-en-v1.5 in fp32, through this repo's own pipeline (transformers.js 4.3.1, onnxruntime-node 1.21.0, CPU), as claude-mem's `LocalEmbedder` would embed them: every document part and query of four datasets, 384-dimensional, for comparison with v2's `minilm-l6` and `multilingual-e5-small`.
+Precomputed ColBERT token vectors of `answerdotai/answerai-colbert-small-v1` (revision `934fa8bb4ce2284f4c2baa232d81aca4d076fa5e`, Apache-2.0) through PyLate 1.6.0 (sentence-transformers 5.3.0, transformers 5.3.0, torch 2.11.0, CPU, fp32): every document part and query of three English datasets, one 96-dimensional L2-normalised vector per token, for the late-interaction rerank in `results/colbert-rerank.md`. Additive to v1–v4; nothing in them changes.
 
-| Dataset | Rows | Queries | Source |
-|---|---|---|---|
-| `longmemeval-s` | 199,509 | 470 answerable | LongMemEval-S cleaned (MIT) |
-| `memsearch-zh`, `memsearch-en` | 955 each | 2,172 each | memsearch-memory-retrieval (MIT) |
-| `miracl-en` | 178,768 | 799 | MIRACL dev via mteb/MIRACLRetrievalHardNegatives (CC-BY-SA-4.0) |
+| Dataset | Rows | Row tokens | Queries | Source |
+|---|---|---|---|---|
+| `longmemeval-s` | 199,509 | 32,191,687 | 470 answerable | LongMemEval-S cleaned (MIT) |
+| `memsearch-en` | 955 | 165,951 | 2,172 | memsearch-memory-retrieval (MIT) |
+| `miracl-en` | 178,768 | 17,991,409 | 799 | MIRACL dev via mteb/MIRACLRetrievalHardNegatives (CC-BY-SA-4.0) |
 
-Model: `bge-small-en` (`Xenova/bge-small-en-v1.5`, `onnx/model.onnx`, fp32): `[CLS]` pooling, L2-normalised, 512 tokens with the closing `[SEP]` restored on truncation, as its sentence-transformers config sets; queries carry the model card's retrieval instruction `Represent this sentence for searching relevant passages: `, passages none. These are not v3's `bge-small-en-q-split510` (Qdrant's static int8 export, split rather than truncated). MIRACL zh, ko and ja were not embedded: bge-small-en is English-only, and memsearch zh already shows the cost.
+Model: `answerai-colbert-small` = BERT (12 layers, hidden 384) then a 384 → 96 linear without bias, L2-normalised per token. Markers inserted after `[CLS]`: query `[Q]` = `[unused0]` (id 1), document `[D]` = `[unused1]` (id 2). Documents: `[CLS] [D] text [SEP]`, at most 512 tokens (the model trained at 300; 16.5% of LongMemEval rows, 0.4% of MIRACL's and none of memsearch's exceed 512), and the 32 punctuation tokens of Python's `string.punctuation` (ids 999–1013, 1024–1036, 1063–1066, PyLate's default skiplist) dropped from the output after encoding, so rows have variable length. Queries: fixed length 32, `[CLS] [Q] text [SEP]` padded with `[MASK]` (id 103) under attention mask 0, every position kept (query augmentation); longer queries are cut (663 of memsearch en's, 61 of LongMemEval's, none of MIRACL's). MIRACL zh, ko and ja and memsearch zh were not released: the model is English, and its vocabulary maps most CJK characters to `[UNK]` (62% of memsearch zh's query tokens).
 
-Against sentence-transformers on `BAAI/bge-small-en-v1.5` (revision `5c38ec7c`), 100 memsearch-en rows and 100 queries match at worst cosine 0.9999999, and 20 texts of 694–919 tokens, truncated, at 1.0000000. `verify.ts` re-embeds 200 rows per dataset: all four at cosine 1.0000000.
+Files, per dataset: `<dataset>.rows.tsv` and `<dataset>.queries.tsv` (ids, text hashes and the relevant documents; no text; byte-identical to v2's and v4's); `<dataset>.answerai-colbert-small.rows.f16.bin` (every row's token vectors concatenated in rows.tsv order, little-endian fp16, 96 values per token) with `<dataset>.answerai-colbert-small.rows.offsets.u64.bin` (little-endian u64, n_rows + 1 token offsets: row i is tokens offsets[i] to offsets[i+1]); the same pair for queries (every query 32 tokens, so its offsets are multiples of 32). Files over GitHub's 2 GiB asset limit ship as `.part00`, `.part01`, … of 2,000 MiB each (`longmemeval-s` rows in 3, `miracl-en` rows in 2): `cat <file>.part?? > <file>`. `SHA256SUMS` lists every piece and every whole file; `scripts/fetch.sh` checks the pieces, joins them and checks the whole. No dataset text is redistributed; `src/datasets.ts` downloads each dataset from Hugging Face at a pinned revision. The vectors are under the same licence as the dataset each came from.
 
-Files, per dataset: `<dataset>.rows.tsv` and `<dataset>.queries.tsv` (ids, text hashes and the relevant documents; no text; byte-identical to v2's), `<dataset>.bge-small-en.rows.f16.bin` and `<dataset>.bge-small-en.queries.f16.bin` (little-endian fp16, 384 values per row, one row per TSV line). `SHA256SUMS` covers them all. 16 files and `SHA256SUMS`, 309 MB. No dataset text is redistributed; `src/datasets.ts` downloads each dataset from Hugging Face at a pinned revision. The vectors are under the same licence as the dataset each came from.
+Parity: `src/colbert_verify.py` re-encodes 200 seeded rows and 200 queries per dataset with PyLate and compares token by token: all three datasets match in every token count, worst token cosine 0.9999998 (rows) and 0.9999998–0.9999999 (queries). `fixtures/colbert-parity.jsonl` in the repo gives token ids, masks and fp32 vectors for 20 queries and 50 written documents, to check another implementation (a Rust port) against.
 
 ```sh
-scripts/fetch.sh v2 memsearch-en   # minilm-l6, multilingual-e5-small and the rest
-scripts/fetch.sh v4 memsearch-en   # adds out/memsearch-en/bge-small-en/
-node src/verify.ts --dataset memsearch-en --model bge-small-en
-node src/eval.ts --dataset memsearch-en --models minilm-l6,multilingual-e5-small,bge-small-en
+scripts/fetch.sh v5 memsearch-en      # adds out/memsearch-en/answerai-colbert-small/
+node src/export-rows.ts --dataset memsearch-en
+uv run --python 3.12 --with pylate==1.6.0 python src/colbert_verify.py --dataset memsearch-en
 ```
 
-Results (`results/*-vector-bge-small-en-*.md`), timing and caveats are in the README; results are best treated as relative accuracy between models.
+Encoding took 2.9 h for LongMemEval and 1.9 h for MIRACL en on `dv`'s EPYC 7351P (4 processes × 4 threads each, both at once), 6.2 GB and 3.5 GB of fp16. Results, latency and caveats are in `results/colbert-rerank.md`.

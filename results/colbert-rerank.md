@@ -1,6 +1,6 @@
 # ColBERT late-interaction rerank
 
-Revised 2026-11-01. Does a ColBERT reranker, with document token vectors
+Revised 2026-10-31. Does a ColBERT reranker, with document token vectors
 precomputed and MaxSim at query time, give most of the cross-encoder's gain
 (results/model-agnostic.md, "Needs a model") for a fraction of its latency?
 MiniLM-L6 stays the first-stage embedder (Rich's ruling); ColBERT only

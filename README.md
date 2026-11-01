@@ -7,8 +7,8 @@ result can be checked in minutes rather than recomputed in hours.
 
 ## Where this stands
 
-<!-- status:begin sha=418c93e at=2026-10-31 -->
-_Written 2026-10-31 from commits through 418c93e, claude-mem memory and results/model-agnostic.md._
+<!-- status:begin sha=5bdba8e at=2026-10-31 -->
+_Written 2026-10-31 from commits through 5bdba8e, claude-mem memory, results/model-agnostic.md and results/colbert-rerank.md._
 
 **Next**
 1. <a id="n-de9865"></a>Open the claude-mem PR. First action: Rich reads the draft
@@ -30,6 +30,12 @@ _Written 2026-10-31 from commits through 418c93e, claude-mem memory and results/
 nothing
 
 **Context for the above**
+- 2026-10-31, b40a0f6, a0f1b35, 32799e5, 5bdba8e, release v5, [#1](https://github.com/rich-murphey/claude-mem-search-eval/issues/1):
+  results/colbert-rerank.md: answerai-colbert-small as a late-interaction reranker over the
+  same hybrid top 50 matches the cross-encoder on MIRACL en (R@5 +0.138 against +0.135), gets
+  86% of its gain on memsearch en and 68% on LongMemEval store, at 30–85 ms a query against
+  2–24 s; storage 192 B a token, about 3 GB for the live store. A Rust port's spec and
+  `fixtures/colbert-parity.jsonl` are in that file; release v5 holds its token vectors.
 - 2026-10-31, c8a3bec, ad0a139, 418c93e, [#1](https://github.com/rich-murphey/claude-mem-search-eval/issues/1): results/model-agnostic.md measures what works on top of any
   stored vectors, cross-validated, on all seven datasets with MiniLM-L6 and e5-small. RRF
   k = 5 is the one free change that both models choose and no dataset loses (store R@5 macro
@@ -123,6 +129,12 @@ What they show:
   2026-10-31): changing claude-mem's RRF k from 60 to 5 raises store-mode R@5 for both
   MiniLM-L6 and e5-small at no cost; transforming stored vectors does not transfer between
   models.
+- **A ColBERT reranker gets the cross-encoder's gain at tens of milliseconds**
+  ([results/colbert-rerank.md](results/colbert-rerank.md), 2026-10-31):
+  answerai-colbert-small over the current hybrid top 50 adds R@5 +0.138 on MIRACL en
+  (the cross-encoder +0.135), +0.080 on memsearch en and +0.103 on LongMemEval store, at
+  30–85 ms a query on `dv` against the cross-encoder's 2–24 s; the price is 192 bytes per
+  stored token, about 3 GB for the live store.
 - **bge-small-en-v1.5 (fp32, through this repo's pipeline) ties e5-small in
   English and loses badly in Chinese.** Paired against e5-small, R@5:
   LongMemEval +0.010 (−0.003–0.023), memsearch en −0.005 (−0.021–0.011),
@@ -615,6 +627,13 @@ language). Release v2 adds both granite cuts, 535 MB each, for 2.7 GB; its
 first three models' files are identical to v1's. Release v4 (2026-10-24)
 adds bge-small-en for LongMemEval, memsearch zh and en and MIRACL en, 309 MB
 (`scripts/fetch.sh v4 <dataset>`, alongside v2's for the other models).
+Release v5 (2026-10-31) adds answerai-colbert-small's per-token vectors for
+LongMemEval, memsearch en and MIRACL en, 9.7 GB: variable-length rows as
+`<dataset>.answerai-colbert-small.rows.f16.bin` (96 fp16 values per token)
+with `.rows.offsets.u64.bin` (n + 1 token offsets), queries fixed at 32
+tokens; files over 2 GiB ship as `.partNN` pieces that `scripts/fetch.sh v5`
+rejoins and checks; `src/colbert_verify.py` re-encodes a sample. Its notes
+give the markers, skiplist and lengths.
 
 ## Plan
 
