@@ -7,8 +7,8 @@ result can be checked in minutes rather than recomputed in hours.
 
 ## Where this stands
 
-<!-- status:begin sha=5bdba8e at=2026-10-31 -->
-_Written 2026-10-31 from commits through 5bdba8e, claude-mem memory, results/model-agnostic.md and results/colbert-rerank.md._
+<!-- status:begin sha=c82e95e at=2026-11-01 -->
+_Written 2026-11-01 from commits through c82e95e, plan documents, issues and session summaries._
 
 **Next**
 1. <a id="n-de9865"></a>Open the claude-mem PR. First action: Rich reads the draft
@@ -16,11 +16,13 @@ _Written 2026-10-31 from commits through 5bdba8e, claude-mem memory, results/mod
    (9e4f313a8), commit count, cited hashes and test counts match the rebased branch. Then he
    pushes `pr/pgvector-search` (tree `~/wt/claude-mem/granite`, local only) to the fork. Done
    when the PR is open on thedotmack/claude-mem with release v2 linked.
-2. Set claude-mem's RRF k to 5. First action: change `const RRF_K = 60` in
-   `src/storage/postgres/observations.ts` on the branch whose hybrid has the bm25 leg
-   (`int/docs-semantic-inject`), then rerun `bun src/server-search.ts --mode store` on
-   LongMemEval and memsearch. Done when the server's own store-mode R@5 matches
-   results/model-agnostic.md (MiniLM-L6 macro +0.014) within its interval.
+2. <a id="n-9ba082"></a>Set claude-mem's RRF k to 5
+   ([#1](https://github.com/rich-murphey/claude-mem-search-eval/issues/1)). First action:
+   change `const RRF_K = 60` in `src/storage/postgres/observations.ts` on
+   `int/docs-semantic-inject` (the branch whose hybrid has the bm25 leg). Then rerun
+   `bun src/server-search.ts --mode store` on LongMemEval and memsearch. Done when the
+   server's own store-mode R@5 matches results/model-agnostic.md (MiniLM-L6 macro +0.014)
+   within its interval.
 3. <a id="n-6d4b28"></a>Judged precision (plan step 5). First action: run an LLM judge over the
    top-5 results that are not labelled relevant on the 100-question LongMemEval sample, then
    hand-check a sample of its verdicts. Done when the README gives a bounded P@5 alongside the
@@ -30,29 +32,30 @@ _Written 2026-10-31 from commits through 5bdba8e, claude-mem memory, results/mod
 nothing
 
 **Context for the above**
-- 2026-10-31, b40a0f6, a0f1b35, 32799e5, 5bdba8e, release v5, [#1](https://github.com/rich-murphey/claude-mem-search-eval/issues/1):
-  results/colbert-rerank.md: answerai-colbert-small as a late-interaction reranker over the
-  same hybrid top 50 matches the cross-encoder on MIRACL en (R@5 +0.138 against +0.135), gets
-  86% of its gain on memsearch en and 68% on LongMemEval store, at 30–85 ms a query against
-  2–24 s; storage 192 B a token, about 3 GB for the live store. A Rust port's spec and
-  `fixtures/colbert-parity.jsonl` are in that file; release v5 holds its token vectors.
-- 2026-10-31, c8a3bec, ad0a139, 418c93e, [#1](https://github.com/rich-murphey/claude-mem-search-eval/issues/1): results/model-agnostic.md measures what works on top of any
-  stored vectors, cross-validated, on all seven datasets with MiniLM-L6 and e5-small. RRF
-  k = 5 is the one free change that both models choose and no dataset loses (store R@5 macro
-  +0.014 MiniLM, +0.038 e5). Convex score fusion gains more but its weight is per model and
-  reading pg_textsearch bm25 scores costs up to 0.4 s a query. Whitening, all-but-the-top and
-  centring hurt e5; MMR, part aggregation and vector PRF gain nothing. A cross-encoder over
-  the hybrid top 50 gives MIRACL en R@5 +0.135 but takes seconds a query on `dv`.
+- 2026-10-31, c8a3bec, ad0a139, 418c93e,
+  [#1](https://github.com/rich-murphey/claude-mem-search-eval/issues/1):
+  results/model-agnostic.md measures what works on top of any stored vectors, on all seven
+  datasets with MiniLM-L6 and e5-small. RRF k = 5 is the one free change that both models
+  choose and no dataset loses (store R@5 macro +0.014 MiniLM, +0.038 e5). Convex score fusion
+  gains more, but its weight is per model and reading pg_textsearch bm25 scores costs up to
+  0.4 s a query.
 - 2026-10-20, upstream 9e4f313a8: `pr/pgvector-search` (13 commits) was rebased onto it
   without conflicts; tests 581 pass, 18 fail (upstream's same 18). The draft `pr.md` cites
   stale hashes and test counts. claude-mem memory shows no PR opened since.
 - 2026-10-22, 916965d: the store-mode and scoped bm25 runs use `pr/model-choice`, while the
   PR branch in Next 1 is `pr/pgvector-search`; only `int/docs-semantic-inject` carries the
   bm25 hybrid leg that Next 2 changes.
+- 2026-11-01, b40a0f6, c82e95e, release v5,
+  [#1](https://github.com/rich-murphey/claude-mem-search-eval/issues/1):
+  results/colbert-rerank.md shows a ColBERT reranker matching the cross-encoder on MIRACL en
+  (R@5 +0.138 against +0.135) at 30–85 ms a query against 2–24 s. Nothing in Next depends on
+  it; the Rust port spec and `fixtures/colbert-parity.jsonl` are there if it is picked up.
 
 **Open questions**
-none
+- <a id="n-d504bb"></a>Which release should GitHub mark as Latest, v4 or v5? The README has no rule, and the last
+  session set v4 back to Latest only for that reason.
 <!-- status:end -->
+
 
 
 
