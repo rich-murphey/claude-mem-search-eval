@@ -36,6 +36,18 @@ live store's 16.3M tokens (1.6 GB at int8).
   cross-encoder); the top N are reordered by it, ties by hybrid rank.
   Documents are cut at 512 tokens (the model trained at 300; 512 matches
   the cross-encoder's cut).
+- **It was distilled from cross-encoders** (announcement post, fetched
+  2026-11-01; the card itself only links it). The release averages three
+  runs on 32-way triplets: 640k from MS MARCO scored by BGE-M3-reranker; a
+  further 2.5M from MS MARCO, HotPotQA, TriviaQA, FEVER and NQ, same
+  teacher; and 640k more from MS MARCO scored by BGE's Gemma-2 lightweight
+  reranker, with teacher scores min-max normalised. So MaxSim is trained to
+  reproduce a cross-encoder's ranking, which is why it can match one on
+  short passages. The authors suspect the small student misses some of a
+  large teacher's subtleties (negatives not hard enough, normalisation),
+  consistent with the LongMemEval shortfall. The cross-encoder baseline here
+  (`ms-marco-MiniLM-L6-v2`) is MS MARCO-trained too; neither saw
+  memory-style data.
 - **Queries**: MIRACL en all 799 (scoped = store); memsearch en store all
   2,172, compared with the cross-encoder on its 400-query sample (smallest
   sha256 of the id); LongMemEval the 100 queries of `lme-s-100-v1`, store
@@ -247,4 +259,5 @@ uv run --with numpy python src/colbert_report.py
 | ColBERT | Khattab & Zaharia, [arXiv 2004.12832](https://arxiv.org/abs/2004.12832) (SIGIR 2020) | Late interaction, MaxSim, query `[MASK]` augmentation |
 | ColBERTv2 / PLAID | Santhanam et al., [arXiv 2112.01488](https://arxiv.org/abs/2112.01488) (NAACL 2022); [arXiv 2205.09707](https://arxiv.org/abs/2205.09707) (CIKM 2022) | Residual compression, 2-bit storage |
 | answerai-colbert-small-v1 | [model card](https://huggingface.co/answerdotai/answerai-colbert-small-v1), `artifact.metadata` at `934fa8bb`; [JaColBERTv2.5](https://arxiv.org/abs/2407.20750) recipe | 96-d, query 32, doc 300 in training, markers, `attend_to_mask_tokens: false` |
+| answerai-colbert-small training | Answer.AI, [Small but Mighty](https://www.answer.ai/posts/2024-08-13-small-but-mighty-colbert.html) (2024-08-13, fetched 2026-11-01) | Teachers (BGE-M3-reranker, BGE Gemma-2 lightweight reranker), data, checkpoint averaging |
 | PyLate 1.6.0 | [lightonai/pylate](https://github.com/lightonai/pylate), `pylate/models/colbert.py` | Tokenisation, marker insert, skiplist (`string.punctuation`), pad = `[MASK]` |
