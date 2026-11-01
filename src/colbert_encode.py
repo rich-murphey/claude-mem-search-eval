@@ -30,10 +30,10 @@ DOC_LEN, QUERY_LEN, DIM = 512, 32, 96
 CHUNK = 8192
 
 
-def load(threads):
+def load(threads, query_length=QUERY_LEN):
     torch.set_num_threads(threads)
     from pylate import models
-    return models.ColBERT(MODEL, revision=REVISION, device='cpu', document_length=DOC_LEN, query_length=QUERY_LEN)
+    return models.ColBERT(MODEL, revision=REVISION, device='cpu', document_length=DOC_LEN, query_length=query_length)
 
 
 def texts_of(dataset, which):
@@ -65,10 +65,11 @@ def main():
     ap.add_argument('--batch', type=int, default=32)
     ap.add_argument('--shard')
     ap.add_argument('--merge', type=int)
+    ap.add_argument('--query-length', type=int, default=QUERY_LEN, help='other than 32: writes queries-q<N>.*')
     a = ap.parse_args()
     if a.merge:
         return merge(a.dataset, a.which, a.merge)
-    model = load(a.threads)
+    model = load(a.threads, a.query_length)
     texts = texts_of(a.dataset, a.which)
     if a.limit:
         # A seeded sample spread over the file, not its head (LongMemEval's head is one haystack).
@@ -77,7 +78,7 @@ def main():
     is_query = a.which == 'queries'
     d = f'out/{a.dataset}/{KEY}'
     os.makedirs(d, exist_ok=True)
-    stem = f'{d}/{a.which}' + ('.sample' if a.limit else '')
+    stem = f'{d}/{a.which}' + (f'-q{a.query_length}' if a.query_length != QUERY_LEN else '') + ('.sample' if a.limit else '')
     if a.shard:
         k, n = map(int, a.shard.split('/'))
         lo, hi = len(texts) * k // n, len(texts) * (k + 1) // n
@@ -102,7 +103,7 @@ def main():
     stats = {
         'dataset': a.dataset, 'which': a.which, 'model': MODEL, 'revision': REVISION, 'threads': a.threads,
         'n': len(texts), 'seconds': secs, 'per_s': len(texts) / secs,
-        'tokens_in': int(np.minimum(raw, DOC_LEN if not is_query else QUERY_LEN).sum()), 'tokens_kept': int(kept.sum()),
+        'tokens_in': int(np.minimum(raw, DOC_LEN if not is_query else a.query_length).sum()), 'tokens_kept': int(kept.sum()),
         'tokens_in_per_s': float(np.minimum(raw, DOC_LEN).sum() / secs),
         'raw_tokens': {'mean': float(raw.mean()), 'median': float(np.median(raw)), 'p90': float(np.percentile(raw, 90)),
                        'max': int(raw.max()), 'over_512': float((raw > DOC_LEN).mean()), 'over_300': float((raw > 300).mean())},

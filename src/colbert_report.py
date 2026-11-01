@@ -21,6 +21,7 @@ RUNS = [  # dataset, mode, depth, label
     ('memsearch-en', 'store', 50, 'ms-en store'),
     ('miracl-en', 'scoped', 20, 'M-en scoped'),
     ('miracl-en', 'scoped', 50, 'M-en scoped'),
+    ('memsearch-zh', 'store', 50, 'ms-zh store'),
 ]
 NAMES = ['hit@5', 'R@5', 'MRR@10', 'nDCG@10']
 

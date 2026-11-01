@@ -41,6 +41,7 @@ def main():
     ap.add_argument('--depth', type=int, default=50)
     ap.add_argument('--threads', type=int, default=8)
     ap.add_argument('--encode-sample', type=int, default=100)
+    ap.add_argument('--query-length', type=int, default=QLEN, help='other than 32: reads queries-q<N>.f16.bin')
     a = ap.parse_args()
     d = f'out/{a.dataset}'
     # Row ranges per doc, from rows.tsv (rows of a doc are contiguous, in part order).
@@ -53,7 +54,9 @@ def main():
     vec = np.memmap(f'{d}/{KEY}/rows.f16.bin', dtype='<f2', mode='r').reshape(-1, DIM)
     assert len(off) - 1 == sum(len(v) for v in doc_rows.values()) and off[-1] == vec.shape[0]
     qids = [line.split('\t', 1)[0] for line in open(f'{d}/queries.tsv').read().strip().split('\n')[1:]]
-    qvec = np.fromfile(f'{d}/{KEY}/queries.f16.bin', dtype='<f2').reshape(len(qids), QLEN, DIM)
+    ql = a.query_length
+    qfile = 'queries' if ql == QLEN else f'queries-q{ql}'
+    qvec = np.fromfile(f'{d}/{KEY}/{qfile}.f16.bin', dtype='<f2').reshape(len(qids), ql, DIM)
     qindex = {q: i for i, q in enumerate(qids)}
     pool = [json.loads(line) for line in open(f'{d}/colbert/pool-{a.mode}.jsonl')]
 
@@ -93,8 +96,8 @@ def main():
     # Query encode latency: one query at a time, as a search would, on --threads.
     torch.set_num_threads(a.threads)
     from pylate import models
-    from colbert_encode import MODEL, REVISION, DOC_LEN, QUERY_LEN
-    model = models.ColBERT(MODEL, revision=REVISION, device='cpu', document_length=DOC_LEN, query_length=QUERY_LEN)
+    from colbert_encode import MODEL, REVISION, DOC_LEN
+    model = models.ColBERT(MODEL, revision=REVISION, device='cpu', document_length=DOC_LEN, query_length=ql)
     texts = [p['text'] for p in pool[:a.encode_sample]]
     model.encode(texts[:2], is_query=True, show_progress_bar=False)  # warm-up
     enc = []
@@ -106,9 +109,9 @@ def main():
         if i < 5:  # the stored query vectors are what a live encode gives
             stored = qvec[qindex[pool[i]['q']]].astype(np.float32)
             assert (np.sum(stored * v, 1) / np.linalg.norm(stored, axis=1)).min() > 0.999
-    out = {'dataset': a.dataset, 'mode': a.mode, 'depth': a.depth, 'model': MODEL, 'revision': REVISION,
+    out = {'dataset': a.dataset, 'mode': a.mode, 'depth': a.depth, 'query_length': ql, 'model': MODEL, 'revision': REVISION,
            'threads': a.threads, 'metrics': ['hit@5', 'R@5', 'MRR@10', 'nDCG@10'], 'encode_ms': enc, 'results': results}
-    with open(f'{d}/colbert/rerank-{a.mode}-{a.depth}.json', 'w') as f:
+    with open(f'{d}/colbert/rerank-{a.mode}-{a.depth}' + ('' if ql == QLEN else f'-q{ql}') + '.json', 'w') as f:
         json.dump(out, f)
     mean = lambda k, i: np.mean([r[k][i] for r in results])
     pct = lambda xs, p: float(np.percentile(xs, p))
