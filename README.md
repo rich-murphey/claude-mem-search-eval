@@ -7,8 +7,8 @@ result can be checked in minutes rather than recomputed in hours.
 
 ## Where this stands
 
-<!-- status:begin sha=c82e95e at=2026-11-01 -->
-_Written 2026-11-01 from commits through c82e95e, plan documents, issues and session summaries._
+<!-- status:begin sha=e44aaae at=2026-11-02 -->
+_Written 2026-11-02 from commits through e44aaae, plan documents, issues and session summaries._
 
 **Next**
 1. <a id="n-de9865"></a>Open the claude-mem PR. First action: Rich reads the draft
@@ -45,16 +45,12 @@ nothing
 - 2026-10-22, 916965d: the store-mode and scoped bm25 runs use `pr/model-choice`, while the
   PR branch in Next 1 is `pr/pgvector-search`; only `int/docs-semantic-inject` carries the
   bm25 hybrid leg that Next 2 changes.
-- 2026-11-01, b40a0f6, c82e95e, release v5,
-  [#1](https://github.com/rich-murphey/claude-mem-search-eval/issues/1):
-  results/colbert-rerank.md shows a ColBERT reranker matching the cross-encoder on MIRACL en
-  (R@5 +0.138 against +0.135) at 30–85 ms a query against 2–24 s. Nothing in Next depends on
-  it; the Rust port spec and `fixtures/colbert-parity.jsonl` are there if it is picked up.
 
 **Open questions**
-- <a id="n-d504bb"></a>Which release should GitHub mark as Latest, v4 or v5? The README has no rule, and the last
-  session set v4 back to Latest only for that reason.
+- <a id="n-d504bb"></a>Which release should GitHub mark as Latest, v4 or v5? The README has no
+  rule, and the last session set v4 back to Latest only for that reason.
 <!-- status:end -->
+
 
 
 
