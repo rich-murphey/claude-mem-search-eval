@@ -138,6 +138,10 @@ What they show:
   (the cross-encoder +0.135), +0.080 on memsearch en and +0.103 on LongMemEval store, at
   30–85 ms a query on `dv` against the cross-encoder's 2–24 s; the price is 192 bytes per
   stored token, about 3 GB for the live store.
+- **ColBERT token vectors keep their accuracy at int8**
+  ([results/colbert-int8.md](results/colbert-int8.md), 2026-11-02): one scale per
+  dimension, query quantised too, moves R@5 by −0.001 to +0.015 (no interval excludes
+  zero) at 96 bytes a token, half of fp16; int4 loses 0.065–0.101 R@5.
 - **bge-small-en-v1.5 (fp32, through this repo's pipeline) ties e5-small in
   English and loses badly in Chinese.** Paired against e5-small, R@5:
   LongMemEval +0.010 (−0.003–0.023), memsearch en −0.005 (−0.021–0.011),

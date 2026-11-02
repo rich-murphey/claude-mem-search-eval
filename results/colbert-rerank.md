@@ -140,6 +140,8 @@ live store's 16.3M tokens (1.6 GB at int8).
   vectors at ingest: a 37-token fact about 12 ms of 16-thread CPU.
 - **Bytes per token**: 192 (96 × fp16); 96 at int8 plus a scale per token
   or per dimension. Offsets add 8 bytes per row.
+  [results/colbert-int8.md](colbert-int8.md) (2026-11-02) measures int8: one
+  scale per dimension costs no measurable R@5 on any dataset, at 96 bytes.
 - **Live store** (302k parts, 16.3M MiniLM tokens; same uncased BERT
   vocabulary, so the counts carry over, plus one marker token per part and
   minus punctuation, which dropped 13–25% here): about 14–16M tokens, so
