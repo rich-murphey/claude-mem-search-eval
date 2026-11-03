@@ -7,8 +7,8 @@ result can be checked in minutes rather than recomputed in hours.
 
 ## Where this stands
 
-<!-- status:begin sha=e44aaae at=2026-11-02 -->
-_Written 2026-11-02 from commits through e44aaae, plan documents, issues and session summaries._
+<!-- status:begin sha=38c8725 at=2026-11-03 -->
+_Written 2026-11-03 from commits through 38c8725, plan documents, issues and session summaries._
 
 **Next**
 1. <a id="n-de9865"></a>Open the claude-mem PR. First action: Rich reads the draft
@@ -41,7 +41,8 @@ nothing
   0.4 s a query.
 - 2026-10-20, upstream 9e4f313a8: `pr/pgvector-search` (13 commits) was rebased onto it
   without conflicts; tests 581 pass, 18 fail (upstream's same 18). The draft `pr.md` cites
-  stale hashes and test counts. claude-mem memory shows no PR opened since.
+  stale hashes and test counts. claude-mem memory shows the PR still unopened and the draft
+  still stale, citing 583 pass against the branch's 581 (memory, 2026-11-03).
 - 2026-10-22, 916965d: the store-mode and scoped bm25 runs use `pr/model-choice`, while the
   PR branch in Next 1 is `pr/pgvector-search`; only `int/docs-semantic-inject` carries the
   bm25 hybrid leg that Next 2 changes.
@@ -50,6 +51,7 @@ nothing
 - <a id="n-d504bb"></a>Which release should GitHub mark as Latest, v4 or v5? The README has no
   rule, and the last session set v4 back to Latest only for that reason.
 <!-- status:end -->
+
 
 
 
