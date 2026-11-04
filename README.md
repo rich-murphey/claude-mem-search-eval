@@ -7,8 +7,8 @@ result can be checked in minutes rather than recomputed in hours.
 
 ## Where this stands
 
-<!-- status:begin sha=38c8725 at=2026-11-03 -->
-_Written 2026-11-03 from commits through 38c8725, plan documents, issues and session summaries._
+<!-- status:begin sha=bbffbe3 at=2026-11-04 -->
+_Written 2026-11-04 from commits through bbffbe3, plan documents, issues and session summaries._
 
 **Next**
 1. <a id="n-de9865"></a>Open the claude-mem PR. First action: Rich reads the draft
@@ -51,6 +51,7 @@ nothing
 - <a id="n-d504bb"></a>Which release should GitHub mark as Latest, v4 or v5? The README has no
   rule, and the last session set v4 back to Latest only for that reason.
 <!-- status:end -->
+
 
 
 
