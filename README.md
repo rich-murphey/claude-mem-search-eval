@@ -7,8 +7,8 @@ result can be checked in minutes rather than recomputed in hours.
 
 ## Where this stands
 
-<!-- status:begin sha=ff87696 at=2026-11-05 -->
-_Written 2026-11-05 from commits through ff87696, plan documents, issues and session summaries, and the work view._
+<!-- status:begin sha=08a6384 at=2026-11-05 -->
+_Written 2026-11-05 from commits through 08a6384, plan documents, issues and session summaries, and the work view._
 
 **Next**
 1. <a id="n-de9865"></a>Open the claude-mem PR. First action: Rich reads the draft
@@ -16,24 +16,24 @@ _Written 2026-11-05 from commits through ff87696, plan documents, issues and ses
    (9e4f313a8), commit count, cited hashes and test counts match the rebased branch. Then he
    pushes `pr/pgvector-search` (tree `~/wt/claude-mem/granite`, local only) to the fork. Done
    when the PR is open on thedotmack/claude-mem with release v2 linked.
-2. <a id="n-9ba082"></a>Set claude-mem's RRF k to 5
-   ([#1](https://github.com/rich-murphey/claude-mem-search-eval/issues/1)). First action:
-   change `const RRF_K = 60` in `src/storage/postgres/observations.ts` on
-   `int/docs-semantic-inject` (the branch whose hybrid has the bm25 leg). Then rerun
-   `bun src/server-search.ts --mode store` on LongMemEval and memsearch. Done when the
-   server's own store-mode R@5 matches results/model-agnostic.md (MiniLM-L6 macro +0.014)
-   within its interval.
-3. <a id="n-6d4b28"></a>Judged precision (plan step 5). First action: run an LLM judge over the
-   top-5 results that are not labelled relevant on the 100-question LongMemEval sample, then
-   hand-check a sample of its verdicts. Done when the README gives a bounded P@5 alongside the
-   label-based one.
+2. <a id="n-9ba082"></a>Set claude-mem's RRF k to 5, issue
+   https://github.com/rich-murphey/claude-mem-search-eval/issues/1. First action: change
+   `const RRF_K = 60` in `src/storage/postgres/observations.ts` on `int/docs-semantic-inject`
+   (the branch whose hybrid has the bm25 leg). Then rerun `bun src/server-search.ts --mode store`
+   on LongMemEval and memsearch. Done when the server's own store-mode R@5 matches
+   results/model-agnostic.md (MiniLM-L6 macro +0.014) within its interval.
+3. <a id="n-6d4b28"></a>Judged precision (plan step 5), issue
+   https://github.com/rich-murphey/claude-mem-search-eval/issues/2. First action: run an LLM
+   judge over the top-5 results that are not labelled relevant on the 100-question LongMemEval
+   sample, then hand-check a sample of its verdicts. Done when the README gives a bounded P@5
+   alongside the label-based one.
 
 **Waiting on**
 nothing
 
 **Context for the above**
 - 2026-10-31, c8a3bec, ad0a139, 418c93e,
-  [#1](https://github.com/rich-murphey/claude-mem-search-eval/issues/1):
+  issue https://github.com/rich-murphey/claude-mem-search-eval/issues/1:
   results/model-agnostic.md measures what works on top of any stored vectors, on all seven
   datasets with MiniLM-L6 and e5-small. RRF k = 5 is the one free change that both models
   choose and no dataset loses (store R@5 macro +0.014 MiniLM, +0.038 e5). Convex score fusion
@@ -52,6 +52,7 @@ nothing
   rule, and the last session set v4 back to Latest only for that reason. Stage: open since
   2026-11-05. No recommendation recorded.
 <!-- status:end -->
+
 
 
 
