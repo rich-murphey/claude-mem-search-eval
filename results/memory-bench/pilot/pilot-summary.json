@@ -1,0 +1,598 @@
+{
+  "pins": {
+    "honcho_commit": "3326373c35f6538fb3b7af97803abe328c5aafb4",
+    "honcho_config": "bench/memory/honcho.config.toml (Plastic Labs' published LongMemEval S settings mapped onto 3326373c)",
+    "honcho_postgres_image": "pgvector/pgvector:pg17 sha256:ac08538c6f8b9904c33c8224c5e5706dbe760aca29db1d096972b4052c22a75d",
+    "claude_mem_rs_commit": "d86dbb06119617a1f074a8054895e537793505fa",
+    "claude_mem_rs_config": "bench/memory/cmr-up.sh (live.env retrieval settings of 2026-11-06, except the API cross-encoder: off, since it calls OpenRouter's rerank; inject gate off; 16 generation workers)",
+    "eval_commit": "",
+    "datasets": {
+      "longmemeval": "xiaowu0162/longmemeval-cleaned@98d7416c24c778c2fee6e6f3006e7a073259d48f longmemeval_s_cleaned.json sha256 d6f21ea9d60a0d56f34a05b609c79c88a451d2ae03597821ea3d5a9678c3a442; oracle arm G derived from it (evidence sessions only)",
+      "beam": "not run in the pilot (see Pilot results)"
+    },
+    "answer_model": "claude-haiku-4-5 via `claude -p` 2.1.319 on Rich's subscription (no tools, hooks, MCP or settings; system prompt replaced), MAX_THINKING_TOKENS 4096, for arms B, D, E, F from 2026-11-06 20:37 UTC; arm G's answers (and the smoke run's) were claude-haiku-4-5 via OpenRouter anthropic/claude-haiku-4.5, provider Anthropic, thinking 4096, max_tokens 8192",
+    "judge_model": "gpt-4o-2024-08-06 via OpenAI, temperature 0, max_tokens 10, LongMemEval evaluate_qa.py prompts",
+    "second_judge_model": "claude-fable-5-1 via `claude -p` on the subscription (Rich's order, 2026-11-06; the plan named claude-sonnet-5-5)",
+    "ingestion_models": {
+      "A": "gemini-2.5-flash-lite via OpenRouter google/gemini-2.5-flash-lite, provider Google AI Studio; temperature 0, reasoning max_tokens 1024 (published: gemini-2.5-flash-lite-preview-09-2025 via Google)",
+      "B": "claude-haiku-5-5 through a bench claude-mem-rs runner on the subscription (bench/memory/runner-up.sh: runner binary sha256 2380a6da…, haiku pool only, 12 slots, no observer tools), from 2026-11-06 20:43 UTC; the smoke run used OpenRouter anthropic/claude-haiku-5.5",
+      "C": "not run: needs gemini-2.5-flash-lite, which only OpenRouter serves (no OpenRouter, Rich 2026-11-06)"
+    },
+    "honcho_dialectic_model": "claude-haiku-4-5 via OpenRouter anthropic/claude-haiku-4.5, provider Anthropic; thinking 4096, 20 tool iterations (published: the same model through OpenRouter, provider 'custom')",
+    "honcho_embedding_model": "text-embedding-3-small via OpenAI",
+    "cmr_embedding_model": "Xenova/all-MiniLM-L6-v2 fp32 (local)",
+    "cpus": "8-15 for Honcho and bench-cmr-B (taskset for the user services, docker --cpuset-cpus for Postgres; cpuset is not delegated to user cgroups on dv); bench-cmr-D 0-7 in the 2026-11-06 resume, so D and B could ingest together",
+    "prices_fetched": "2026-11-06 (OpenRouter returned each call's cost until the stop; OpenAI list prices for the judge and embeddings; subscription calls carry the CLI's notional list cost as notional_usd, nothing billed)"
+  },
+  "subset": {
+    "seed": 52,
+    "per_type": 20,
+    "question_ids": [
+      "d52b4f67",
+      "66f24dbb",
+      "0862e8bf",
+      "4fd1909e",
+      "f4f1d8a4_abs",
+      "ccb36322",
+      "c8c3f81d",
+      "86b68151",
+      "29f2956b",
+      "8e9d538c",
+      "19b5f2b3_abs",
+      "94f70d80",
+      "6ade9755",
+      "15745da0",
+      "1e043500",
+      "7527f7e2",
+      "6b168ec8",
+      "a82c026e",
+      "a06e4cfe",
+      "51a45a95",
+      "3249768e",
+      "8aef76bc",
+      "d596882b",
+      "51b23612",
+      "1568498a",
+      "1903aded",
+      "6ae235be",
+      "1de5cff2",
+      "ceb54acb",
+      "7e00a6cb",
+      "488d3006",
+      "f523d9fe",
+      "c4f10528",
+      "8752c811",
+      "fea54f57",
+      "ac031881",
+      "8cf51dda",
+      "778164c6",
+      "eaca4986",
+      "7161e7e2",
+      "a89d7624",
+      "caf03d32",
+      "d24813b1",
+      "8a2466db",
+      "1c0ddc50",
+      "0a34ad58",
+      "57f827a0",
+      "32260d93",
+      "505af2f5",
+      "fca70973",
+      "afdc33df",
+      "38146c39",
+      "75f70248",
+      "1a1907b4",
+      "95228167",
+      "07b6f563",
+      "1d4e3b97",
+      "b0479f84",
+      "35a27287",
+      "b6025781",
+      "2b8f3739",
+      "099778bb",
+      "1f2b8d4f",
+      "80ec1f4f_abs",
+      "d6062bb9",
+      "8e91e7d9",
+      "b3c15d39",
+      "gpt4_194be4b3",
+      "77eafa52",
+      "91b15a6e",
+      "4adc0475",
+      "7405e8b1",
+      "078150f1",
+      "6cb6f249",
+      "e6041065",
+      "a11281a2",
+      "60bf93ed",
+      "7024f17c",
+      "0100672e",
+      "efc3f7c2",
+      "gpt4_468eb063",
+      "gpt4_5438fa52",
+      "gpt4_1d80365e",
+      "gpt4_65aabe59",
+      "gpt4_6ed717ea",
+      "gpt4_f49edff3",
+      "gpt4_7bc6cf22",
+      "2c63a862",
+      "gpt4_59149c78",
+      "gpt4_6dc9b45b",
+      "gpt4_7f6b06db",
+      "gpt4_4929293a",
+      "gpt4_4edbafa2",
+      "gpt4_78cf46a3",
+      "2ebe6c90",
+      "a3838d2b",
+      "gpt4_7ca326fa",
+      "gpt4_1a1dc16d",
+      "2ebe6c92",
+      "6e984301",
+      "031748ae_abs",
+      "6aeb4375",
+      "b6019101",
+      "8fb83627",
+      "b01defab",
+      "c7dc5443",
+      "a1eacc2a",
+      "2698e78f",
+      "6aeb4375_abs",
+      "cc5ded98",
+      "e61a7584",
+      "ce6d2d27",
+      "22d2cb42",
+      "ba61f0b9",
+      "184da446",
+      "0977f2af",
+      "031748ae",
+      "dad224aa",
+      "5c40ec5b",
+      "0ddfec37_abs"
+    ]
+  },
+  "reproduction": {
+    "accuracy": 0.9333333333333333,
+    "ci95": [
+      0.8833333333333333,
+      0.975
+    ],
+    "published": 0.904,
+    "ci_contains_published": true,
+    "published_on_same_subset": 0.9333333333333333
+  },
+  "arms": [
+    {
+      "arm": "A",
+      "n": 120,
+      "accuracy": 0.9333333333333333,
+      "ci95": [
+        0.8833333333333333,
+        0.975
+      ],
+      "by_type": {
+        "single-session-user": 1,
+        "single-session-assistant": 1,
+        "single-session-preference": 0.85,
+        "multi-session": 0.9,
+        "temporal-reasoning": 0.85,
+        "knowledge-update": 1
+      },
+      "recall_at": {
+        "5": 0.9587719298245615,
+        "10": 0.9883040935672515
+      },
+      "tokens": {
+        "ingest_in": 17033594,
+        "ingest_out": 6991888,
+        "consolidate": null,
+        "answer_in": 1651453,
+        "answer_out": 102126,
+        "embedding": 13557423
+      },
+      "usd": 6.0787,
+      "latency_ms": {
+        "ingest_ack_p50": 222,
+        "drain_p50": 78032.5,
+        "retrieval_p50": null,
+        "answer_p50": 5787,
+        "p50": 5787,
+        "p95": 15538.5,
+        "p99": 21725.149999999994,
+        "p50_ci95": [
+          5072,
+          6667
+        ],
+        "cold_p50": 6545.5,
+        "warm_p50": 4470
+      },
+      "messages_per_s": 36.96623000493445,
+      "cpu_seconds": 4676.747761000004,
+      "cpu_seconds_per_1k_messages": 77.29568018848947,
+      "cpu_seconds_per_query": 0.40633590361445854,
+      "mem_peak_bytes": 4758036480,
+      "mem_steady_bytes": 4751994880,
+      "disk_bytes_per_m_tokens": null,
+      "outside_load_cores": {
+        "ingest": 17.82061769662741,
+        "query": 9.955233176177984
+      },
+      "repeat_spread_pp": 4.492753623188406,
+      "answer_context_tokens_p50": null
+    },
+    {
+      "arm": "B",
+      "n": 0,
+      "accuracy": null,
+      "ci95": null,
+      "by_type": {},
+      "recall_at": {
+        "5": null,
+        "10": null
+      },
+      "tokens": {
+        "ingest_in": 29026587,
+        "ingest_out": 3594960,
+        "consolidate": null,
+        "answer_in": 0,
+        "answer_out": 0,
+        "embedding": null
+      },
+      "usd": 0,
+      "latency_ms": {
+        "ingest_ack_p50": 5,
+        "drain_p50": 210937,
+        "retrieval_p50": null,
+        "answer_p50": null,
+        "p50": null,
+        "p95": null,
+        "p99": null,
+        "p50_ci95": null,
+        "cold_p50": null,
+        "warm_p50": null
+      },
+      "messages_per_s": null,
+      "cpu_seconds": 2030.535320000003,
+      "cpu_seconds_per_1k_messages": 120.47794707487854,
+      "cpu_seconds_per_query": null,
+      "mem_peak_bytes": 1057689600,
+      "mem_steady_bytes": null,
+      "disk_bytes_per_m_tokens": null,
+      "outside_load_cores": {
+        "ingest": 24.704297866786625
+      },
+      "repeat_spread_pp": null,
+      "answer_context_tokens_p50": null
+    },
+    {
+      "arm": "C",
+      "n": 0,
+      "accuracy": null,
+      "ci95": null,
+      "by_type": {},
+      "recall_at": {
+        "5": null,
+        "10": null
+      },
+      "tokens": {
+        "ingest_in": 0,
+        "ingest_out": 0,
+        "consolidate": null,
+        "answer_in": 0,
+        "answer_out": 0,
+        "embedding": null
+      },
+      "usd": 0,
+      "latency_ms": {
+        "ingest_ack_p50": null,
+        "drain_p50": null,
+        "retrieval_p50": null,
+        "answer_p50": null,
+        "p50": null,
+        "p95": null,
+        "p99": null,
+        "p50_ci95": null,
+        "cold_p50": null,
+        "warm_p50": null
+      },
+      "messages_per_s": null,
+      "cpu_seconds": 0,
+      "cpu_seconds_per_1k_messages": null,
+      "cpu_seconds_per_query": null,
+      "mem_peak_bytes": 0,
+      "mem_steady_bytes": null,
+      "disk_bytes_per_m_tokens": null,
+      "outside_load_cores": null,
+      "repeat_spread_pp": null,
+      "answer_context_tokens_p50": null
+    },
+    {
+      "arm": "D",
+      "n": 0,
+      "accuracy": null,
+      "ci95": null,
+      "by_type": {},
+      "recall_at": {
+        "5": null,
+        "10": null
+      },
+      "tokens": {
+        "ingest_in": null,
+        "ingest_out": null,
+        "consolidate": null,
+        "answer_in": 0,
+        "answer_out": 0,
+        "embedding": null
+      },
+      "usd": 0,
+      "latency_ms": {
+        "ingest_ack_p50": 1089,
+        "drain_p50": 0,
+        "retrieval_p50": null,
+        "answer_p50": null,
+        "p50": null,
+        "p95": null,
+        "p99": null,
+        "p50_ci95": null,
+        "cold_p50": null,
+        "warm_p50": null
+      },
+      "messages_per_s": null,
+      "cpu_seconds": 17429.37968900004,
+      "cpu_seconds_per_1k_messages": 726.3452112435424,
+      "cpu_seconds_per_query": null,
+      "mem_peak_bytes": 1177317376,
+      "mem_steady_bytes": null,
+      "disk_bytes_per_m_tokens": null,
+      "outside_load_cores": {
+        "ingest": 16.623734459783073
+      },
+      "repeat_spread_pp": null,
+      "answer_context_tokens_p50": null
+    },
+    {
+      "arm": "E",
+      "n": 120,
+      "accuracy": 0.8666666666666667,
+      "ci95": [
+        0.8083333333333333,
+        0.925
+      ],
+      "by_type": {
+        "single-session-user": 0.95,
+        "single-session-assistant": 0.65,
+        "single-session-preference": 0.85,
+        "multi-session": 0.95,
+        "temporal-reasoning": 0.85,
+        "knowledge-update": 0.95
+      },
+      "recall_at": {
+        "5": 0.9587719298245615,
+        "10": 0.9883040935672515
+      },
+      "tokens": {
+        "ingest_in": null,
+        "ingest_out": null,
+        "consolidate": null,
+        "answer_in": 276635,
+        "answer_out": 47956,
+        "embedding": 4454
+      },
+      "usd": 0.0001,
+      "latency_ms": {
+        "ingest_ack_p50": null,
+        "drain_p50": null,
+        "retrieval_p50": 399,
+        "answer_p50": 4802,
+        "p50": 5593,
+        "p95": 8927.75,
+        "p99": 10046.970000000001,
+        "p50_ci95": [
+          5227.5,
+          6001.5
+        ],
+        "cold_p50": 5593,
+        "warm_p50": null
+      },
+      "messages_per_s": null,
+      "cpu_seconds": 36.318637999999964,
+      "cpu_seconds_per_1k_messages": null,
+      "cpu_seconds_per_query": 0.3026553166666664,
+      "mem_peak_bytes": 3234684928,
+      "mem_steady_bytes": 1461112832,
+      "disk_bytes_per_m_tokens": null,
+      "outside_load_cores": {
+        "query": 14.90178898299661,
+        "judge": 15.832133057615518
+      },
+      "repeat_spread_pp": null,
+      "answer_context_tokens_p50": 1241.5
+    },
+    {
+      "arm": "F",
+      "n": 120,
+      "accuracy": 0.7416666666666667,
+      "ci95": [
+        0.6583333333333333,
+        0.8166666666666667
+      ],
+      "by_type": {
+        "single-session-user": 0.9,
+        "single-session-assistant": 1,
+        "single-session-preference": 0.55,
+        "multi-session": 0.65,
+        "temporal-reasoning": 0.6,
+        "knowledge-update": 0.75
+      },
+      "recall_at": {
+        "5": null,
+        "10": null
+      },
+      "tokens": {
+        "ingest_in": null,
+        "ingest_out": null,
+        "consolidate": null,
+        "answer_in": 14091556,
+        "answer_out": 61469,
+        "embedding": null
+      },
+      "usd": 0,
+      "latency_ms": {
+        "ingest_ack_p50": null,
+        "drain_p50": null,
+        "retrieval_p50": null,
+        "answer_p50": 7357,
+        "p50": 7361,
+        "p95": 12993.049999999996,
+        "p99": 19673.20000000001,
+        "p50_ci95": [
+          6607,
+          7818.174999999999
+        ],
+        "cold_p50": 7361,
+        "warm_p50": null
+      },
+      "messages_per_s": null,
+      "cpu_seconds": 0,
+      "cpu_seconds_per_1k_messages": null,
+      "cpu_seconds_per_query": 0,
+      "mem_peak_bytes": 0,
+      "mem_steady_bytes": null,
+      "disk_bytes_per_m_tokens": null,
+      "outside_load_cores": {},
+      "repeat_spread_pp": null,
+      "answer_context_tokens_p50": 124085
+    },
+    {
+      "arm": "G",
+      "n": 120,
+      "accuracy": 0.9333333333333333,
+      "ci95": [
+        0.8833333333333333,
+        0.975
+      ],
+      "by_type": {
+        "single-session-user": 0.95,
+        "single-session-assistant": 1,
+        "single-session-preference": 0.85,
+        "multi-session": 0.9,
+        "temporal-reasoning": 0.95,
+        "knowledge-update": 0.95
+      },
+      "recall_at": {
+        "5": null,
+        "10": null
+      },
+      "tokens": {
+        "ingest_in": null,
+        "ingest_out": null,
+        "consolidate": null,
+        "answer_in": 635013,
+        "answer_out": 50800,
+        "embedding": null
+      },
+      "usd": 0.889,
+      "latency_ms": {
+        "ingest_ack_p50": null,
+        "drain_p50": null,
+        "retrieval_p50": null,
+        "answer_p50": 4307.5,
+        "p50": 4307.5,
+        "p95": 7626.9,
+        "p99": 11352.800000000008,
+        "p50_ci95": [
+          3899,
+          4825
+        ],
+        "cold_p50": 4307.5,
+        "warm_p50": null
+      },
+      "messages_per_s": null,
+      "cpu_seconds": 0,
+      "cpu_seconds_per_1k_messages": null,
+      "cpu_seconds_per_query": 0,
+      "mem_peak_bytes": 0,
+      "mem_steady_bytes": null,
+      "disk_bytes_per_m_tokens": null,
+      "outside_load_cores": {},
+      "repeat_spread_pp": null,
+      "answer_context_tokens_p50": 5275
+    }
+  ],
+  "comparisons": [
+    {
+      "pair": "A-B",
+      "n": 0,
+      "diff_pp": null,
+      "ci95": null,
+      "mcnemar_p": null
+    },
+    {
+      "pair": "A-E",
+      "n": 120,
+      "diff_pp": 6.666666666666667,
+      "ci95": [
+        0.8333333333333334,
+        12.5
+      ],
+      "mcnemar_p": 0.057373046875000125
+    },
+    {
+      "pair": "B-C",
+      "n": 0,
+      "diff_pp": null,
+      "ci95": null,
+      "mcnemar_p": null
+    },
+    {
+      "pair": "B-D",
+      "n": 0,
+      "diff_pp": null,
+      "ci95": null,
+      "mcnemar_p": null
+    },
+    {
+      "pair": "B-F",
+      "n": 0,
+      "diff_pp": null,
+      "ci95": null,
+      "mcnemar_p": null
+    },
+    {
+      "pair": "A-F",
+      "n": 120,
+      "diff_pp": 19.166666666666668,
+      "ci95": [
+        10.833333333333334,
+        27.500000000000004
+      ],
+      "mcnemar_p": 0.000015236437320709208
+    },
+    {
+      "pair": "B-E",
+      "n": 0,
+      "diff_pp": null,
+      "ci95": null,
+      "mcnemar_p": null
+    },
+    {
+      "pair": "F-G",
+      "n": 120,
+      "diff_pp": -19.166666666666668,
+      "ci95": [
+        -26.666666666666668,
+        -11.666666666666666
+      ],
+      "mcnemar_p": 0.000005647540092468257
+    }
+  ],
+  "judge_kappa": 0.8789237668161436,
+  "judge_kappa_n": 54,
+  "judge_tokens": {
+    "gpt4o_in": 134033,
+    "gpt4o_out": 901,
+    "second_in": 0,
+    "second_usd": 0
+  },
+  "ingested_tokens_approx": 14712195,
+  "budget_phase45": null
+}
