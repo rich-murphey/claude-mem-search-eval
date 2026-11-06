@@ -29,8 +29,11 @@ up) ;;
 esac
 
 mkdir -p "$DIR"
-install -m 0755 "$TREE/target/release/claude-mem-rs" "$DIR/claude-mem-rs"
-git -C "$TREE" rev-parse HEAD > "$DIR/commit"
+# No built tree: keep the binary installed earlier (and its recorded commit).
+if [ -x "$TREE/target/release/claude-mem-rs" ]; then
+  install -m 0755 "$TREE/target/release/claude-mem-rs" "$DIR/claude-mem-rs"
+  git -C "$TREE" rev-parse HEAD > "$DIR/commit"
+fi
 
 common=(
   -E CMEM_RS_DB="$DIR/claude-mem.sqlite"
@@ -39,7 +42,8 @@ common=(
   # live.env retrieval settings, 2026-11-06
   -E CMEM_RS_RERANK=colbert -E CMEM_RS_RERANK_DEPTH=20
   -E CMEM_RS_CUTOFF=ratio -E CMEM_RS_CUTOFF_RATIO=0.5 -E CMEM_RS_CUTOFF_COSINE_AT=after -E CMEM_RS_CUTOFF_COSINE=0.15
-  -E CMEM_RS_CROSS_ENCODER=api -E CMEM_RS_CROSS_ENCODER_TOP=20
+  # the API cross-encoder calls OpenRouter's rerank, off by Rich's ruling of 2026-11-06 (claude-mem-rs#52)
+  -E CMEM_RS_CROSS_ENCODER=off -E CMEM_RS_CROSS_ENCODER_TOP=20
   -E CMEM_RS_RERANK_API_MODEL=mongodb/rerank-3-lite -E CMEM_RS_RERANK_API_FALLBACK_MODEL=cohere/rerank-5-fast
   -E CMEM_RS_INJECT_PARTS_MARGIN=0.25 -E CMEM_RS_INJECT_VECTOR_CHUNKS=8 -E CMEM_RS_INJECT_VECTOR_FUSION=rrf
   -E CMEM_RS_SUMMARY_PROMPT=knowledge

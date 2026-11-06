@@ -26,6 +26,10 @@ const { values } = parseArgs({
   options: {
     port: { type: 'string', default: '37902' },
     log: { type: 'string', default: 'results/memory-bench/usage.jsonl' },
+    // Rich, 2026-11-06: no OpenRouter at all; its routes answer 403.
+    'no-openrouter': { type: 'boolean', default: false },
+    // Messages calls go here instead (the claude-mem-rs subscription runner), model names unmapped.
+    'messages-upstream': { type: 'string' },
   },
 });
 
@@ -147,7 +151,18 @@ async function handle(req: IncomingMessage, res: ServerResponse) {
     res.writeHead(404).end(`no route for ${rest}`);
     return;
   }
-  if (body && route !== 'embeddings' && route !== 'openai.chat') {
+  if (route === 'messages' && values['messages-upstream']) {
+    route = 'runner';
+    target = `${values['messages-upstream']}/v1/messages`;
+    delete headers.authorization;
+    headers['x-cmem-caller'] = `memory-bench.${tag}`;
+  }
+  if (values['no-openrouter'] && route !== 'embeddings' && route !== 'openai.chat' && route !== 'runner') {
+    appendFileSync(values.log!, JSON.stringify({ ts: new Date().toISOString(), tag, ctx, route, model: body?.model ?? null, status: 403, error: 'openrouter refused (--no-openrouter)' }) + '\n');
+    res.writeHead(403, { 'content-type': 'application/json' }).end(JSON.stringify({ error: { type: 'forbidden', message: 'OpenRouter is off for this run (--no-openrouter)' } }));
+    return;
+  }
+  if (body && route !== 'embeddings' && route !== 'openai.chat' && route !== 'runner') {
     body.model = openRouterModel(body.model);
     const p = pin(body.model);
     if (p) body.provider = p;

@@ -1,8 +1,10 @@
 // Shared pieces of the memory benchmark harness (claude-mem-rs#52): the
 // dataset, the pilot subset, the model call through the usage proxy, timing,
 // and JSONL files.
+import { execFileSync, spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { appendFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { homedir, tmpdir } from 'node:os';
 import { dirname } from 'node:path';
 import { loadLongMemEvalS, type LmeQuestion } from '../../src/longmemeval.ts';
 
@@ -70,30 +72,66 @@ export function setProxyCtx(ctx: string) {
 
 export interface Call { text: string; input_tokens: number; output_tokens: number; ms: number; stop_reason: string | null }
 
-/** One Anthropic Messages call through the proxy, retried on 429/5xx/transport errors. */
-export async function messages(tag: string, body: Record<string, unknown>): Promise<Call> {
-  let wait = 2000;
+/** Where claudeP logs its calls: the proxy's usage log for the run. */
+export const USAGE_LOG = process.env.BENCH_USAGE ?? 'results/memory-bench/pilot/usage.jsonl';
+/** The subscription's seven-day use at which claudeP stops starting calls (order on #52: the 80% weekly reserve). */
+const WEEK_STOP_PCT = 80;
+let weekCheckedAt = 0;
+
+function weekUsedPct(): number {
+  const out = execFileSync(`${homedir()}/opt/claude-mem-rs/bin/claude-mem-rs`, ['queue', 'status'], { encoding: 'utf8' });
+  return Number(JSON.parse(out).week_used_pct);
+}
+
+/**
+ * One Claude call on Rich's subscription, through `claude -p` (Rich, 2026-11-06:
+ * no OpenRouter, the API key has no credit): no tools, hooks, MCP servers,
+ * settings or saved session, Claude Code's system prompt replaced by `system`.
+ * `thinking` sets MAX_THINKING_TOKENS. Logged to USAGE_LOG with tag, tokens and
+ * the CLI's notional list cost; cost_usd stays null, since nothing is billed.
+ */
+export async function claudeP(tag: string, model: string, system: string, prompt: string, thinking = 0): Promise<Call> {
+  if (Date.now() - weekCheckedAt > 5 * 60_000) {
+    const pct = weekUsedPct();
+    if (pct >= WEEK_STOP_PCT) throw Object.assign(new Error(`subscription week ${pct}% used, at or over ${WEEK_STOP_PCT}%`), { fatal: true });
+    weekCheckedAt = Date.now();
+  }
+  let wait = 5000;
   for (let attempt = 0; ; attempt++) {
     const t0 = performance.now();
     try {
-      const r = await fetch(`${PROXY}/${tag}/v1/messages`, {
-        method: 'POST', headers: { 'content-type': 'application/json', 'anthropic-version': '2023-06-01' }, body: JSON.stringify(body),
+      const env = { ...process.env, MAX_THINKING_TOKENS: String(thinking) };
+      delete env.ANTHROPIC_API_KEY;
+      const out = await new Promise<string>((resolve, reject) => {
+        const p = spawn('claude', [
+          '-p', '--model', model, '--output-format', 'json', '--tools', '', '--strict-mcp-config',
+          '--no-session-persistence', '--settings', '{"disableAllHooks":true}', '--setting-sources', '', '--system-prompt', system,
+        ], { cwd: tmpdir(), env });
+        let o = '', e = '';
+        p.stdout.on('data', d => (o += d));
+        p.stderr.on('data', d => (e += d));
+        p.on('error', reject);
+        p.on('close', code => (o.trim() ? resolve(o) : reject(new Error(`claude -p exit ${code}: ${e.slice(0, 300)}`))));
+        p.stdin.end(prompt);
       });
-      const text = await r.text();
-      if (r.status === 429 || r.status >= 500) throw new Error(`status ${r.status}: ${text.slice(0, 200)}`);
-      if (!r.ok) throw Object.assign(new Error(`status ${r.status}: ${text.slice(0, 400)}`), { fatal: true });
-      const v = JSON.parse(text);
-      return {
-        text: (v.content ?? []).filter((b: any) => b.type === 'text').map((b: any) => b.text).join('\n').trim(),
-        input_tokens: (v.usage?.input_tokens ?? 0) + (v.usage?.cache_read_input_tokens ?? 0) + (v.usage?.cache_creation_input_tokens ?? 0),
-        output_tokens: v.usage?.output_tokens ?? 0,
-        ms: performance.now() - t0,
-        stop_reason: v.stop_reason ?? null,
+      const v = JSON.parse(out);
+      if (v.is_error) throw new Error(`claude -p error: ${String(v.result).slice(0, 300)}`);
+      const u = v.usage ?? {};
+      const cached = (u.cache_read_input_tokens ?? 0) + (u.cache_creation_input_tokens ?? 0);
+      const call: Call = {
+        text: String(v.result ?? '').trim(), input_tokens: (u.input_tokens ?? 0) + cached, output_tokens: u.output_tokens ?? 0,
+        ms: performance.now() - t0, stop_reason: v.stop_reason ?? null,
       };
+      appendJsonl(USAGE_LOG, {
+        ts: new Date().toISOString(), tag, ctx: '', route: 'claude-p', model: Object.keys(v.modelUsage ?? {})[0] ?? model, status: 200,
+        input_tokens: call.input_tokens, output_tokens: call.output_tokens, cached_tokens: cached,
+        reasoning_tokens: u.output_tokens_details?.thinking_tokens ?? 0, cost_usd: null, notional_usd: v.total_cost_usd ?? null, ms: Math.round(call.ms),
+      });
+      return call;
     } catch (e: any) {
-      if (e.fatal || attempt >= 6) throw e;
+      if (e.fatal || attempt >= 4) throw e;
       await new Promise(res => setTimeout(res, wait));
-      wait *= 2;
+      wait *= 3;
     }
   }
 }

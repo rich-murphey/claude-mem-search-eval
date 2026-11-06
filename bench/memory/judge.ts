@@ -5,10 +5,10 @@
 // (MIT, Copyright (c) 2024 Di Wu), called as that script calls them: GPT-4o
 // 2024-08-06, temperature 0, max_tokens 10, label = "yes" in the reply.
 // The question is passed without its date, as the script does.
-import { messages, PROXY, type Question, isAbstention } from './common.ts';
+import { claudeP, PROXY, type Question, isAbstention } from './common.ts';
 
 export const JUDGE_MODEL = 'gpt-4o-2024-08-06';
-export const SECOND_JUDGE_MODEL = 'claude-sonnet-5-5';
+export const SECOND_JUDGE_MODEL = 'claude-fable-5-1';
 export const ANSWER_MODEL = 'claude-haiku-4-5';
 
 const BASE = 'I will give you a question, a correct answer, and a response from a model. Please answer yes if the response contains the correct answer. Otherwise, answer no. If the response is equivalent to the correct answer or contains all the intermediate steps to get the correct answer, you should also answer yes. If the response only contains a subset of the information required by the answer, answer no. ';
@@ -53,7 +53,7 @@ export async function judge(q: Question, response: string, model = JUDGE_MODEL):
       wait *= 2;
     }
   }
-  const c = await messages('J.judge2', { model, max_tokens: 10, temperature: 0, messages: [{ role: 'user', content: prompt }] });
+  const c = await claudeP('J.judge2', model, 'You are a grader. Answer yes or no only.', prompt);
   return { label: c.text.toLowerCase().includes('yes'), raw: c.text, model };
 }
 
@@ -78,10 +78,5 @@ export function answerPrompt(q: Question, context: string): string {
 }
 
 export async function answer(tag: string, q: Question, context: string) {
-  return messages(tag, {
-    model: ANSWER_MODEL,
-    max_tokens: 8192,
-    thinking: { type: 'enabled', budget_tokens: 4096 },
-    messages: [{ role: 'user', content: answerPrompt(q, context) }],
-  });
+  return claudeP(tag, ANSWER_MODEL, 'You are a chat assistant. Answer the question in the user message from the memory it gives.', answerPrompt(q, context), 4096);
 }
