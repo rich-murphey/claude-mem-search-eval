@@ -1,0 +1,41 @@
+question_id	session_id	judge	check	check_reason	check_model
+c8c3f81d	19ec83c5_1	relevant	not	User only says good past experience with Nike for gym shoes; no statement of favorite running shoe brand.	claude-sonnet-5-5
+95228167	b916da64_2	not	not	Session covers styling Levi's jeans, Dr. Martens, and a coat; nothing about guitars, the user's current guitar, or Stratocaster/Les Paul preferences.	claude-sonnet-5-5
+eaca4986	07fb2f15_1	not	not	Session covers entrepreneurship courses and startup ideas; no sad songs or chord progressions appear anywhere in it.	claude-sonnet-5-5
+69fee5aa	9d11d844	not	not	Session covers retail loyalty programs and reminders; contains nothing about coins or a pre-1920 American coin collection count.	claude-sonnet-5-5
+a3045048	sharegpt_asoSnhq_0	not	not	Session covers English grammar questions and Single's Inferno summaries; no mention of a best friend's birthday party or gift order.	claude-sonnet-5-5
+2e6d26dc	ultrachat_541982	not	not	Session covers animal reproductive biology only; it mentions no babies born to the user's friends or family members.	claude-sonnet-5-5
+a1cc6108	7285299a_4	not	not	Session covers craft room organization and ceramic jewelry; no mention of Alex, the user's age, or anyone's birth.	claude-sonnet-5-5
+27016adc	ff5e0db0_1	not	not	Session covers Hawaii surfing trip planning only; no mention of countryside property price or house renovation costs.	claude-sonnet-5-5
+09d032c9	af631aa3_2	not	not	Session covers workout playlists, protein meal prep, and yoga; no mention of phone battery or a portable power bank purchase.	claude-sonnet-5-5
+69fee5aa	90c0b930	not	not	Session covers only bike pedals, computer, helmet, and lock; no mention of coins or a coin collection.	claude-sonnet-5-5
+0f05491a	28000804	not	not	Session covers lake house trip, activities, and catering; no mention of Starbucks Rewards or star thresholds for gold level.	claude-sonnet-5-5
+157a136e	a2e2cb72_5	not	not	Session covers volunteering and music therapy; no mention of the user's age, birth year, or grandma's age.	claude-sonnet-5-5
+eaca4986	931c521e_1	not	not	Session covers music theory, piano, gear, and band advice; no sad songs or chorus chord progressions appear anywhere.	claude-sonnet-5-5
+caf03d32	ec806228	not	not	Session covers stress, sleep, anxiety, and journaling; no mention of slow cookers, beef stew, or yogurt.	claude-sonnet-5-5
+09d032c9	e8bfacec_2	not	not	Session covers habit tracking, books, and commute mini-habits; no mention of phone battery or a portable power bank purchase.	claude-sonnet-5-5
+37d43f65	c8c3892a_1	not	not	Session covers iPhone accessories, power bank, and phone storage; no mention of laptop RAM or any upgrade.	claude-sonnet-5-5
+gpt4_372c3eed	4d04b866	not	not	Session covers only road trips and East Coast travel planning; nothing about high school, Bachelor's degree, or years of education.	claude-sonnet-5-5
+4b24c848	b0855671_2	not	not	Session covers farm property taxes, BBQ menu, and outdoor games; no mention of H&M or buying tops.	claude-sonnet-5-5
+71017276	sharegpt_tCLMKZY_0	not	not	Session is a role-play of a 1st grade classroom; it contains nothing about an aunt, a crystal chandelier, or a meetup date.	claude-sonnet-5-5
+6aeb4375	sharegpt_Me2C50l_0	not	not	Session only covers drink recipes (shrub, watermelon refresher); no mention of Korean restaurants or the user's dining history.	claude-sonnet-5-5
+ba358f49	fb117eb0_2	not	not	Session only covers Meissen porcelain and a vase appraisal; no mention of Rachel, her wedding, or the user's age.	claude-sonnet-5-5
+8c18457d	2dfc1443_1	not	not	Session covers Frankfurt hotels, Hilton Honors, and credit cards; no mention of brother's graduation gift or best friend's birthday gift purchase dates.	claude-sonnet-5-5
+1568498a	71e0db57	not	not	Session covers only bike gear adjustment, maintenance, carriers, and locks; no chess game or moves like 27. Kg2 Bd5+ appear.	claude-sonnet-5-5
+a06e4cfe	ultrachat_442201	not	not	Session covers only Napa Valley wineries, transport, food, spas, and activities; no mention of gin, vermouth, martinis, or ratios.	claude-sonnet-5-5
+e56a43b9	3c0ed3bf_1	not	not	Session covers only fishing tackle, pike, and Lake Michigan trout; nothing about FreshMart, discounts, coupons, or purchases.	claude-sonnet-5-5
+9ea5eabc	8c8b180e	not	not	Session mentions a Hyatt Regency stay after a cousin's wedding and a Santa Monica plan, but never mentions Paris or a family trip destination.	claude-sonnet-5-5
+001be529	sharegpt_o3cfukb_0	not	not	Session covers Antarctic nematodes and an ear-tube study design; nothing about asylum applications or decision wait times.	claude-sonnet-5-5
+37d43f65	sharegpt_UymyDFt_0	not	not	Session is about generating a positive psychology resilience article prompt; it contains no mention of laptop or RAM upgrades.	claude-sonnet-5-5
+370a8ff4	sharegpt_UbMVpdp_93	not	not	Session is a UFO/Bigfoot role-play with David Paulides; it contains nothing about flu recovery or outdoor jogging.	claude-sonnet-5-5
+3fdac837	a98ff421_7	not	not	Session only mentions having been in Japan generally; no trip durations or dates for Japan or Chicago, so it provides no day counts.	claude-sonnet-5-5
+cc5ded98	ef785bb4_2	not	not	Session covers only road trip planning (Badlands, Yellowstone, accommodations); nothing about coding exercises or daily practice time.	claude-sonnet-5-5
+dc439ea3	eb7366f2_1	not	not	Session covers charity runs and walks; no mention of Native American powwows, traditional games, or Hoop Dance.	claude-sonnet-5-5
+caf9ead2	ca5f0505	not	not	Session covers trade show lead tracking and the Tech Expo; nothing about moving to a new apartment or how long it took.	claude-sonnet-5-5
+86b68151	sharegpt_beV15ZO_0	not	not	Session only covers describing 6sense in B2B terms; no mention of a bookshelf or where it was purchased.	claude-sonnet-5-5
+gpt4_ab202e7f	e78617c5_2	not	not	Session covers healthy snacks, meal prep, and food delivery habits; no mention of replacing or fixing any kitchen items.	claude-sonnet-5-5
+71017276	398f23e7	not	not	Session only covers weekly schedule planning (chores, meetings, appointments); no mention of meeting an aunt or receiving a crystal chandelier.	claude-sonnet-5-5
+5c40ec5b	sharegpt_RVk16qK_0	not	not	Session covers a song lyric, a stereo image dataset, and stereo vs regular images; no mention of Alex or meetups.	claude-sonnet-5-5
+4dfccbf7	756a4a02_1	not	not	Session covers printer setup, photo printing, and Alexa; nothing about ukulele lessons or taking an acoustic guitar to a guitar tech.	claude-sonnet-5-5
+d3ab962e	3329e5e8_1	not	not	Session only mentions a week-long John Muir Trail backpacking trip and bike planning; no weekend hike distances are given.	claude-sonnet-5-5
+gpt4_372c3eed	4d1125f9_2	not	not	Session covers daily scheduling and meal prep; no mention of high school, Bachelor's degree, or years of education.	claude-sonnet-5-5

@@ -7,8 +7,8 @@ result can be checked in minutes rather than recomputed in hours.
 
 ## Where this stands
 
-<!-- status:begin sha=08a6384 at=2026-11-05 -->
-_Written 2026-11-05 from commits through 08a6384, plan documents, issues and session summaries, and the work view._
+<!-- status:begin sha=4a789c8 at=2026-11-06 -->
+_Written 2026-11-06 from commits through 4a789c8, issues https://github.com/rich-murphey/claude-mem-search-eval/issues/1 and https://github.com/rich-murphey/claude-mem-search-eval/issues/2, upstream PRs, and the judged-precision run._
 
 **Next**
 1. <a id="n-de9865"></a>Open the claude-mem PR. First action: Rich reads the draft
@@ -22,16 +22,18 @@ _Written 2026-11-05 from commits through 08a6384, plan documents, issues and ses
    (the branch whose hybrid has the bm25 leg). Then rerun `bun src/server-search.ts --mode store`
    on LongMemEval and memsearch. Done when the server's own store-mode R@5 matches
    results/model-agnostic.md (MiniLM-L6 macro +0.014) within its interval.
-3. <a id="n-6d4b28"></a>Judged precision (plan step 5), issue
-   https://github.com/rich-murphey/claude-mem-search-eval/issues/2. First action: run an LLM
-   judge over the top-5 results that are not labelled relevant on the 100-question LongMemEval
-   sample, then hand-check a sample of its verdicts. Done when the README gives a bounded P@5
-   alongside the label-based one.
 
 **Waiting on**
 nothing
 
 **Context for the above**
+- 2026-11-06, issue https://github.com/rich-murphey/claude-mem-search-eval/issues/2: plan
+  step 5 is done. GPT-4o judged the unlabelled top-5 sessions on the 100-question LongMemEval
+  sample ($2.94 on OpenRouter), and Claude Sonnet 5.5 checked 40 verdicts. Judged P@5 is 0.354
+  (bound 0.348–0.402), the same as label P@5: the cleaned labels miss almost no answers.
+- 2026-10-23: upstream merged pgvector search as
+  https://github.com/thedotmack/claude-mem/pull/5001 (`pr/pgvector-core`, 46 commits). Nobody
+  has checked whether that leaves anything for `pr/pgvector-search` (Next 1).
 - 2026-10-31, c8a3bec, ad0a139, 418c93e,
   issue https://github.com/rich-murphey/claude-mem-search-eval/issues/1:
   results/model-agnostic.md measures what works on top of any stored vectors, on all seven
@@ -216,6 +218,25 @@ were run, as they should: Chroma embeds with the same model, and the worker
 returns Chroma's ranking. Where the server's keyword leg returns nothing
 (MIRACL zh and ja), hybrid equals vector only.
 
+Judged precision on the 100-question LongMemEval sample
+([results/longmemeval-s-judged-lme-s-100-v1.md](results/longmemeval-s-judged-lme-s-100-v1.md),
+2026-11-06). An LLM judge read every top-5 session not labelled relevant and
+said whether it holds evidence for the answer. A second model checked a sample
+of the verdicts (plan step 5; "What label errors do to the results" gives the method):
+
+| Run | Label P@5 | Judged P@5 | Bound (95%) |
+|---|---|---|---|
+| Server hybrid, MiniLM-L6 | 0.354 | 0.354 | 0.348–0.402 |
+| MiniLM-L6 vector only | 0.354 | 0.354 | 0.348–0.402 |
+
+The judge found one unlabelled answer in 323 slots, and the check overturned
+it, so judged P@5 equals label P@5. GPT-4o's verdicts alone give 0.356, which is what the
+results file reports. The bound's low end drops the 3 labelled
+top-5 sessions that have no answer turn. Its high end adds the most unlabelled
+answers the check allows: 0 of 39 sampled "not relevant" verdicts were
+overturned, which bounds the miss rate at 7.4% (Clopper-Pearson, one-sided)
+of 322 slots.
+
 One store per user, every document in one project
 (`results/*-server-store.md`; vector only, then hybrid):
 
@@ -369,8 +390,28 @@ No session outside `answer_session_ids` has a turn marked `has_answer`.
 The false positives' effect is bounded: 45 sessions can fill at most 45 of the
 2,350 top-5 slots, so P@5 is overstated by at most 1.9 points, and recall is
 understated by at most 3.1 points if none of them is retrieved. Both
-concentrate in temporal reasoning. The false negatives' effect has no bound
-without judging (plan step 5).
+concentrate in temporal reasoning.
+
+The false negatives were bounded by judging (plan step 5, 2026-11-06) on the
+100-question sample, through server hybrid search with MiniLM-L6. GPT-4o
+(`gpt-4o-2024-08-06` through OpenRouter, pinned to OpenAI, temperature 0;
+`src/judge.ts`) read each of the 434 unlabelled top-5 sessions of the vector
+and hybrid runs (323 in each run, with overlap), with the question and its
+gold answer. It said whether the session holds evidence the answer is drawn
+from, and gave a reason. The spend was $2.94 as OpenRouter reported it.
+
+Claude Sonnet 5.5 (`claude -p` on the subscription; `src/judge-check.ts`)
+then judged 40 of the hybrid run's verdicts blind, with the same prompt: the
+judge's one "relevant" and 39 seeded-random "not relevant". It agreed on 39
+(97.5%). The one disagreement was the "relevant" verdict: for "What brand are
+my favorite running shoes?" (Nike), the session says only that Nike gym shoes
+were good once. A read of the session sides with the check. This is a second
+model's check, not a human's (Rich's ruling, 2026-11-06). The verdicts are in
+`results/judge/verdicts.tsv` and the check in `results/judge/check.tsv`.
+
+So unlabelled answers are rare in the cleaned release's top 5: none was
+confirmed, and the check bounds them at 7.4% of unlabelled slots (95%),
+which is at most +0.048 on P@5.
 
 #### Caveat on absolute accuracy
 
@@ -378,9 +419,10 @@ Precision and recall here are measured against LongMemEval's labels, which
 contain errors in both directions. About 5% of labelled answer sessions (45 of
 890, mostly temporal-reasoning distractors) do not hold the answer; these can
 raise P@5 by at most 1.9 points and lower recall by at most 3.1. Sessions that
-hold an answer without being labelled could not be counted: a literal search
-found none, but paraphrased ones cannot be ruled out, and each one retrieved
-lowers measured precision while each one missed raises measured recall. The two
+hold an answer without being labelled lower measured precision when
+retrieved and raise measured recall when missed. Judging the 100-question
+sample's top 5 found none, and bounds them at +0.048 P@5 (95%); recall's side
+was not judged. The two
 errors partly offset, so neither metric is a strict bound. Differences between
 models on the same questions are affected far less, since both are scored
 against the same labels; per-type results for temporal reasoning are the least
@@ -656,5 +698,9 @@ give the markers, skiplist and lengths.
    documents itself, on memsearch and LongMemEval samples.
 4. **One store per user**: done for LongMemEval and memsearch; every document
    in one project rather than one haystack per question.
-5. **Judged precision**: an LLM pass with a hand-checked sample over top-5
-   results that are not labelled relevant, to bound the unlabelled answers.
+5. **Judged precision**: done (2026-11-06) on the 100-question LongMemEval
+   sample, for server hybrid and vector-only MiniLM-L6. GPT-4o
+   (`gpt-4o-2024-08-06`, OpenRouter, $2.94) judged the top-5 results that are
+   not labelled relevant, and Claude Sonnet 5.5 (`claude -p`, subscription)
+   checked 40 of the verdicts. Judged P@5 is 0.354 (bound 0.348–0.402); see "What label
+   errors do to the results".

@@ -1,0 +1,435 @@
+question_id	session_id	verdict	reason	model	cost_usd
+c960da58	sharegpt_CdnyHep_0	not	Session lacks information about user's Spotify playlists.	openai/gpt-4o-2024-08-06	0.0046125
+c8c3f81d	b818e2a1_1	not	Session lacks any mention of running shoe brands or preferences.	openai/gpt-4o-2024-08-06	0.010985
+c8c3f81d	66e94928	not	The session lacks any mention of Nike or user's favorite running shoes.	openai/gpt-4o-2024-08-06	0.004705
+c8c3f81d	2b16f3d6_1	not	Session lacks any mention of running shoes or the user's brand preference.	openai/gpt-4o-2024-08-06	0.0082975
+c960da58	89d3053f	not	Session lacks any mention of Spotify playlists or their quantity.	openai/gpt-4o-2024-08-06	0.0100025
+c960da58	ultrachat_198948	not	Session lacks information about user's Spotify playlists.	openai/gpt-4o-2024-08-06	0.003525
+c8c3f81d	19ec83c5_1	relevant	User mentions having a good experience with Nike gym shoes in the past.	openai/gpt-4o-2024-08-06	0.0072925
+c960da58	b65f51fb_5	not	Session lacks information about Spotify playlists or their quantity.	openai/gpt-4o-2024-08-06	0.0082025
+a06e4cfe	de64539a_2	not	Session lacks any mention of gin-to-vermouth ratio or martini preferences.	openai/gpt-4o-2024-08-06	0.0089075
+a06e4cfe	4d2c2c88_1	not	Session lacks information on gin-to-vermouth ratio preference.	openai/gpt-4o-2024-08-06	0.0061825
+a06e4cfe	ultrachat_442201	not	Session lacks information on user's gin-to-vermouth ratio preference for a martini.	openai/gpt-4o-2024-08-06	0.00567
+a06e4cfe	3c2e6725	not	Session lacks any mention of gin-to-vermouth ratio or related preferences.	openai/gpt-4o-2024-08-06	0.00988
+37d43f65	c8c3892a_1	not	Session lacks information about laptop RAM upgrade.	openai/gpt-4o-2024-08-06	0.0068475
+37d43f65	sharegpt_UymyDFt_0	not	Session lacks information about laptop RAM upgrade.	openai/gpt-4o-2024-08-06	0.002545
+37d43f65	ca12cb71_1	not	Session lacks any mention of laptop RAM upgrade details.	openai/gpt-4o-2024-08-06	0.007415
+caf9ead2	ca5f0505	not	Session lacks information about the apartment move duration.	openai/gpt-4o-2024-08-06	0.0061975
+37d43f65	sharegpt_brc2wJS_264	not	Session lacks information about laptop RAM upgrade; focuses on privacy and disposal of waste.	openai/gpt-4o-2024-08-06	0.0053
+caf9ead2	ultrachat_137778	not	The session lacks information about the duration of moving to a new apartment.	openai/gpt-4o-2024-08-06	0.0043175
+caf9ead2	fcc6d66d_1	not	The session lacks information about moving to a new apartment or the time it took.	openai/gpt-4o-2024-08-06	0.0070925
+86b68151	0abaca24_1	not	Session lacks evidence of where the bookshelf was purchased.	openai/gpt-4o-2024-08-06	0.0106225
+caf9ead2	44713827_2	not	The session lacks information about moving to a new apartment or its duration.	openai/gpt-4o-2024-08-06	0.0103525
+86b68151	4e671700	not	Session lacks evidence of bookshelf purchase location.	openai/gpt-4o-2024-08-06	0.0061275
+86b68151	159ab103	not	Session lacks evidence of where the bookshelf was purchased.	openai/gpt-4o-2024-08-06	0.010385
+86b68151	3d72c0c0	not	Session lacks any mention of purchasing a bookshelf or IKEA.	openai/gpt-4o-2024-08-06	0.0099
+ccb36322	facfdfe2	not	Session lacks any mention of Spotify or music streaming services.	openai/gpt-4o-2024-08-06	0.0078975
+ccb36322	162ff451	not	Session lacks evidence of the user's music streaming service preference.	openai/gpt-4o-2024-08-06	0.009185
+ccb36322	8b1019b8_1	not	Session lacks any mention of Spotify or music streaming services.	openai/gpt-4o-2024-08-06	0.0078
+ccb36322	ultrachat_203880	not	Session lacks evidence of user's music streaming service preference or usage.	openai/gpt-4o-2024-08-06	0.00471
+001be529	sharegpt_o3cfukb_0	not	Session lacks information on asylum application wait time.	openai/gpt-4o-2024-08-06	0.0039
+001be529	sharegpt_PKXxlMF_0	not	The session lacks information about the user's asylum application wait time.	openai/gpt-4o-2024-08-06	0.0036925
+001be529	752a01fe_3	not	The session lacks any mention of asylum applications or waiting periods.	openai/gpt-4o-2024-08-06	0.006155
+001be529	3c11dc79	not	The session lacks any mention of asylum applications or waiting periods.	openai/gpt-4o-2024-08-06	0.00772
+19b5f2b3	ultrachat_138083	not	Session lacks evidence about user's duration in Japan.	openai/gpt-4o-2024-08-06	0.004085
+19b5f2b3	f379d356_1	not	The session lacks any mention of a trip to Japan or its duration.	openai/gpt-4o-2024-08-06	0.0047425
+19b5f2b3	ultrachat_8325	not	The session lacks any mention of a trip to Japan or its duration.	openai/gpt-4o-2024-08-06	0.003655
+311778f1	4fe91719_1	not	Session lacks information on documentary watching hours on Netflix.	openai/gpt-4o-2024-08-06	0.0043825
+19b5f2b3	b951f8c6_2	not	Session lacks evidence of user's duration in Japan.	openai/gpt-4o-2024-08-06	0.00899
+311778f1	ultrachat_378778	not	The session lacks any mention of time spent watching documentaries on Netflix.	openai/gpt-4o-2024-08-06	0.004065
+311778f1	ultrachat_514341	not	Missing evidence of time spent watching documentaries on Netflix.	openai/gpt-4o-2024-08-06	0.0040525
+311778f1	414b9122	not	Missing evidence about time spent watching documentaries on Netflix.	openai/gpt-4o-2024-08-06	0.008615
+c19f7a0b	ultrachat_352431	not	Session lacks information about user's work schedule or usual return time.	openai/gpt-4o-2024-08-06	0.0027925
+c19f7a0b	ultrachat_80803	not	Session lacks information about user's work schedule or commute time.	openai/gpt-4o-2024-08-06	0.001905
+c19f7a0b	9530353d_1	not	Session lacks evidence of user's work schedule or time they get home.	openai/gpt-4o-2024-08-06	0.007055
+c19f7a0b	58ab5fc5	not	The session lacks any mention of the user's work schedule or return time.	openai/gpt-4o-2024-08-06	0.0051525
+29f2956b	a79db993	not	Session lacks information on user's guitar practice time.	openai/gpt-4o-2024-08-06	0.009755
+29f2956b	ultrachat_433030	not	Session lacks information on user's guitar practice time.	openai/gpt-4o-2024-08-06	0.0026025
+29f2956b	88361fdd	not	The session lacks any mention of guitar practice or related time commitments.	openai/gpt-4o-2024-08-06	0.008375
+29f2956b	00842aad_2	not	Session lacks evidence of user's daily guitar practice duration.	openai/gpt-4o-2024-08-06	0.00882
+faba32e5	ultrachat_425944	not	Session lacks information on marinating BBQ ribs or any related cooking details.	openai/gpt-4o-2024-08-06	0.0029425
+faba32e5	69f3fc12_1	not	Session lacks any mention of marinating BBQ ribs or related cooking details.	openai/gpt-4o-2024-08-06	0.00842
+faba32e5	83cfab9f_2	not	Session lacks information on marinating BBQ ribs or any related cooking details.	openai/gpt-4o-2024-08-06	0.0079375
+faba32e5	770d11f5	not	Session lacks information on marinating BBQ ribs or any related cooking details.	openai/gpt-4o-2024-08-06	0.008085
+36580ce8	ultrachat_318891	not	The session lacks any mention of bronchitis or related health issues.	openai/gpt-4o-2024-08-06	0.00447
+36580ce8	ultrachat_53784	not	The session lacks any mention of bronchitis or related health issues.	openai/gpt-4o-2024-08-06	0.0049075
+36580ce8	ultrachat_270984	not	The session lacks any mention of health issues or personal experiences related to bronchitis or a cold.	openai/gpt-4o-2024-08-06	0.0056525
+36580ce8	ultrachat_149170	not	The session lacks any mention of bronchitis or related health issues.	openai/gpt-4o-2024-08-06	0.004795
+gpt4_59c863d7	sharegpt_Opm4kTV_0	not	Session lacks any mention of model kits or related purchases.	openai/gpt-4o-2024-08-06	0.003465
+e831120c	ba6b67af_2	not	Session lacks information on watching Marvel and Star Wars films duration.	openai/gpt-4o-2024-08-06	0.0072625
+e831120c	8fb3fe3a_1	not	Missing evidence about the duration of watching Marvel and Star Wars films.	openai/gpt-4o-2024-08-06	0.007335
+e831120c	7c82a6c3	not	The session lacks information on movie watching duration or schedule.	openai/gpt-4o-2024-08-06	0.006875
+gpt4_59c863d7	1a73cecb_1	not	The session lacks any mention of model kits or related details.	openai/gpt-4o-2024-08-06	0.00731
+aae3761f	b192ae00_2	not	Session lacks information on driving hours or road trip destinations.	openai/gpt-4o-2024-08-06	0.0048325
+gpt4_d84a3211	sharegpt_TY5Si51_17	not	Session lacks any information on bike-related expenses or financial transactions.	openai/gpt-4o-2024-08-06	0.00502
+2e6d26dc	sharegpt_flHO7QM_17	not	session lacks information on babies born to friends and family members	openai/gpt-4o-2024-08-06	0.0007325
+c4a1ceb8	ultrachat_476874	not	Session lacks information on citrus fruits used in cocktail recipes.	openai/gpt-4o-2024-08-06	0.0037125
+7024f17c	385683f0_1	not	No evidence of jogging or yoga activities mentioned.	openai/gpt-4o-2024-08-06	0.00922
+7024f17c	b7f69a7d_1	not	Session lacks evidence of jogging or yoga activities.	openai/gpt-4o-2024-08-06	0.0092925
+aae3761f	sharegpt_ynLoh9N_0	not	Session lacks any information about driving hours or road trip destinations.	openai/gpt-4o-2024-08-06	0.00618
+aae3761f	072b4f50_1	not	Missing evidence about driving hours or road trip destinations.	openai/gpt-4o-2024-08-06	0.0075675
+2788b940	ultrachat_410014	not	Session lacks information on user's weekly fitness class attendance.	openai/gpt-4o-2024-08-06	0.005405
+2788b940	ff6e824b_1	not	Session lacks evidence about user's weekly fitness class attendance.	openai/gpt-4o-2024-08-06	0.0089125
+60bf93ed	ultrachat_7648	not	Session lacks any information about the laptop backpack purchase or delivery timeline.	openai/gpt-4o-2024-08-06	0.003495
+60bf93ed	ultrachat_149649	not	Session lacks information on laptop backpack purchase and delivery timeline.	openai/gpt-4o-2024-08-06	0.001695
+60bf93ed	6414f676_4	not	Missing purchase and delivery dates for the laptop backpack.	openai/gpt-4o-2024-08-06	0.0087625
+gpt4_ab202e7f	e78617c5_2	not	The session lacks evidence about replacing or fixing kitchen items.	openai/gpt-4o-2024-08-06	0.00696
+gpt4_ab202e7f	sharegpt_cZhfJYa_13	not	Session lacks information on kitchen items replaced or fixed.	openai/gpt-4o-2024-08-06	0.0054375
+gpt4_372c3eed	ultrachat_290513	not	Session lacks information on user's education duration or timeline.	openai/gpt-4o-2024-08-06	0.00309
+gpt4_372c3eed	4d1125f9_2	not	Session lacks information on user's education duration or timeline.	openai/gpt-4o-2024-08-06	0.0062375
+afdc33df	22f9f163_3	not	Session lacks evidence of user's kitchen organization preferences or concerns about granite surfaces.	openai/gpt-4o-2024-08-06	0.0075825
+gpt4_372c3eed	sharegpt_6VqlSoL_25	not	Session lacks information on education duration or personal educational history.	openai/gpt-4o-2024-08-06	0.0053525
+afdc33df	d70b7418	not	Session lacks evidence of user's kitchen preferences or cleaning concerns.	openai/gpt-4o-2024-08-06	0.0099825
+afdc33df	b6558bfb	not	Session lacks evidence of user's kitchen cleaning preferences or concerns.	openai/gpt-4o-2024-08-06	0.011325
+caf03d32	sharegpt_3D7Qpuq_14	not	Session lacks specific slow cooker tips or user's preferences and experiences with slow cooker recipes.	openai/gpt-4o-2024-08-06	0.00486
+caf03d32	ultrachat_478785	not	Session lacks evidence on slow cooker preferences or experiences.	openai/gpt-4o-2024-08-06	0.005655
+caf03d32	8567068d_4	not	Session lacks evidence of user's slow cooker preferences or experiences with beef stew and yogurt.	openai/gpt-4o-2024-08-06	0.0078225
+caf03d32	bd6d0687	not	Session lacks specific slow cooker tips or user's preferences and experiences with slow cooker recipes.	openai/gpt-4o-2024-08-06	0.008835
+afdc33df	d03b6a05_3	not	Session lacks evidence of user's kitchen cleaning preferences or concerns.	openai/gpt-4o-2024-08-06	0.0091125
+09d032c9	b21bd3e2	not	Session lacks any mention of battery life, power banks, or related preferences.	openai/gpt-4o-2024-08-06	0.007185
+09d032c9	ultrachat_510971	not	Session lacks evidence of user's preference for portable power bank or battery-saving tips.	openai/gpt-4o-2024-08-06	0.0025625
+09d032c9	21ef2d05_1	not	Session lacks evidence of user's preference for portable power bank or battery-saving tips.	openai/gpt-4o-2024-08-06	0.006895
+38146c39	5806662d_1	not	Session lacks any mention of turbinado sugar or cookie-making preferences.	openai/gpt-4o-2024-08-06	0.0065775
+38146c39	ultrachat_233519	not	Session lacks any mention of cookies, turbinado sugar, or related preferences.	openai/gpt-4o-2024-08-06	0.00345
+38146c39	5263736d_1	not	Session lacks evidence of user's preference for turbinado sugar in cookies.	openai/gpt-4o-2024-08-06	0.00716
+38146c39	87aaee77	not	Session lacks evidence of user's preference for turbinado sugar in cookies.	openai/gpt-4o-2024-08-06	0.0069725
+09d032c9	e8bfacec_2	not	Session lacks evidence of user's preference for portable power bank or battery-saving tips.	openai/gpt-4o-2024-08-06	0.0099875
+95228167	b916da64_2	not	Session lacks guitar-specific preferences or comparisons needed for the correct answer.	openai/gpt-4o-2024-08-06	0.0067575
+95228167	f07752be_1	not	Session lacks information on guitar preferences or specific models like Fender Stratocaster and Gibson Les Paul.	openai/gpt-4o-2024-08-06	0.005845
+1d4e3b97	ecb24dd8_2	not	Missing evidence of bike chain, cassette replacement, or Garmin bike computer use.	openai/gpt-4o-2024-08-06	0.0082875
+95228167	8199fb3a_4	not	Session lacks specific guitar preferences or comparisons needed for the user's question.	openai/gpt-4o-2024-08-06	0.0108075
+1d4e3b97	fb2368b8_3	not	Session lacks details on bike performance improvements like chain, cassette, or Garmin computer.	openai/gpt-4o-2024-08-06	0.011505
+1d4e3b97	c7772f2d_2	not	Session lacks details on bike chain, cassette, or Garmin computer affecting performance.	openai/gpt-4o-2024-08-06	0.00879
+1d4e3b97	809cabca_1	not	Session lacks details on bike chain, cassette, or Garmin computer affecting performance.	openai/gpt-4o-2024-08-06	0.01041
+95228167	e2691068	not	Session lacks information on guitar preferences or specific models like Fender Stratocaster or Gibson Les Paul.	openai/gpt-4o-2024-08-06	0.0076125
+d3ab962e	3329e5e8_1	not	Session lacks specific hike distances needed to calculate total miles for consecutive weekends.	openai/gpt-4o-2024-08-06	0.0094475
+d3ab962e	ultrachat_48872	not	The session lacks any information about hiking distances or related activities.	openai/gpt-4o-2024-08-06	0.00544
+9aaed6a3	9f8bdd23_2	not	Session lacks any information about cashback or transactions at SaveMart.	openai/gpt-4o-2024-08-06	0.0075925
+e6041065	ultrachat_407355	not	Session lacks information about the percentage of packed shoes worn on the last trip.	openai/gpt-4o-2024-08-06	0.0036025
+9aaed6a3	66bfa1db	not	Session lacks any information about cashback or transactions at SaveMart.	openai/gpt-4o-2024-08-06	0.0051075
+e6041065	2a86d0da_2	not	Missing evidence about the percentage of packed shoes worn on the last trip.	openai/gpt-4o-2024-08-06	0.008925
+9aaed6a3	c846422a_1	not	Session lacks details on SaveMart cashback or transactions, focusing on Walmart shopping and cashback programs.	openai/gpt-4o-2024-08-06	0.0063925
+d3ab962e	ultrachat_564044	not	Missing evidence about hikes or distances; session is about Paris landmarks and cafes.	openai/gpt-4o-2024-08-06	0.0022925
+e6041065	ec616e7e_4	not	Session lacks information on the percentage of packed shoes worn on the trip.	openai/gpt-4o-2024-08-06	0.00805
+51c32626	sharegpt_hzwc0HI_13	not	Session lacks any mention of research paper submission dates or related events.	openai/gpt-4o-2024-08-06	0.0032525
+51c32626	sharegpt_7ATc6lt_11	not	Session lacks any mention of research paper submission dates or related events.	openai/gpt-4o-2024-08-06	0.0063425
+51c32626	sharegpt_f6tUGHK_9	not	Session lacks any mention of research paper submission dates or related events.	openai/gpt-4o-2024-08-06	0.00394
+d905b33f	7613d5ec_2	not	Session lacks information about book purchase or discount details.	openai/gpt-4o-2024-08-06	0.0070125
+a1cc6108	ultrachat_152948	not	The session lacks any information about the user's age or Alex's birth.	openai/gpt-4o-2024-08-06	0.0064375
+d905b33f	8cfa91c3_2	not	Session lacks any mention of a book purchase or discount details.	openai/gpt-4o-2024-08-06	0.0091975
+d905b33f	3301f749_1	not	Session lacks information on book discount or favorite author.	openai/gpt-4o-2024-08-06	0.0104325
+a1cc6108	sharegpt_jpiaPoJ_29	not	The session lacks any information about ages or birth dates needed to answer the question.	openai/gpt-4o-2024-08-06	0.00549
+a1cc6108	sharegpt_eBOaucG_46	not	Session lacks information about user's age or Alex's birth date needed to determine age difference.	openai/gpt-4o-2024-08-06	0.0055425
+a1cc6108	f32e8c80	not	Missing evidence about user's age or Alex's birth date.	openai/gpt-4o-2024-08-06	0.0060625
+27016adc	sharegpt_2xEqy3j_7	not	Session lacks information on property price or renovation costs.	openai/gpt-4o-2024-08-06	0.0021625
+3fdac837	c85ef24e_1	not	Session lacks information on days spent in Japan and Chicago.	openai/gpt-4o-2024-08-06	0.0079825
+3fdac837	a98ff421_7	not	Session lacks specific travel dates or durations for Japan and Chicago.	openai/gpt-4o-2024-08-06	0.010355
+3fdac837	3a5cdafc	not	Session lacks travel dates or duration information for Japan and Chicago.	openai/gpt-4o-2024-08-06	0.0074325
+27016adc	ultrachat_131737	not	Session lacks information on property price or renovation costs.	openai/gpt-4o-2024-08-06	0.0018125
+27016adc	28ea20bf	not	Session lacks information on property price or renovation costs needed to calculate the percentage.	openai/gpt-4o-2024-08-06	0.0091025
+bb7c3b45	ba37a946	not	Session lacks any mention of Jimmy Choo heels or related financial details.	openai/gpt-4o-2024-08-06	0.007105
+bb7c3b45	4f2d6be4_1	not	Session lacks information on Jimmy Choo heels or related savings details.	openai/gpt-4o-2024-08-06	0.008275
+ba358f49	fb117eb0_2	not	Session lacks any information about Rachel's marriage or user's age.	openai/gpt-4o-2024-08-06	0.0095675
+bb7c3b45	3891baea_4	not	Session lacks information about the price or discount on Jimmy Choo heels.	openai/gpt-4o-2024-08-06	0.0068125
+ba358f49	fb0f2ac2	not	Missing evidence about user's age or Rachel's marriage date.	openai/gpt-4o-2024-08-06	0.008185
+ba358f49	2a2ea005_1	not	The session lacks any information about Rachel's marriage or the user's age.	openai/gpt-4o-2024-08-06	0.0053975
+099778bb	sharegpt_1dQ2mgC_0	not	session lacks information on women's leadership positions in the company	openai/gpt-4o-2024-08-06	0.0056325
+ba358f49	4ea6f550	not	Missing evidence about user's age or Rachel's marriage date.	openai/gpt-4o-2024-08-06	0.008195
+a08a253f	771570c5_1	not	Session lacks evidence of attending fitness classes 4 days a week.	openai/gpt-4o-2024-08-06	0.0083925
+157a136e	sharegpt_8qFtl50_0	not	Session lacks age information needed to calculate age difference between user and grandma.	openai/gpt-4o-2024-08-06	0.003595
+a08a253f	4524c250_2	not	No evidence about fitness class attendance frequency is present.	openai/gpt-4o-2024-08-06	0.006455
+099778bb	6550181f	not	The session lacks information about women's leadership positions in the user's company.	openai/gpt-4o-2024-08-06	0.011215
+099778bb	ultrachat_60492	not	Session lacks information on women's leadership positions in the company.	openai/gpt-4o-2024-08-06	0.002915
+a08a253f	1fdbdfff_1	not	Session lacks evidence about fitness class attendance frequency.	openai/gpt-4o-2024-08-06	0.00679
+e56a43b9	7596ba6a	not	Session lacks information about FreshMart discounts or user purchases there.	openai/gpt-4o-2024-08-06	0.0081825
+e56a43b9	3c0ed3bf_1	not	Session lacks information on FreshMart discounts or related promotions.	openai/gpt-4o-2024-08-06	0.0082125
+157a136e	7614c21f_2	not	Session lacks age information needed to calculate the age difference between user and grandma.	openai/gpt-4o-2024-08-06	0.006305
+157a136e	7746ba1b_1	not	Session lacks age information needed to calculate the age difference between user and grandma.	openai/gpt-4o-2024-08-06	0.01115
+e56a43b9	ce21f0e4	not	Session lacks information about FreshMart discounts or promotions.	openai/gpt-4o-2024-08-06	0.0086125
+71017276	398f23e7	not	Session lacks evidence of meeting with aunt or receiving chandelier.	openai/gpt-4o-2024-08-06	0.0033725
+71017276	f78a22b6_4	not	The session lacks any mention of meeting an aunt or receiving a chandelier.	openai/gpt-4o-2024-08-06	0.0066275
+71017276	683c8358_1	not	The session lacks any mention of meeting an aunt or receiving a chandelier.	openai/gpt-4o-2024-08-06	0.0101675
+gpt4_4929293a	96c743d0_abs_2	not	The session lacks any information about the cousin's wedding or Michael's engagement party.	openai/gpt-4o-2024-08-06	0.006685
+71017276	44e4ae7e	not	The session lacks any mention of meeting an aunt or receiving a chandelier.	openai/gpt-4o-2024-08-06	0.008635
+0bc8ad92	d3cc5bdc_1	not	Missing evidence of the user's last museum visit date.	openai/gpt-4o-2024-08-06	0.0080425
+0bc8ad92	ultrachat_349938	not	Missing evidence of the user's last museum visit date with a friend.	openai/gpt-4o-2024-08-06	0.004045
+gpt4_4929293a	ultrachat_329640	not	The session lacks temporal information about the wedding or engagement party.	openai/gpt-4o-2024-08-06	0.0020425
+gpt4_4929293a	ultrachat_221041	not	The session lacks any temporal information about the events in question.	openai/gpt-4o-2024-08-06	0.0038325
+0bc8ad92	ultrachat_282889	not	Missing evidence of the museum visit date needed for temporal reasoning.	openai/gpt-4o-2024-08-06	0.00261
+0db4c65d	sharegpt_UGg8d44_9	not	session lacks dates or events needed for temporal reasoning about book reading and event attendance	openai/gpt-4o-2024-08-06	0.0057875
+gpt4_8279ba02	b6018747_2	not	The session lacks any temporal information about purchasing a smoker.	openai/gpt-4o-2024-08-06	0.0078325
+0db4c65d	953d5a4b_1	not	The session lacks any temporal information about reading or attending the event.	openai/gpt-4o-2024-08-06	0.009915
+0db4c65d	b22a2540	not	No dates or events related to reading or attending the book event are mentioned.	openai/gpt-4o-2024-08-06	0.0058125
+gpt4_8279ba02	86c5d31d	not	The session lacks any mention of purchasing a smoker or related dates.	openai/gpt-4o-2024-08-06	0.003275
+gpt4_8279ba02	sharegpt_uh8yJR0_0	not	The session lacks any mention of purchasing a smoker or relevant dates.	openai/gpt-4o-2024-08-06	0.003615
+gpt4_8279ba02	sharegpt_3xB7vJ2_195	not	The session lacks any temporal information about purchasing a smoker.	openai/gpt-4o-2024-08-06	0.00541
+gpt4_1e4a8aeb	sharegpt_D7qcNG1_23	not	Session lacks dates or events related to gardening or planting activities.	openai/gpt-4o-2024-08-06	0.001705
+4dfccbf7	e1b7b676	not	Session lacks any temporal information about ukulele lessons or guitar servicing.	openai/gpt-4o-2024-08-06	0.0096575
+4dfccbf7	ultrachat_55529	not	Session lacks temporal information about ukulele lessons or guitar servicing.	openai/gpt-4o-2024-08-06	0.0025
+4dfccbf7	c2f86a02	not	The session lacks any temporal information about ukulele lessons or guitar servicing.	openai/gpt-4o-2024-08-06	0.0099625
+gpt4_1e4a8aeb	28621d6a_2	not	Session lacks dates for the gardening workshop and tomato planting.	openai/gpt-4o-2024-08-06	0.0089525
+gpt4_1e4a8aeb	sharegpt_WGS6keq_29	not	The session lacks dates or events related to the gardening workshop or planting tomato saplings.	openai/gpt-4o-2024-08-06	0.00455
+gpt4_e061b84f	ultrachat_194928	not	Session lacks information about sports events or their order.	openai/gpt-4o-2024-08-06	0.00155
+gpt4_e061b84f	ultrachat_129606	not	The session lacks information about the user's participation in sports events.	openai/gpt-4o-2024-08-06	0.0053375
+gpt4_e061b84f	3275acf9	not	The session lacks information about the user's participation in sports events.	openai/gpt-4o-2024-08-06	0.0079025
+370a8ff4	ultrachat_101945	not	session lacks temporal information about flu recovery or jogging events	openai/gpt-4o-2024-08-06	0.0012325
+gpt4_e061b84f	78d28576_2	not	The session lacks information about the user's participation in specific sports events.	openai/gpt-4o-2024-08-06	0.0091475
+370a8ff4	2b4eaee0_1	not	Session lacks temporal details about flu recovery or jogging timeline.	openai/gpt-4o-2024-08-06	0.009745
+370a8ff4	ultrachat_91702	not	Missing temporal information about flu recovery and jogging timeline.	openai/gpt-4o-2024-08-06	0.002945
+gpt4_f420262c	sharegpt_3dtASzd_0	not	Session lacks information about airlines or flight dates.	openai/gpt-4o-2024-08-06	0.0041725
+gpt4_21adecb5	sharegpt_ipLglky_42	not	session lacks dates of degree completion and thesis submission needed for temporal reasoning	openai/gpt-4o-2024-08-06	0.0061475
+gpt4_21adecb5	e1f37e24	not	Missing dates of undergraduate completion and master's thesis submission for temporal reasoning.	openai/gpt-4o-2024-08-06	0.0063825
+gpt4_21adecb5	ultrachat_444790	not	Missing dates of degree completion and thesis submission for temporal reasoning.	openai/gpt-4o-2024-08-06	0.0054475
+gpt4_af6db32f	43b449ce	not	Session lacks any mention of the Super Bowl or related temporal information.	openai/gpt-4o-2024-08-06	0.0085325
+gpt4_21adecb5	sharegpt_pydqYVn_0	not	session lacks dates or events related to degree completion or thesis submission	openai/gpt-4o-2024-08-06	0.0013975
+gpt4_af6db32f	ea834a17_2	not	The session lacks any mention of the Super Bowl or related dates.	openai/gpt-4o-2024-08-06	0.007295
+gpt4_21adecb5	sharegpt_cUXo8S0_0	not	Missing dates of degree completion and thesis submission for temporal reasoning.	openai/gpt-4o-2024-08-06	0.00302
+gpt4_af6db32f	aee13015_6	not	Session lacks any mention of the Super Bowl or related temporal information.	openai/gpt-4o-2024-08-06	0.0078725
+gpt4_af6db32f	ultrachat_251919	not	Session lacks any mention of the Super Bowl or relevant dates for temporal reasoning.	openai/gpt-4o-2024-08-06	0.005895
+eac54adc	sharegpt_Jm8wWJN_0	not	Missing evidence of website launch date and client contract date.	openai/gpt-4o-2024-08-06	0.0055275
+eac54adc	89ea5a4e	not	Session lacks any information about website launch or client contract dates.	openai/gpt-4o-2024-08-06	0.0081375
+eac54adc	sharegpt_P5L0ISm_74	not	Session lacks temporal information about website launch or client contract date.	openai/gpt-4o-2024-08-06	0.0058975
+gpt4_7ca326fa	sharegpt_LDpwZD3_0	not	Session lacks information on Emma, Rachel, and Alex's graduation order.	openai/gpt-4o-2024-08-06	0.0023025
+gpt4_7ca326fa	ultrachat_220216	not	The session lacks information about the graduation order of Emma, Rachel, and Alex.	openai/gpt-4o-2024-08-06	0.0023625
+gpt4_7bc6cf22	ultrachat_465755	not	The session lacks temporal information about the March 15th issue of The New Yorker.	openai/gpt-4o-2024-08-06	0.0049625
+gpt4_7bc6cf22	sharegpt_yzmMl34_0	not	The session lacks any temporal information about reading dates or the March 15th issue of The New Yorker.	openai/gpt-4o-2024-08-06	0.00661
+gpt4_7bc6cf22	ultrachat_330542	not	Session lacks temporal information about reading the March 15th issue of The New Yorker.	openai/gpt-4o-2024-08-06	0.0043425
+71017277	ultrachat_557308	not	Session lacks information about who gave the jewelry on a specific date.	openai/gpt-4o-2024-08-06	0.00319
+71017277	fd749c9a_1	not	The session lacks information about who gave the jewelry.	openai/gpt-4o-2024-08-06	0.0078225
+71017277	ad175dc4_5	not	Session lacks evidence about who gave the jewelry.	openai/gpt-4o-2024-08-06	0.0069925
+0bc8ad93	2c185a2b_1	not	Session lacks evidence about visiting the museum with or without a friend.	openai/gpt-4o-2024-08-06	0.00617
+71017277	e5b86922_1	not	Session lacks evidence about who gave the jewelry; it focuses on woodworking and staining advice.	openai/gpt-4o-2024-08-06	0.00828
+gpt4_7bc6cf22	sharegpt_zmJpIQn_0	not	The session lacks any temporal information related to the March 15th issue of The New Yorker.	openai/gpt-4o-2024-08-06	0.00264
+gpt4_65aabe59	6a7e3aec	not	Session lacks evidence of which device was set up first.	openai/gpt-4o-2024-08-06	0.008105
+gpt4_65aabe59	ultrachat_190669	not	Session lacks information on device setup order, focusing on Northern Line train upgrades instead.	openai/gpt-4o-2024-08-06	0.003385
+gpt4_8c8961ae	ultrachat_324099	not	Session lacks temporal information about the user's trips to Europe and Thailand.	openai/gpt-4o-2024-08-06	0.0036575
+gpt4_8c8961ae	8ac4bf41	not	The session lacks any temporal information about trips to Europe or Thailand.	openai/gpt-4o-2024-08-06	0.00661
+gpt4_65aabe59	sharegpt_4dxAHri_25	not	Session lacks temporal information about device setup order.	openai/gpt-4o-2024-08-06	0.005735
+gpt4_8c8961ae	3b22d17b	not	Session lacks temporal information about trips to Europe or Thailand.	openai/gpt-4o-2024-08-06	0.007865
+a3045048	aaf71ce2_2	not	Session lacks information about the gift order date or the birthday party date.	openai/gpt-4o-2024-08-06	0.007425
+a3045048	ultrachat_433030	not	Missing evidence about the gift order date and birthday party date.	openai/gpt-4o-2024-08-06	0.002675
+gpt4_2f56ae70	dc3ee1d1_1	not	The session lacks information about the user's streaming service usage or preferences.	openai/gpt-4o-2024-08-06	0.007875
+0bc8ad93	69dc0888	not	Session lacks evidence about museum visit or companionship details.	openai/gpt-4o-2024-08-06	0.0096125
+a3045048	sharegpt_asoSnhq_0	not	The session lacks any temporal information about ordering a gift or a birthday party.	openai/gpt-4o-2024-08-06	0.0058375
+6613b389	f1cc1ddb_1	not	Session lacks any mention of Rachel's engagement or the user's anniversary date.	openai/gpt-4o-2024-08-06	0.008485
+gpt4_2f56ae70	74c8f7bb	not	The session lacks any mention of streaming services or Disney+.	openai/gpt-4o-2024-08-06	0.00872
+6613b389	2780323d_3	not	The session lacks any temporal information about Rachel's engagement or the user's anniversary.	openai/gpt-4o-2024-08-06	0.0094875
+gpt4_2f56ae70	8e3887c3_3	not	The session lacks information about the user's recent streaming service usage.	openai/gpt-4o-2024-08-06	0.0080875
+gpt4_78cf46a3	ultrachat_305042	not	The session lacks temporal information about the phone charger and phone case events.	openai/gpt-4o-2024-08-06	0.003285
+gpt4_78cf46a3	sharegpt_DYHoNBD_0	not	Session lacks temporal information about phone charger or phone case events.	openai/gpt-4o-2024-08-06	0.00154
+gpt4_78cf46a3	sharegpt_ZWqMvoL_593	not	The session lacks any mention of the phone charger or phone case events.	openai/gpt-4o-2024-08-06	0.005615
+gpt4_0a05b494	48b68664	not	Session lacks temporal information about meeting the woman or the tourist.	openai/gpt-4o-2024-08-06	0.005755
+gpt4_0a05b494	sharegpt_eWQFoct_17	not	The session lacks any temporal information about meeting the woman or the tourist.	openai/gpt-4o-2024-08-06	0.0055075
+gpt4_78cf46a3	sharegpt_rx39ipj_0	not	The session lacks any temporal information about the phone charger or phone case events.	openai/gpt-4o-2024-08-06	0.0067325
+gpt4_0a05b494	353d3c6d_2	not	Missing evidence of meeting either the woman selling jam or the tourist from Australia.	openai/gpt-4o-2024-08-06	0.0047125
+gpt4_2f584639	c6eb17f0_1	not	Session lacks evidence of purchase order for necklace or photo album.	openai/gpt-4o-2024-08-06	0.0078025
+gpt4_2f584639	ultrachat_430445	not	Session lacks evidence about the order of gift purchases.	openai/gpt-4o-2024-08-06	0.0050925
+gpt4_2f584639	ultrachat_464469	not	Session lacks information on gift purchase order for temporal reasoning.	openai/gpt-4o-2024-08-06	0.002225
+8c18457d	98cd882c_2	not	The session lacks dates or events needed to calculate the days between two gift purchases.	openai/gpt-4o-2024-08-06	0.008435
+8c18457d	4745bb2e	not	Missing specific dates for the graduation and birthday gift purchases.	openai/gpt-4o-2024-08-06	0.00659
+8c18457d	2dfc1443_1	not	The session lacks dates or events related to gift purchases for temporal reasoning.	openai/gpt-4o-2024-08-06	0.008605
+6aeb4375	402e0082_5	not	Session lacks evidence of the number of Korean restaurants tried.	openai/gpt-4o-2024-08-06	0.008255
+6aeb4375	sharegpt_MWlvrvZ_0	not	session lacks evidence about the number of Korean restaurants tried	openai/gpt-4o-2024-08-06	0.005785
+945e3d21	sharegpt_E7VUcfj_0	not	Session lacks evidence on yoga class frequency for anxiety management.	openai/gpt-4o-2024-08-06	0.0056225
+945e3d21	9418c255	not	The session lacks information about yoga classes or anxiety management.	openai/gpt-4o-2024-08-06	0.007335
+945e3d21	9bbd38a6	not	Session lacks evidence about yoga class frequency for anxiety management.	openai/gpt-4o-2024-08-06	0.0091425
+9ea5eabc	29695e1c_2	not	Session lacks evidence of the user's most recent family trip destination.	openai/gpt-4o-2024-08-06	0.0100475
+6aeb4375	sharegpt_Me2C50l_0	not	The session lacks information about the number of Korean restaurants tried.	openai/gpt-4o-2024-08-06	0.0024
+9ea5eabc	8c8b180e	not	The session lacks evidence of a trip to Paris or any recent family trip details.	openai/gpt-4o-2024-08-06	0.0061875
+9ea5eabc	62e6593e_1	not	Session lacks evidence of the user's most recent family trip destination.	openai/gpt-4o-2024-08-06	0.00588
+0f05491a	27aba903_2	not	Session lacks information on Starbucks Rewards app star requirements.	openai/gpt-4o-2024-08-06	0.0055975
+0f05491a	28000804	not	Session lacks information on Starbucks Rewards app or star requirements for gold level.	openai/gpt-4o-2024-08-06	0.0064525
+0f05491a	0c260a71_3	not	Session lacks information on Starbucks Rewards app or required stars for gold level.	openai/gpt-4o-2024-08-06	0.006445
+6a27ffc2	ultrachat_22304	not	Session lacks information on Corey Schafer's Python programming series or user's progress.	openai/gpt-4o-2024-08-06	0.0032075
+8fb83627	02b81ad9	not	Missing evidence about the number of National Geographic issues read.	openai/gpt-4o-2024-08-06	0.0080625
+6a27ffc2	4604bc73_3	not	The session lacks any mention of Corey Schafer or Python programming series completion.	openai/gpt-4o-2024-08-06	0.0095325
+8fb83627	sharegpt_RXPXFRG_17	not	Session lacks evidence about the number of National Geographic issues read.	openai/gpt-4o-2024-08-06	0.004945
+6a27ffc2	ae00973d_5	not	The session lacks any mention of Corey Schafer's Python programming series or the number of videos completed.	openai/gpt-4o-2024-08-06	0.00928
+0e4e4c46	ultrachat_280826	not	The session lacks any information about Ticket to Ride scores.	openai/gpt-4o-2024-08-06	0.0038825
+8fb83627	be050ab3_2	not	The session lacks information about the user's reading history of National Geographic issues.	openai/gpt-4o-2024-08-06	0.010205
+0e4e4c46	ultrachat_467820	not	Session lacks information about Ticket to Ride scores.	openai/gpt-4o-2024-08-06	0.0025275
+0e4e4c46	sharegpt_1YtwybC_15	not	The session lacks any information about Ticket to Ride scores or related game details.	openai/gpt-4o-2024-08-06	0.0037
+4b24c848	1815d1b7	not	Session lacks evidence of the number of tops bought from H&M.	openai/gpt-4o-2024-08-06	0.0078775
+4b24c848	sharegpt_iqJr8nh_0	not	Session lacks information on user's purchases from H&M.	openai/gpt-4o-2024-08-06	0.00591
+59524333	2d5d1c10	not	Session lacks specific information about the user's gym schedule or time preferences.	openai/gpt-4o-2024-08-06	0.01063
+4b24c848	b0855671_2	not	Session lacks information on H&M purchases; focuses on farm taxes and BBQ planning.	openai/gpt-4o-2024-08-06	0.0098075
+59524333	638e7094_1	not	The session lacks any mention of gym schedules or specific times.	openai/gpt-4o-2024-08-06	0.0084575
+affe2881	ultrachat_443550	not	The session lacks information about bird species seen in the user's local park.	openai/gpt-4o-2024-08-06	0.0039875
+affe2881	fb5dd87f_7	not	Session lacks evidence of the number of bird species seen in the user's local park.	openai/gpt-4o-2024-08-06	0.00829
+59524333	sharegpt_RtTJZF3_29	not	Session lacks evidence about user's gym schedule or time preferences.	openai/gpt-4o-2024-08-06	0.0028725
+50635ada	add7cc1e	not	Session lacks information about user's previous frequent flyer status on United Airlines.	openai/gpt-4o-2024-08-06	0.0071325
+affe2881	sharegpt_gjpwgXW_0	not	Session lacks evidence about bird species count in local park.	openai/gpt-4o-2024-08-06	0.0056975
+50635ada	ultrachat_294687	not	Session lacks any information about United Airlines or frequent flyer status.	openai/gpt-4o-2024-08-06	0.0021675
+50635ada	sharegpt_MpJ5UCF_0	not	Session lacks information about user's frequent flyer status on United Airlines.	openai/gpt-4o-2024-08-06	0.0055075
+cc5ded98	8a5fe67a	not	The session lacks information about daily coding exercise duration.	openai/gpt-4o-2024-08-06	0.007875
+69fee5aa	9d11d844	not	Session lacks information about pre-1920 American coins or the user's coin collection.	openai/gpt-4o-2024-08-06	0.0067875
+5c40ec5b	sharegpt_RVk16qK_0	not	Missing evidence about meetings with Alex from Germany.	openai/gpt-4o-2024-08-06	0.0021925
+69fee5aa	90c0b930	not	The session lacks information about the user's coin collection or pre-1920 American coins.	openai/gpt-4o-2024-08-06	0.00757
+69fee5aa	5d284d7d_2	not	Session lacks information on the number of pre-1920 American coins in the user's collection.	openai/gpt-4o-2024-08-06	0.0098725
+5c40ec5b	a200b713_3	not	Session lacks evidence of meetings with Alex from Germany.	openai/gpt-4o-2024-08-06	0.0075775
+5c40ec5b	ultrachat_271436	not	Session lacks evidence of user's meetups with Alex from Germany.	openai/gpt-4o-2024-08-06	0.00506
+0977f2af	ultrachat_62319	not	Session lacks information about kitchen gadgets or Instant Pot purchase.	openai/gpt-4o-2024-08-06	0.00317
+cc5ded98	ef785bb4_2	not	The session lacks information about daily coding exercise time.	openai/gpt-4o-2024-08-06	0.009745
+cc5ded98	c1b801e6	not	Session lacks evidence about user's daily coding exercise time.	openai/gpt-4o-2024-08-06	0.0078375
+0977f2af	e0bfe67a_2	not	Session lacks evidence of purchasing an Instant Pot before the Air Fryer.	openai/gpt-4o-2024-08-06	0.0065675
+7161e7e2	sharegpt_qRHOKTO_28	not	Session lacks information on shift rotation or Admon's Sunday schedule.	openai/gpt-4o-2024-08-06	0.0060225
+0977f2af	809cbce9_3	not	Session lacks information about kitchen gadgets or purchases before the Air Fryer.	openai/gpt-4o-2024-08-06	0.010135
+0977f2af	f115a3db_1	not	Session lacks information about kitchen gadgets or Instant Pot purchase.	openai/gpt-4o-2024-08-06	0.00852
+f523d9fe	44165708	not	Session lacks any mention of Netflix or the show 'Doc Martin'.	openai/gpt-4o-2024-08-06	0.00918
+7161e7e2	sharegpt_xkWMnwQ_0	not	Session lacks information on shift rotation or Admon's schedule.	openai/gpt-4o-2024-08-06	0.00546
+7161e7e2	a849dd16	not	The session lacks information about Admon's shift rotation on Sundays.	openai/gpt-4o-2024-08-06	0.0071675
+f523d9fe	fbfda981	not	The session lacks any mention of Netflix or the show 'Doc Martin'.	openai/gpt-4o-2024-08-06	0.00914
+f523d9fe	22aa7cca_4	not	The session lacks any mention of Netflix or the show 'Doc Martin'.	openai/gpt-4o-2024-08-06	0.007495
+f523d9fe	sharegpt_4RnbgQt_0	not	The session does not mention Netflix or the show 'Doc Martin'.	openai/gpt-4o-2024-08-06	0.0068525
+0e5e2d1a	c756c34e	not	The session lacks information about the study or the number of subjects involved.	openai/gpt-4o-2024-08-06	0.00855
+0e5e2d1a	ultrachat_180166	not	Missing study details on subjects in Music and Medicine journal about binaural beats.	openai/gpt-4o-2024-08-06	0.0032125
+7161e7e2	3c3fee41	not	Session lacks information on shift rotation or Admon's schedule.	openai/gpt-4o-2024-08-06	0.008695
+0e5e2d1a	ultrachat_201585	not	Session lacks information on the study or number of subjects.	openai/gpt-4o-2024-08-06	0.0033225
+0e5e2d1a	f84b4266	not	Session lacks information on the study or number of subjects in Music and Medicine journal.	openai/gpt-4o-2024-08-06	0.009425
+dc439ea3	1bfd5a8b_2	not	The session lacks information about Native American powwows or the Hoop Dance.	openai/gpt-4o-2024-08-06	0.0088775
+71a3fd6b	7f7e26d2_2	not	The session lacks information about the Speyer tourism board's phone number.	openai/gpt-4o-2024-08-06	0.00728
+dc439ea3	f716720c_4	not	Session lacks information on traditional games or powwows, focusing on travel and dining in Chicago.	openai/gpt-4o-2024-08-06	0.0071675
+dc439ea3	ultrachat_191216	not	Session lacks information on traditional games or powwows, focusing on festivals in Shillong instead.	openai/gpt-4o-2024-08-06	0.00321
+71a3fd6b	b7146673_1	not	The session lacks information about the Speyer tourism board's phone number.	openai/gpt-4o-2024-08-06	0.0084525
+71a3fd6b	sharegpt_69zYTa4_0	not	Session lacks information about Speyer tourism board or its contact details.	openai/gpt-4o-2024-08-06	0.0021425
+8752c811	sharegpt_Bjn7mKF_360	not	Session lacks any mention of prompt parameters or a list of them.	openai/gpt-4o-2024-08-06	0.0039175
+71a3fd6b	sharegpt_5Rpp72b_148	not	Session lacks any mention of Speyer tourism board or its contact information.	openai/gpt-4o-2024-08-06	0.0052775
+8752c811	ultrachat_401721	not	Session lacks information on prompt parameters or the specific 27th parameter.	openai/gpt-4o-2024-08-06	0.00131
+8752c811	ultrachat_290040	not	Session lacks information on prompt parameters or the specific list mentioned.	openai/gpt-4o-2024-08-06	0.0011125
+8752c811	sharegpt_cTla0Yd_0	not	The session lacks any mention of prompt parameters or a list of them.	openai/gpt-4o-2024-08-06	0.00624
+1568498a	70fed904	not	The session lacks any information about a chess game or specific moves.	openai/gpt-4o-2024-08-06	0.006655
+dc439ea3	49d8a382	not	The session lacks any mention of Native American powwows or the Hoop Dance.	openai/gpt-4o-2024-08-06	0.00906
+51b23612	sharegpt_rx0Hm6s_9	not	Session lacks mention of Soviet cartoons or Western culture mocking.	openai/gpt-4o-2024-08-06	0.0059075
+1568498a	ultrachat_131295	not	Session lacks any information about a chess game or specific moves.	openai/gpt-4o-2024-08-06	0.002645
+51b23612	17f444f3	not	The session lacks any mention of Soviet cartoons or Western culture.	openai/gpt-4o-2024-08-06	0.0092725
+1568498a	71e0db57	not	The session lacks any information about the chess game or specific moves.	openai/gpt-4o-2024-08-06	0.0099225
+1568498a	a05cd79f_1	not	The session lacks any information about the chess game or specific moves made.	openai/gpt-4o-2024-08-06	0.0084575
+51b23612	ultrachat_318734	not	The session lacks any mention of Soviet cartoons or Western culture.	openai/gpt-4o-2024-08-06	0.0029175
+3e321797	57144028_2	not	The session lacks information on applying tomato and lemon juice for dark circles.	openai/gpt-4o-2024-08-06	0.00811
+3e321797	96b6e5e8_1	not	The session lacks information on tomato and lemon juice application duration.	openai/gpt-4o-2024-08-06	0.009025
+51b23612	ultrachat_221034	not	Session lacks mention of Soviet cartoons or Western culture mocking.	openai/gpt-4o-2024-08-06	0.0018625
+3e321797	00305dd2_1	not	The session lacks information on natural remedies for dark circles or the specific remedy mentioned.	openai/gpt-4o-2024-08-06	0.0090525
+7a8d0b71	f07752be_1	not	The session lacks information on the DHL Wellness Retreats campaign or influencer marketing budget.	openai/gpt-4o-2024-08-06	0.00569
+3e321797	0382dbfe_2	not	Session lacks information on tomato and lemon juice application duration.	openai/gpt-4o-2024-08-06	0.0084075
+7a8d0b71	1e26715f	not	The session lacks information on the DHL Wellness Retreats campaign or influencer marketing budget.	openai/gpt-4o-2024-08-06	0.00904
+7a8d0b71	8969b3ca_2	not	Session lacks information on DHL Wellness Retreats campaign or influencer marketing budget.	openai/gpt-4o-2024-08-06	0.00789
+7a8d0b71	sharegpt_7NBowvd_0	not	session lacks information on DHL Wellness Retreats or influencer marketing budget	openai/gpt-4o-2024-08-06	0.0011575
+4baee567	sharegpt_dBQwSJX_0	not	session lacks evidence of Chiefs vs Jaguars games at Arrowhead Stadium	openai/gpt-4o-2024-08-06	0.001945
+4baee567	ultrachat_487211	not	The session lacks information about Chiefs vs. Jaguars games at Arrowhead Stadium.	openai/gpt-4o-2024-08-06	0.0042875
+4baee567	sharegpt_hRVKLa2_0	not	The session lacks information on Chiefs vs. Jaguars games at Arrowhead Stadium.	openai/gpt-4o-2024-08-06	0.003815
+eaca4986	sharegpt_fVpT6Aa_35	not	Missing chord progression details for the second song's chorus.	openai/gpt-4o-2024-08-06	0.0054225
+eaca4986	sharegpt_LcJNQmj_0	not	Session lacks any mention of songs or chord progressions.	openai/gpt-4o-2024-08-06	0.0017925
+eaca4986	ultrachat_311235	not	Session lacks any mention of sad songs or specific chord progressions.	openai/gpt-4o-2024-08-06	0.00574
+4baee567	6169ef55_1	not	The session lacks information on Chiefs vs. Jaguars games at Arrowhead Stadium.	openai/gpt-4o-2024-08-06	0.0094275
+eaca4986	0e543e9e_2	not	The session lacks any mention of sad songs or specific chord progressions.	openai/gpt-4o-2024-08-06	0.00785
+311778f1	8e6e058b_3	not	Missing evidence of hours spent watching documentaries on Netflix.	openai/gpt-4o-2024-08-06	0.007855
+ccb36322	04a0b385	not	The session lacks any mention of Spotify or music streaming services.	openai/gpt-4o-2024-08-06	0.00735
+29f2956b	46548fab_3	not	The session lacks any mention of guitar practice or time dedicated to it.	openai/gpt-4o-2024-08-06	0.0080875
+gpt4_59c863d7	a7d014e4_1	not	The session lacks any mention of model kits or related purchases.	openai/gpt-4o-2024-08-06	0.0066175
+311778f1	5db56d24_2	not	The session lacks information about time spent watching documentaries on Netflix.	openai/gpt-4o-2024-08-06	0.0084475
+86b68151	sharegpt_beV15ZO_0	not	Session lacks information about purchasing a bookshelf or IKEA.	openai/gpt-4o-2024-08-06	0.00132
+gpt4_59c863d7	eb47739f_2	not	The session lacks any mention of model kits or related details.	openai/gpt-4o-2024-08-06	0.0067575
+e831120c	63388005	not	Session lacks information on movie watching duration or schedule.	openai/gpt-4o-2024-08-06	0.008865
+ccb36322	bdcee74e_3	not	Session lacks any mention of Spotify or music streaming services.	openai/gpt-4o-2024-08-06	0.006495
+gpt4_59c863d7	de5f2701_1	not	The session lacks information about model kits or their scales.	openai/gpt-4o-2024-08-06	0.009465
+gpt4_d84a3211	18d68208_1	not	Session lacks any mention of bike-related expenses or financial details.	openai/gpt-4o-2024-08-06	0.0077225
+c4a1ceb8	40c77045	not	Session lacks information on citrus fruits used in cocktail recipes.	openai/gpt-4o-2024-08-06	0.009185
+gpt4_59c863d7	9ef698bc_2	not	Session lacks information about model kits or their scales.	openai/gpt-4o-2024-08-06	0.00665
+2e6d26dc	ultrachat_541982	not	Missing evidence about births to friends and family members.	openai/gpt-4o-2024-08-06	0.0047775
+7024f17c	8c652eb0_1	not	Session lacks information on jogging or yoga activities.	openai/gpt-4o-2024-08-06	0.008975
+60bf93ed	388c5534_3	not	Session lacks any information about the laptop backpack purchase or delivery timeline.	openai/gpt-4o-2024-08-06	0.00973
+aae3761f	d576152e_2	not	Session lacks information on driving hours or road trip destinations.	openai/gpt-4o-2024-08-06	0.00978
+gpt4_372c3eed	4d04b866	not	Session lacks information on user's education duration or timeline.	openai/gpt-4o-2024-08-06	0.007295
+caf03d32	af631aa3_1	not	Session lacks evidence of user's slow cooker preferences or experiences with beef stew and yogurt.	openai/gpt-4o-2024-08-06	0.008475
+gpt4_ab202e7f	sharegpt_q3qJzui_0	not	Session lacks evidence of kitchen items replaced or fixed.	openai/gpt-4o-2024-08-06	0.0040475
+caf03d32	ec806228	not	Session lacks specific slow cooker advice or user's preferences on recipes.	openai/gpt-4o-2024-08-06	0.009825
+afdc33df	ad8d9f0f	not	Session lacks kitchen cleaning preferences or concerns, focusing on yoga routines and practices instead.	openai/gpt-4o-2024-08-06	0.010635
+caf03d32	4374f9a6_2	not	Session lacks evidence of user's slow cooker preferences or experiences.	openai/gpt-4o-2024-08-06	0.0081925
+09d032c9	612e23f1	not	Session lacks evidence of user's preference for portable power bank or battery-saving tips.	openai/gpt-4o-2024-08-06	0.0088575
+38146c39	381b80a3	not	Session lacks evidence of user's preference for turbinado sugar in cookies.	openai/gpt-4o-2024-08-06	0.00754
+d3ab962e	ultrachat_248741	not	Session lacks evidence of hiking distances or specific hikes done by the user.	openai/gpt-4o-2024-08-06	0.00456
+95228167	084802f9_2	not	Session lacks specific guitar preferences or comparisons needed for the correct answer.	openai/gpt-4o-2024-08-06	0.0092275
+1d4e3b97	044e200f_2	not	Session lacks details on bike performance improvements like chain, cassette, or Garmin computer.	openai/gpt-4o-2024-08-06	0.0084775
+e6041065	d79173aa_1	not	Session lacks information about the user's last trip or shoe usage.	openai/gpt-4o-2024-08-06	0.008795
+9aaed6a3	c95f2a09_2	not	The session lacks information about cashback or transactions at SaveMart.	openai/gpt-4o-2024-08-06	0.0092425
+e6041065	4a006b77	not	Session lacks any mention of shoes, trips, or percentages related to shoe usage.	openai/gpt-4o-2024-08-06	0.0095475
+d905b33f	2d364fb0	not	Session lacks information about a book purchase or discount details.	openai/gpt-4o-2024-08-06	0.009195
+a1cc6108	298a07de_5	not	The session lacks any information about ages or birth dates needed to answer the question.	openai/gpt-4o-2024-08-06	0.0080575
+09d032c9	af631aa3_2	not	Session lacks evidence of user's preference for portable power bank or battery-saving tips.	openai/gpt-4o-2024-08-06	0.009705
+d905b33f	368276ab_3	not	Session lacks information on book discount or purchase details.	openai/gpt-4o-2024-08-06	0.0086
+a1cc6108	001cefa7_2	not	Session lacks any information about ages or birth dates needed to answer the question.	openai/gpt-4o-2024-08-06	0.0094325
+a1cc6108	7285299a_4	not	The session lacks any information about ages or birth dates needed to answer the question.	openai/gpt-4o-2024-08-06	0.007945
+a1cc6108	fb328ace_1	not	Session lacks information about user's age or Alex's birth date.	openai/gpt-4o-2024-08-06	0.0093175
+3fdac837	ea0a5580_1	not	Session lacks travel dates or duration information for Japan and Chicago.	openai/gpt-4o-2024-08-06	0.0074575
+27016adc	ff5e0db0_1	not	Session lacks information on property price or renovation costs.	openai/gpt-4o-2024-08-06	0.0087375
+bb7c3b45	a51dc9ca	not	The session lacks any mention of Jimmy Choo heels or related savings information.	openai/gpt-4o-2024-08-06	0.0063175
+157a136e	a2e2cb72_5	not	Missing evidence about ages or age difference between user and grandma.	openai/gpt-4o-2024-08-06	0.0093275
+157a136e	ultrachat_506827	not	Session lacks information about ages needed to calculate the age difference.	openai/gpt-4o-2024-08-06	0.003745
+a08a253f	798fa5f2	not	No evidence about fitness class attendance frequency is present in the session.	openai/gpt-4o-2024-08-06	0.0069925
+157a136e	ultrachat_255132	not	The session lacks any information about ages or the age difference between the user and their grandma.	openai/gpt-4o-2024-08-06	0.003495
+71017276	sharegpt_tCLMKZY_0	not	The session lacks any mention of meeting an aunt or receiving a chandelier.	openai/gpt-4o-2024-08-06	0.0053525
+71017276	ultrachat_431324	not	Missing evidence about meeting with aunt or receiving chandelier.	openai/gpt-4o-2024-08-06	0.0049975
+0bc8ad92	0868982f_1	not	The session lacks any mention of a museum visit or relevant dates for temporal reasoning.	openai/gpt-4o-2024-08-06	0.008345
+0db4c65d	71dc2037_2	not	Session lacks dates or events related to reading or book event.	openai/gpt-4o-2024-08-06	0.0096675
+gpt4_8279ba02	b909542d_1	not	The session lacks any mention of purchasing a smoker or relevant dates.	openai/gpt-4o-2024-08-06	0.0066175
+a08a253f	6e5130ed_2	not	The session lacks any mention of fitness classes or attendance frequency.	openai/gpt-4o-2024-08-06	0.0065
+gpt4_8279ba02	1a037873_2	not	No evidence of purchase date for the smoker is present in the session.	openai/gpt-4o-2024-08-06	0.0088875
+gpt4_1e4a8aeb	15564b61_2	not	The session lacks dates or events related to the gardening workshop or planting tomato saplings.	openai/gpt-4o-2024-08-06	0.00778
+gpt4_1e4a8aeb	fd18e0dd_1	not	The session lacks dates or events related to the gardening workshop and planting tomato saplings.	openai/gpt-4o-2024-08-06	0.011415
+4dfccbf7	756a4a02_1	not	Session lacks information on ukulele lessons or guitar servicing dates.	openai/gpt-4o-2024-08-06	0.0094775
+4dfccbf7	f5493bf3	not	Session lacks information on ukulele lessons or guitar servicing dates.	openai/gpt-4o-2024-08-06	0.0106175
+gpt4_e061b84f	4cc9270f	not	The session lacks any mention of sports events or their order.	openai/gpt-4o-2024-08-06	0.00956
+gpt4_e061b84f	0a6bf5e4_1	not	The session lacks information about the user's participation in sports events.	openai/gpt-4o-2024-08-06	0.00781
+gpt4_af6db32f	ec1b557a_1	not	Session lacks any mention of the Super Bowl or related dates.	openai/gpt-4o-2024-08-06	0.0096025
+370a8ff4	sharegpt_UbMVpdp_93	not	The session lacks any temporal information about flu recovery or jogging events.	openai/gpt-4o-2024-08-06	0.0056125
+eac54adc	bf234051_2	not	Missing evidence about website launch or client contract date.	openai/gpt-4o-2024-08-06	0.0069275
+370a8ff4	8c64ce25_1	not	Session lacks temporal information about flu recovery and jogging timeline.	openai/gpt-4o-2024-08-06	0.0092875
+eac54adc	sharegpt_PgmAp0p_0	not	Session lacks information on website launch date or client contract date.	openai/gpt-4o-2024-08-06	0.00747
+gpt4_af6db32f	8617737e	not	Session lacks any mention of the Super Bowl or related temporal information.	openai/gpt-4o-2024-08-06	0.00929
+gpt4_7ca326fa	ultrachat_524795	not	Missing evidence about graduation order of Emma, Rachel, and Alex.	openai/gpt-4o-2024-08-06	0.0057625
+gpt4_7bc6cf22	68396ed3_2	not	Session lacks any reference to reading The New Yorker or relevant dates.	openai/gpt-4o-2024-08-06	0.008
+gpt4_7bc6cf22	09d021e7_1	not	Session lacks temporal information about reading the March 15th issue of The New Yorker.	openai/gpt-4o-2024-08-06	0.008295
+gpt4_7ca326fa	sharegpt_7SCdbX2_0	not	The session lacks information about the graduation order of Emma, Rachel, and Alex.	openai/gpt-4o-2024-08-06	0.0067325
+gpt4_7bc6cf22	sharegpt_xiDADcv_0	not	Missing evidence of when the user read the March 15th issue of The New Yorker.	openai/gpt-4o-2024-08-06	0.0055725
+0bc8ad93	4c177c66_1	not	Session lacks evidence about visiting a museum or accompanying a friend.	openai/gpt-4o-2024-08-06	0.0071475
+71017277	f8de4e92_4	not	Session lacks information about who gave the jewelry on the specified date.	openai/gpt-4o-2024-08-06	0.00778
+6613b389	1a65880d	not	Missing evidence about Rachel's engagement and the user's anniversary date.	openai/gpt-4o-2024-08-06	0.0084825
+gpt4_2f56ae70	647f5851	not	Session lacks information on streaming services or user's recent usage history.	openai/gpt-4o-2024-08-06	0.0117425
+945e3d21	5fcca8bc_1	not	Session lacks information on yoga class frequency or anxiety management.	openai/gpt-4o-2024-08-06	0.0092175
+gpt4_78cf46a3	7fd52e1c_2	not	The session lacks any temporal information about the phone charger or phone case events.	openai/gpt-4o-2024-08-06	0.0098325
+8c18457d	9c549466_1	not	Missing dates of gift purchases needed for temporal reasoning.	openai/gpt-4o-2024-08-06	0.007975
+945e3d21	ef0341d4_2	not	Session lacks evidence about yoga class frequency or anxiety management.	openai/gpt-4o-2024-08-06	0.0083675
+8fb83627	88e01130_1	not	Session lacks information on the number of National Geographic issues read.	openai/gpt-4o-2024-08-06	0.0084225
+4b24c848	d0c1453b_1	not	Session lacks evidence of H&M purchases or any related shopping activity.	openai/gpt-4o-2024-08-06	0.00659
+50635ada	9f9b402a_5	not	The session lacks any mention of United Airlines or frequent flyer status.	openai/gpt-4o-2024-08-06	0.00864
+50635ada	2e53911b_1	not	The session lacks information about the user's previous frequent flyer status on United Airlines.	openai/gpt-4o-2024-08-06	0.0076575
+0977f2af	b24eddd9_1	not	Session lacks information about kitchen gadgets or purchases before the Air Fryer.	openai/gpt-4o-2024-08-06	0.0095175
+0e4e4c46	60876def_2	not	The session lacks any mention of Ticket to Ride scores or related information.	openai/gpt-4o-2024-08-06	0.0074775
+0977f2af	1692563c_1	not	Session lacks information about kitchen gadgets or purchases.	openai/gpt-4o-2024-08-06	0.00663
+0977f2af	ultrachat_554962	not	Session lacks information about kitchen gadgets or user's purchase history.	openai/gpt-4o-2024-08-06	0.0061125
+7161e7e2	sharegpt_yguSguz_0	not	Session lacks information on shift rotation or Admon's Sunday schedule.	openai/gpt-4o-2024-08-06	0.006205
+7161e7e2	5aed819f	not	The session lacks information about shift rotation or Admon's schedule.	openai/gpt-4o-2024-08-06	0.0076575
+7161e7e2	dba97bb1_4	not	The session lacks information about Admon's shift rotation on Sundays.	openai/gpt-4o-2024-08-06	0.00768
+f523d9fe	a07f9d5c_1	not	The session lacks any mention of Netflix or the show 'Doc Martin'.	openai/gpt-4o-2024-08-06	0.007435
+dc439ea3	ultrachat_186512	not	The session lacks information about Native American powwows or the Hoop Dance.	openai/gpt-4o-2024-08-06	0.00338
+dc439ea3	cb5637b3	not	The session lacks information about traditional games or powwows.	openai/gpt-4o-2024-08-06	0.008485
+71a3fd6b	8419b385_3	not	The session lacks information about the Speyer tourism board's phone number.	openai/gpt-4o-2024-08-06	0.0081725
+dc439ea3	eb7366f2_1	not	Session lacks information on traditional games or powwows, focusing on charity events instead.	openai/gpt-4o-2024-08-06	0.00771
+f523d9fe	73f75ab4	not	The session lacks any mention of Netflix or the show 'Doc Martin'.	openai/gpt-4o-2024-08-06	0.0094675
+71a3fd6b	36743359_3	not	Session lacks information on Speyer tourism board's phone number.	openai/gpt-4o-2024-08-06	0.0090175
+8752c811	d0a41222_1	not	The session lacks any mention of prompt parameters or a list of them.	openai/gpt-4o-2024-08-06	0.0089
+8752c811	sharegpt_Y6MteNX_0	not	Session lacks information about prompt parameters or the specific 27th parameter.	openai/gpt-4o-2024-08-06	0.0039375
+8752c811	93f23301_2	not	The session lacks any mention of prompt parameters or a list of them.	openai/gpt-4o-2024-08-06	0.0080725
+8752c811	9db30f1c_3	not	The session lacks any mention of prompt parameters or a list of them.	openai/gpt-4o-2024-08-06	0.0087975
+51b23612	8672f398_2	not	The session lacks any mention of Soviet cartoons or Western culture.	openai/gpt-4o-2024-08-06	0.0089325
+51b23612	409015ef_1	not	The session lacks any mention of Soviet cartoons or Western culture mocking.	openai/gpt-4o-2024-08-06	0.006735
+7a8d0b71	d5eab084_2	not	The session lacks information on the DHL Wellness Retreats campaign or influencer marketing budget.	openai/gpt-4o-2024-08-06	0.0102575
+7a8d0b71	f20e72e4_2	not	Session lacks information on DHL Wellness Retreats campaign or influencer marketing budget.	openai/gpt-4o-2024-08-06	0.008205
+4baee567	b3272f34_1	not	The session lacks information about Chiefs vs. Jaguars games at Arrowhead Stadium.	openai/gpt-4o-2024-08-06	0.0063175
+51b23612	e5380545	not	The session lacks any mention of Soviet cartoons or Western culture.	openai/gpt-4o-2024-08-06	0.0077025
+4baee567	sharegpt_NxG2nGm_91	not	Session lacks information on Chiefs vs. Jaguars games at Arrowhead Stadium.	openai/gpt-4o-2024-08-06	0.0064175
+7a8d0b71	c14e3f09_2	not	The session lacks information on the DHL Wellness Retreats campaign or influencer marketing budget.	openai/gpt-4o-2024-08-06	0.007555
+4baee567	d5415748	not	The session lacks information about Chiefs vs. Jaguars games at Arrowhead Stadium.	openai/gpt-4o-2024-08-06	0.00836
+eaca4986	07fb2f15_1	not	The session lacks any mention of songs, music, or chord progressions.	openai/gpt-4o-2024-08-06	0.009455
+eaca4986	931c521e_1	not	Session lacks any mention of sad songs or specific chord progressions.	openai/gpt-4o-2024-08-06	0.0090075
+1568498a	6ad46850_2	not	Session lacks any chess-related content or specific moves from a chess game.	openai/gpt-4o-2024-08-06	0.0093275
