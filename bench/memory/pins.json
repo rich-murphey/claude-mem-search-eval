@@ -1,0 +1,25 @@
+{
+  "honcho_commit": "3326373c35f6538fb3b7af97803abe328c5aafb4",
+  "honcho_config": "bench/memory/honcho.config.toml (Plastic Labs' published LongMemEval S settings mapped onto 3326373c)",
+  "honcho_postgres_image": "pgvector/pgvector:pg17 sha256:ac08538c6f8b9904c33c8224c5e5706dbe760aca29db1d096972b4052c22a75d",
+  "claude_mem_rs_commit": "d86dbb06119617a1f074a8054895e537793505fa",
+  "claude_mem_rs_config": "bench/memory/cmr-up.sh (live.env retrieval settings of 2026-11-06; inject gate off; 16 generation workers)",
+  "eval_commit": "",
+  "datasets": {
+    "longmemeval": "xiaowu0162/longmemeval-cleaned@98d7416c24c778c2fee6e6f3006e7a073259d48f longmemeval_s_cleaned.json sha256 d6f21ea9d60a0d56f34a05b609c79c88a451d2ae03597821ea3d5a9678c3a442; oracle arm G derived from it (evidence sessions only)",
+    "beam": "not run in the pilot (see Pilot results)"
+  },
+  "answer_model": "claude-haiku-4-5 via OpenRouter anthropic/claude-haiku-4.5, provider Anthropic, no fallbacks; thinking budget 4096, max_tokens 8192",
+  "judge_model": "gpt-4o-2024-08-06 via OpenAI, temperature 0, max_tokens 10, LongMemEval evaluate_qa.py prompts",
+  "second_judge_model": "claude-sonnet-5-5 via OpenRouter anthropic/claude-sonnet-5.5, provider Anthropic, temperature 0",
+  "ingestion_models": {
+    "A": "gemini-2.5-flash-lite via OpenRouter google/gemini-2.5-flash-lite, provider Google AI Studio; temperature 0, reasoning max_tokens 1024 (published: gemini-2.5-flash-lite-preview-09-2025 via Google)",
+    "B": "claude-haiku-5-5 via OpenRouter anthropic/claude-haiku-5.5, provider Anthropic; thinking adaptive (live: same model through the subscription runner)",
+    "C": "gemini-2.5-flash-lite via OpenRouter google/gemini-2.5-flash-lite, provider Google AI Studio; thinking budget 1024"
+  },
+  "honcho_dialectic_model": "claude-haiku-4-5 via OpenRouter anthropic/claude-haiku-4.5, provider Anthropic; thinking 4096, 20 tool iterations (published: the same model through OpenRouter, provider 'custom')",
+  "honcho_embedding_model": "text-embedding-3-small via OpenAI",
+  "cmr_embedding_model": "Xenova/all-MiniLM-L6-v2 fp32 (local)",
+  "cpus": "8-15 (taskset for the user services, docker --cpuset-cpus for Postgres; cpuset is not delegated to user cgroups on dv)",
+  "prices_fetched": "2026-11-06 (OpenRouter returns each call's cost; OpenAI list prices for the judge and embeddings)"
+}

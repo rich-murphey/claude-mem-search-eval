@@ -1,0 +1,145 @@
+# Honcho config for the memory benchmark (claude-mem-rs#52), copied to
+# config.toml in the Honcho tree (~/wt/honcho/cc-memory-bench) by run-honcho.sh.
+#
+# Mirrors Plastic Labs' published LongMemEval S run (honcho-benchmarks
+# a1d689b/longmemeval_s_results_20251212_201328.json, metadata): deriver
+# gemini-2.5-flash-lite at temperature 0 with a 1,024-token thinking budget,
+# 4,096 output tokens, 16,384 tokens per batch, 30 workers; dialectic
+# claude-haiku-4.5 with a 4,096-token thinking budget, 20 tool iterations,
+# no session history; dreams and summaries off. Their settings names predate
+# the fork (3326373c); the mapping is in docs/memory-benchmark.md § Pilot results.
+#
+# Every model call goes to the usage proxy (bench/memory/proxy.ts) on
+# 127.0.0.1:37902, which holds the real keys; the keys here are placeholders.
+
+[app]
+LOG_LEVEL = "WARNING"
+EMBED_MESSAGES = true
+
+[db]
+CONNECTION_URI = "postgresql+psycopg://postgres:postgres@127.0.0.1:5440/postgres"
+POOL_SIZE = 20
+MAX_OVERFLOW = 20
+
+[auth]
+USE_AUTH = false
+
+[llm]
+OPENAI_API_KEY = "proxy"
+ANTHROPIC_API_KEY = "proxy"
+
+[embedding]
+VECTOR_DIMENSIONS = 1536
+
+[embedding.model_config]
+transport = "openai"
+model = "text-embedding-3-small"
+
+[embedding.model_config.overrides]
+base_url = "http://127.0.0.1:37902/A.embedding/v1"
+api_key = "proxy"
+
+[deriver]
+ENABLED = true
+WORKERS = 30
+POLLING_STARTUP_JITTER_SECONDS = 0.0
+POLLING_SLEEP_MAX_INTERVAL_SECONDS = 2.0
+DEDUPLICATE = true
+MAX_INPUT_TOKENS = 23000
+WORKING_REPRESENTATION_MAX_OBSERVATIONS = 100
+# Each benchmark session is added in one request, so a claimable unit holds
+# the whole session; 16,384 caps the window per deriver call as published.
+REPRESENTATION_BATCH_WORK_UNIT_TARGET_TOKENS = 0
+REPRESENTATION_BATCH_TARGET_INPUT_TOKENS = 16384
+
+[deriver.model_config]
+transport = "openai"
+model = "gemini-2.5-flash-lite"
+temperature = 0.0
+max_output_tokens = 4096
+
+[deriver.model_config.overrides]
+base_url = "http://127.0.0.1:37902/A.deriver/v1"
+api_key = "proxy"
+
+[deriver.model_config.overrides.provider_params.extra_body.reasoning]
+max_tokens = 1024
+
+[peer_card]
+ENABLED = true
+
+[dialectic]
+MAX_OUTPUT_TOKENS = 8192
+MAX_INPUT_TOKENS = 100000
+SESSION_HISTORY_MAX_TOKENS = 0
+
+# The harness asks at the default level, "low"; every level is set the same
+# so the level cannot matter.
+[dialectic.levels.minimal]
+MAX_TOOL_ITERATIONS = 20
+MAX_OUTPUT_TOKENS = 8192
+[dialectic.levels.minimal.model_config]
+transport = "anthropic"
+model = "claude-haiku-4-5"
+thinking_budget_tokens = 4096
+[dialectic.levels.minimal.model_config.overrides]
+base_url = "http://127.0.0.1:37902/A.dialectic"
+api_key = "proxy"
+
+[dialectic.levels.low]
+MAX_TOOL_ITERATIONS = 20
+[dialectic.levels.low.model_config]
+transport = "anthropic"
+model = "claude-haiku-4-5"
+thinking_budget_tokens = 4096
+[dialectic.levels.low.model_config.overrides]
+base_url = "http://127.0.0.1:37902/A.dialectic"
+api_key = "proxy"
+
+[dialectic.levels.medium]
+MAX_TOOL_ITERATIONS = 20
+[dialectic.levels.medium.model_config]
+transport = "anthropic"
+model = "claude-haiku-4-5"
+thinking_budget_tokens = 4096
+[dialectic.levels.medium.model_config.overrides]
+base_url = "http://127.0.0.1:37902/A.dialectic"
+api_key = "proxy"
+
+[dialectic.levels.high]
+MAX_TOOL_ITERATIONS = 20
+[dialectic.levels.high.model_config]
+transport = "anthropic"
+model = "claude-haiku-4-5"
+thinking_budget_tokens = 4096
+[dialectic.levels.high.model_config.overrides]
+base_url = "http://127.0.0.1:37902/A.dialectic"
+api_key = "proxy"
+
+[dialectic.levels.max]
+MAX_TOOL_ITERATIONS = 20
+[dialectic.levels.max.model_config]
+transport = "anthropic"
+model = "claude-haiku-4-5"
+thinking_budget_tokens = 4096
+[dialectic.levels.max.model_config.overrides]
+base_url = "http://127.0.0.1:37902/A.dialectic"
+api_key = "proxy"
+
+[summary]
+ENABLED = false
+
+[dream]
+ENABLED = false
+
+[metrics]
+ENABLED = false
+
+[telemetry]
+ENABLED = false
+
+[cache]
+ENABLED = false
+
+[vector_store]
+TYPE = "pgvector"
