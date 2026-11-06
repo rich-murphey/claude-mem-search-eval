@@ -32,3 +32,7 @@
 [B] ingested 1903aded (486 msgs, ingest 7s, drain 205s)
 [B] ingested 0a34ad58 (485 msgs, ingest 2s, drain 208s)
 [B] ingested 8e91e7d9 (498 msgs, ingest 5s, drain 207s)
+[B] ingested gpt4_f49edff3 (498 msgs, ingest 6s, drain 443s)
+[B] ingested c7dc5443 (478 msgs, ingest 3s, drain 440s)
+[B] ingested c8c3f81d (487 msgs, ingest 2s, drain 447s)
+[B] ingested 6ae235be (454 msgs, ingest 237s, drain 207s)
