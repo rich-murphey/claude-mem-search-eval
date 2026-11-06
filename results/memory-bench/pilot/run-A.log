@@ -1,0 +1,286 @@
+[A] ingested ccb36322 (471 msgs, ingest 48s, drain 28s)
+[A] ingested 86b68151 (485 msgs, ingest 50s, drain 28s)
+[A] ingested 0862e8bf (490 msgs, ingest 52s, drain 29s)
+[A] ingested 66f24dbb (507 msgs, ingest 52s, drain 29s)
+[A] ingested c8c3f81d (487 msgs, ingest 53s, drain 31s)
+[A] ingested d52b4f67 (479 msgs, ingest 54s, drain 30s)
+[A] ingested f4f1d8a4_abs (506 msgs, ingest 53s, drain 32s)
+[A] ingested 4fd1909e (554 msgs, ingest 54s, drain 30s)
+[A] ingested 29f2956b (496 msgs, ingest 28s, drain 22s)
+[A] ingested 8e9d538c (486 msgs, ingest 39s, drain 23s)
+[A] ingested 19b5f2b3_abs (527 msgs, ingest 47s, drain 29s)
+[A] ingested 94f70d80 (510 msgs, ingest 47s, drain 29s)
+[A] ingested 7527f7e2 (490 msgs, ingest 46s, drain 30s)
+[A] ingested 15745da0 (474 msgs, ingest 47s, drain 31s)
+[A] ingested 1e043500 (510 msgs, ingest 49s, drain 29s)
+[A] ingested 6ade9755 (513 msgs, ingest 49s, drain 30s)
+[A] ingested 6b168ec8 (482 msgs, ingest 14s, drain 33s)
+[A] ingested a82c026e (476 msgs, ingest 15s, drain 28s)
+[A] ingested a06e4cfe (534 msgs, ingest 40s, drain 48s)
+[A] ingested 51a45a95 (529 msgs, ingest 43s, drain 55s)
+[A] ingested 3249768e (475 msgs, ingest 43s, drain 59s)
+[A] ingested d596882b (474 msgs, ingest 44s, drain 62s)
+[A] ingested 8aef76bc (492 msgs, ingest 47s, drain 67s)
+[A] ingested 51b23612 (481 msgs, ingest 45s, drain 69s)
+[A] ingested 1568498a (478 msgs, ingest 39s, drain 75s)
+[A] ingested 1903aded (486 msgs, ingest 31s, drain 75s)
+[A] ingested 6ae235be (454 msgs, ingest 11s, drain 48s)
+[A] ingested 1de5cff2 (473 msgs, ingest 19s, drain 75s)
+[A] ingested ceb54acb (493 msgs, ingest 30s, drain 65s)
+[A] ingested 488d3006 (509 msgs, ingest 44s, drain 81s)
+[A] ingested 7e00a6cb (564 msgs, ingest 54s, drain 90s)
+[A] ingested c4f10528 (485 msgs, ingest 41s, drain 90s)
+[A] ingested fea54f57 (527 msgs, ingest 31s, drain 100s)
+[A] ingested f523d9fe (484 msgs, ingest 46s, drain 114s)
+[A] ingested 8752c811 (493 msgs, ingest 44s, drain 104s)
+[A] ingested ac031881 (529 msgs, ingest 11s, drain 90s)
+[A] ingested 8cf51dda (454 msgs, ingest 11s, drain 97s)
+[A] ingested 778164c6 (542 msgs, ingest 9s, drain 71s)
+[A] ingested eaca4986 (513 msgs, ingest 10s, drain 72s)
+[A] ingested 7161e7e2 (550 msgs, ingest 15s, drain 74s)
+[A] ingested a89d7624 (496 msgs, ingest 21s, drain 73s)
+[A] ingested d24813b1 (485 msgs, ingest 23s, drain 73s)
+[A] ingested caf03d32 (493 msgs, ingest 27s, drain 76s)
+[A] ingested 8a2466db (508 msgs, ingest 22s, drain 77s)
+[A] ingested 1c0ddc50 (548 msgs, ingest 13s, drain 81s)
+[A] ingested 0a34ad58 (485 msgs, ingest 9s, drain 78s)
+[A] ingested 57f827a0 (495 msgs, ingest 12s, drain 73s)
+[A] ingested 32260d93 (524 msgs, ingest 14s, drain 68s)
+[A] ingested 505af2f5 (501 msgs, ingest 20s, drain 60s)
+[A] ingested fca70973 (442 msgs, ingest 21s, drain 67s)
+[A] ingested afdc33df (502 msgs, ingest 24s, drain 65s)
+[A] ingested 38146c39 (538 msgs, ingest 23s, drain 65s)
+[A] ingested 75f70248 (466 msgs, ingest 20s, drain 71s)
+[A] ingested 1a1907b4 (532 msgs, ingest 17s, drain 76s)
+[A] ingested 95228167 (507 msgs, ingest 16s, drain 108s)
+[A] ingested 07b6f563 (524 msgs, ingest 14s, drain 105s)
+[A] ingested 1d4e3b97 (474 msgs, ingest 11s, drain 113s)
+[A] ingested b0479f84 (502 msgs, ingest 23s, drain 112s)
+[A] ingested 35a27287 (519 msgs, ingest 49s, drain 98s)
+[A] ingested b6025781 (460 msgs, ingest 53s, drain 93s)
+[A] ingested 2b8f3739 (491 msgs, ingest 67s, drain 86s)
+[A] ingested 099778bb (466 msgs, ingest 70s, drain 80s)
+[A] ingested 1f2b8d4f (522 msgs, ingest 55s, drain 77s)
+[A] ingested d6062bb9 (532 msgs, ingest 35s, drain 77s)
+[A] ingested 8e91e7d9 (498 msgs, ingest 17s, drain 73s)
+[A] ingested 80ec1f4f_abs (479 msgs, ingest 49s, drain 98s)
+[A] ingested gpt4_194be4b3 (474 msgs, ingest 19s, drain 74s)
+[A] ingested b3c15d39 (502 msgs, ingest 17s, drain 82s)
+[A] ingested 91b15a6e (489 msgs, ingest 24s, drain 82s)
+[A] ingested 77eafa52 (527 msgs, ingest 29s, drain 86s)
+[A] ingested 4adc0475 (490 msgs, ingest 11s, drain 80s)
+[A] ingested 7405e8b1 (469 msgs, ingest 25s, drain 94s)
+[A] ingested 078150f1 (551 msgs, ingest 27s, drain 93s)
+[A] ingested 6cb6f249 (470 msgs, ingest 31s, drain 96s)
+[A] ingested a11281a2 (457 msgs, ingest 32s, drain 95s)
+[A] ingested e6041065 (493 msgs, ingest 30s, drain 98s)
+[A] ingested 60bf93ed (494 msgs, ingest 33s, drain 88s)
+[A] ingested 7024f17c (483 msgs, ingest 32s, drain 88s)
+[A] ingested 0100672e (486 msgs, ingest 29s, drain 87s)
+[A] ingested efc3f7c2 (497 msgs, ingest 27s, drain 74s)
+[A] ingested gpt4_468eb063 (498 msgs, ingest 27s, drain 78s)
+[A] ingested gpt4_5438fa52 (513 msgs, ingest 27s, drain 74s)
+[A] ingested gpt4_1d80365e (517 msgs, ingest 22s, drain 82s)
+[A] ingested gpt4_65aabe59 (452 msgs, ingest 19s, drain 84s)
+[A] ingested gpt4_6ed717ea (489 msgs, ingest 31s, drain 81s)
+[A] ingested gpt4_f49edff3 (498 msgs, ingest 33s, drain 81s)
+[A] ingested gpt4_7bc6cf22 (519 msgs, ingest 36s, drain 83s)
+[A] ingested 2c63a862 (529 msgs, ingest 42s, drain 83s)
+[A] ingested gpt4_59149c78 (497 msgs, ingest 40s, drain 85s)
+[A] ingested gpt4_6dc9b45b (565 msgs, ingest 45s, drain 88s)
+[A] ingested gpt4_7f6b06db (558 msgs, ingest 37s, drain 93s)
+[A] ingested gpt4_4929293a (486 msgs, ingest 34s, drain 96s)
+[A] ingested gpt4_4edbafa2 (460 msgs, ingest 30s, drain 87s)
+[A] ingested gpt4_78cf46a3 (505 msgs, ingest 36s, drain 79s)
+[A] ingested 2ebe6c90 (485 msgs, ingest 33s, drain 79s)
+[A] ingested a3838d2b (484 msgs, ingest 24s, drain 80s)
+[A] ingested gpt4_7ca326fa (516 msgs, ingest 30s, drain 76s)
+[A] ingested gpt4_1a1dc16d (453 msgs, ingest 21s, drain 77s)
+[A] ingested 6e984301 (513 msgs, ingest 27s, drain 78s)
+[A] ingested 2ebe6c92 (487 msgs, ingest 26s, drain 78s)
+[A] ingested 6aeb4375 (468 msgs, ingest 21s, drain 99s)
+[A] ingested 031748ae_abs (523 msgs, ingest 24s, drain 96s)
+[A] ingested b6019101 (510 msgs, ingest 22s, drain 94s)
+[A] ingested 8fb83627 (485 msgs, ingest 15s, drain 102s)
+[A] ingested b01defab (503 msgs, ingest 29s, drain 101s)
+[A] ingested c7dc5443 (478 msgs, ingest 25s, drain 98s)
+[A] ingested a1eacc2a (474 msgs, ingest 26s, drain 94s)
+[A] ingested 2698e78f (478 msgs, ingest 28s, drain 92s)
+[A] ingested 6aeb4375_abs (521 msgs, ingest 34s, drain 72s)
+[A] ingested cc5ded98 (493 msgs, ingest 40s, drain 71s)
+[A] ingested e61a7584 (496 msgs, ingest 40s, drain 70s)
+[A] ingested ce6d2d27 (521 msgs, ingest 26s, drain 75s)
+[A] ingested 22d2cb42 (473 msgs, ingest 20s, drain 82s)
+[A] ingested ba61f0b9 (454 msgs, ingest 19s, drain 83s)
+[A] ingested 184da446 (473 msgs, ingest 15s, drain 84s)
+[A] ingested 0977f2af (484 msgs, ingest 16s, drain 87s)
+[A] ingested 031748ae (494 msgs, ingest 19s, drain 74s)
+[A] ingested dad224aa (521 msgs, ingest 27s, drain 83s)
+[A] ingested 5c40ec5b (479 msgs, ingest 29s, drain 80s)
+[A] ingested 0ddfec37_abs (447 msgs, ingest 18s, drain 81s)
+[A] answered d52b4f67 rep 0 in 3.0s
+[A] answered 66f24dbb rep 0 in 3.8s
+[A] answered 0862e8bf rep 0 in 2.9s
+[A] answered 4fd1909e rep 0 in 3.5s
+[A] answered f4f1d8a4_abs rep 0 in 7.6s
+[A] answered ccb36322 rep 0 in 3.5s
+[A] answered c8c3f81d rep 0 in 3.6s
+[A] answered 86b68151 rep 0 in 3.2s
+[A] answered 29f2956b rep 0 in 6.0s
+[A] answered 8e9d538c rep 0 in 7.6s
+[A] answered 19b5f2b3_abs rep 0 in 7.7s
+[A] answered 94f70d80 rep 0 in 2.8s
+[A] answered 6ade9755 rep 0 in 4.2s
+[A] answered 15745da0 rep 0 in 3.9s
+[A] answered 1e043500 rep 0 in 2.9s
+[A] answered 7527f7e2 rep 0 in 2.5s
+[A] answered 6b168ec8 rep 0 in 5.4s
+[A] answered a82c026e rep 0 in 8.9s
+[A] answered a06e4cfe rep 0 in 4.0s
+[A] answered 51a45a95 rep 0 in 6.4s
+[A] answered 3249768e rep 0 in 17.2s
+[A] answered 8aef76bc rep 0 in 6.2s
+[A] answered d596882b rep 0 in 4.8s
+[A] answered 51b23612 rep 0 in 7.6s
+[A] answered 1568498a rep 0 in 5.3s
+[A] answered 1903aded rep 0 in 5.8s
+[A] answered 6ae235be rep 0 in 4.6s
+[A] answered 1de5cff2 rep 0 in 3.8s
+[A] answered ceb54acb rep 0 in 5.1s
+[A] answered 7e00a6cb rep 0 in 5.8s
+[A] answered 488d3006 rep 0 in 5.5s
+[A] answered f523d9fe rep 0 in 7.9s
+[A] answered c4f10528 rep 0 in 5.2s
+[A] answered 8752c811 rep 0 in 6.5s
+[A] answered fea54f57 rep 0 in 7.0s
+[A] answered ac031881 rep 0 in 5.8s
+[A] answered 8cf51dda rep 0 in 4.7s
+[A] answered 778164c6 rep 0 in 9.5s
+[A] answered eaca4986 rep 0 in 8.3s
+[A] answered 7161e7e2 rep 0 in 6.0s
+[A] answered a89d7624 rep 0 in 7.3s
+[A] answered caf03d32 rep 0 in 12.0s
+[A] answered d24813b1 rep 0 in 13.5s
+[A] answered 8a2466db rep 0 in 12.6s
+[A] answered 1c0ddc50 rep 0 in 10.6s
+[A] answered 0a34ad58 rep 0 in 12.3s
+[A] answered 57f827a0 rep 0 in 13.8s
+[A] answered 32260d93 rep 0 in 11.7s
+[A] answered 505af2f5 rep 0 in 8.7s
+[A] answered fca70973 rep 0 in 19.8s
+[A] answered afdc33df rep 0 in 12.5s
+[A] answered 38146c39 rep 0 in 9.3s
+[A] answered 75f70248 rep 0 in 8.6s
+[A] answered 1a1907b4 rep 0 in 9.3s
+[A] answered 95228167 rep 0 in 6.7s
+[A] answered 07b6f563 rep 0 in 9.5s
+[A] answered 1d4e3b97 rep 0 in 8.4s
+[A] answered b0479f84 rep 0 in 7.3s
+[A] answered 35a27287 rep 0 in 17.7s
+[A] answered b6025781 rep 0 in 9.1s
+[A] answered 2b8f3739 rep 0 in 11.4s
+[A] answered 099778bb rep 0 in 4.2s
+[A] answered 1f2b8d4f rep 0 in 4.0s
+[A] answered 80ec1f4f_abs rep 0 in 7.8s
+[A] answered d6062bb9 rep 0 in 4.1s
+[A] answered 8e91e7d9 rep 0 in 4.5s
+[A] answered b3c15d39 rep 0 in 5.2s
+[A] answered gpt4_194be4b3 rep 0 in 13.3s
+[A] answered 77eafa52 rep 0 in 4.4s
+[A] answered 91b15a6e rep 0 in 4.8s
+[A] answered 4adc0475 rep 0 in 9.1s
+[A] answered 7405e8b1 rep 0 in 14.0s
+[A] answered 078150f1 rep 0 in 3.8s
+[A] answered 6cb6f249 rep 0 in 8.5s
+[A] answered e6041065 rep 0 in 16.1s
+[A] answered a11281a2 rep 0 in 4.6s
+[A] answered 60bf93ed rep 0 in 4.3s
+[A] answered 7024f17c rep 0 in 15.4s
+[A] answered 0100672e rep 0 in 4.6s
+[A] answered efc3f7c2 rep 0 in 22.7s
+[A] answered gpt4_468eb063 rep 0 in 6.8s
+[A] answered gpt4_5438fa52 rep 0 in 7.3s
+[A] answered gpt4_1d80365e rep 0 in 9.6s
+[A] answered gpt4_65aabe59 rep 0 in 11.0s
+[A] answered gpt4_6ed717ea rep 0 in 4.4s
+[A] answered gpt4_f49edff3 rep 0 in 3.4s
+[A] answered gpt4_7bc6cf22 rep 0 in 6.3s
+[A] answered 2c63a862 rep 0 in 13.9s
+[A] answered gpt4_59149c78 rep 0 in 21.8s
+[A] answered gpt4_6dc9b45b rep 0 in 4.6s
+[A] answered gpt4_7f6b06db rep 0 in 31.3s
+[A] answered gpt4_4929293a rep 0 in 3.0s
+[A] answered gpt4_4edbafa2 rep 0 in 4.2s
+[A] answered gpt4_78cf46a3 rep 0 in 3.8s
+[A] answered 2ebe6c90 rep 0 in 6.8s
+[A] answered a3838d2b rep 0 in 7.9s
+[A] answered gpt4_7ca326fa rep 0 in 3.9s
+[A] answered gpt4_1a1dc16d rep 0 in 4.1s
+[A] answered 2ebe6c92 rep 0 in 3.2s
+[A] answered 6e984301 rep 0 in 5.7s
+[A] answered 031748ae_abs rep 0 in 14.3s
+[A] answered 6aeb4375 rep 0 in 7.2s
+[A] answered b6019101 rep 0 in 16.2s
+[A] answered 8fb83627 rep 0 in 5.9s
+[A] answered b01defab rep 0 in 9.3s
+[A] answered c7dc5443 rep 0 in 7.5s
+[A] answered a1eacc2a rep 0 in 15.7s
+[A] answered 2698e78f rep 0 in 4.3s
+[A] answered 6aeb4375_abs rep 0 in 7.5s
+[A] answered cc5ded98 rep 0 in 5.8s
+[A] answered e61a7584 rep 0 in 4.4s
+[A] answered ce6d2d27 rep 0 in 8.4s
+[A] answered 22d2cb42 rep 0 in 9.0s
+[A] answered ba61f0b9 rep 0 in 14.3s
+[A] answered 184da446 rep 0 in 5.7s
+[A] answered 0977f2af rep 0 in 8.5s
+[A] answered 031748ae rep 0 in 7.2s
+[A] answered dad224aa rep 0 in 7.1s
+[A] answered 5c40ec5b rep 0 in 8.0s
+[A] answered 0ddfec37_abs rep 0 in 7.0s
+[A] answered d52b4f67 rep 1 in 2.0s
+[A] answered 66f24dbb rep 1 in 3.5s
+[A] answered 0862e8bf rep 1 in 2.5s
+[A] answered 4fd1909e rep 1 in 2.6s
+[A] answered f4f1d8a4_abs rep 1 in 12.3s
+[A] answered ccb36322 rep 1 in 3.3s
+[A] answered c8c3f81d rep 1 in 2.6s
+[A] answered 86b68151 rep 1 in 2.6s
+[A] answered 29f2956b rep 1 in 5.5s
+[A] answered 8e9d538c rep 1 in 6.6s
+[A] answered 19b5f2b3_abs rep 1 in 7.3s
+[A] answered 94f70d80 rep 1 in 2.1s
+[A] answered 6ade9755 rep 1 in 4.6s
+[A] answered 15745da0 rep 1 in 4.3s
+[A] answered 1e043500 rep 1 in 3.5s
+[A] answered 7527f7e2 rep 1 in 2.9s
+[A] answered 6b168ec8 rep 1 in 3.3s
+[A] answered a82c026e rep 1 in 3.2s
+[A] answered a06e4cfe rep 1 in 4.2s
+[A] answered 51a45a95 rep 1 in 7.0s
+[A] answered 3249768e rep 1 in 9.9s
+[A] answered 8aef76bc rep 1 in 6.5s
+[A] answered d596882b rep 1 in 3.9s
+[A] answered 51b23612 rep 1 in 5.8s
+[A] answered 1568498a rep 1 in 3.8s
+[A] answered 1903aded rep 1 in 4.4s
+[A] answered 6ae235be rep 1 in 4.5s
+[A] answered 1de5cff2 rep 1 in 3.5s
+[A] answered ceb54acb rep 1 in 3.0s
+[A] answered 7e00a6cb rep 1 in 4.8s
+[A] answered 488d3006 rep 1 in 4.4s
+[A] answered f523d9fe rep 1 in 5.4s
+[A] answered c4f10528 rep 1 in 4.8s
+[A] answered 8752c811 rep 1 in 4.2s
+[A] answered fea54f57 rep 1 in 8.6s
+[A] answered ac031881 rep 1 in 3.3s
+[A] answered 8cf51dda rep 1 in 4.0s
+[A] answered 778164c6 rep 1 in 9.5s
+[A] answered eaca4986 rep 1 in 7.6s
+[A] answered 7161e7e2 rep 1 in 6.5s
+[A] answered a89d7624 rep 1 in 6.2s
+[A] answered caf03d32 rep 1 in 12.9s
+[A] answered d24813b1 rep 1 in 9.4s
+[A] answered 8a2466db rep 1 in 15.8s
+[A] answered 1c0ddc50 rep 1 in 10.2s
+[A] answered 0a34ad58 rep 1 in 12.0s
