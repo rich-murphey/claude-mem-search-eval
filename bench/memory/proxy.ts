@@ -155,7 +155,7 @@ async function handle(req: IncomingMessage, res: ServerResponse) {
     route = 'runner';
     target = `${values['messages-upstream']}/v1/messages`;
     delete headers.authorization;
-    headers['x-cmem-caller'] = `memory-bench.${tag}`;
+    headers['x-trove-caller'] = `memory-bench.${tag}`;
   }
   if (values['no-openrouter'] && route !== 'embeddings' && route !== 'openai.chat' && route !== 'runner') {
     appendFileSync(values.log!, JSON.stringify({ ts: new Date().toISOString(), tag, ctx, route, model: body?.model ?? null, status: 403, error: 'openrouter refused (--no-openrouter)' }) + '\n');
