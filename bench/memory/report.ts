@@ -1,4 +1,4 @@
-// Pilot summary for the memory benchmark (claude-mem-rs#52).
+// Pilot summary for the memory benchmark (trove#52).
 //
 //   node bench/memory/report.ts --out results/memory-bench/pilot --usage results/memory-bench/pilot/usage.jsonl
 //        --pins bench/memory/pins.json --summary <path to pilot-summary.json> [--kappa-sample 0.1]

@@ -185,7 +185,7 @@ multilingual late-interaction model (e.g. jina-colbert-v2, not measured).
 
 ## Porting to Rust
 
-What a port (candle 0.9 as in xerj's `xerj-cmem-embed`, or `ort`) has to
+What a port (candle 0.9 as in xerj's `xerj-trove-embed`, or `ort`) has to
 reproduce; `fixtures/colbert-parity.jsonl` checks it.
 
 - **Weights**: `answerdotai/answerai-colbert-small-v1` revision

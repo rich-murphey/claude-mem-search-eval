@@ -1,6 +1,6 @@
 # ColBERT token vectors at int8
 
-Revised 2026-11-02. Can claude-mem-rs's `part_colbert` table store
+Revised 2026-11-02. Can trove's `part_colbert` table store
 answerai-colbert-small's document token vectors as int8 instead of fp16
 without losing rerank quality? Offline: the fp16 vectors of release v5 and
 the pools of results/colbert-rerank.md, re-scored with quantised copies.
@@ -158,7 +158,7 @@ Candidates are padded to a multiple of 8 tokens by repeating the last token
 - The benchmark source is not in this repo (scratchpad on `dv`); the kernels
   are as the table describes.
 
-## For claude-mem-rs
+## For trove
 
 - **Store `part_colbert` as int8 with one scale per dimension**: 96 bytes a
   token, a fixed 96-entry f32 table per model computed once over a large

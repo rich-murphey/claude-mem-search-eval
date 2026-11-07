@@ -1,4 +1,4 @@
-// Shared pieces of the memory benchmark harness (claude-mem-rs#52): the
+// Shared pieces of the memory benchmark harness (trove#52): the
 // dataset, the pilot subset, the model call through the usage proxy, timing,
 // and JSONL files.
 import { execFileSync, spawn } from 'node:child_process';
@@ -79,7 +79,7 @@ const WEEK_STOP_PCT = 80;
 let weekCheckedAt = 0;
 
 function weekUsedPct(): number {
-  const out = execFileSync(`${homedir()}/opt/claude-mem-rs/bin/claude-mem-rs`, ['queue', 'status'], { encoding: 'utf8' });
+  const out = execFileSync(`${homedir()}/opt/trove/bin/trove`, ['queue', 'status'], { encoding: 'utf8' });
   return Number(JSON.parse(out).week_used_pct);
 }
 

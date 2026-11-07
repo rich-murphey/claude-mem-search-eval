@@ -1,4 +1,4 @@
-# memory-bench-pilot-120.txt reordered round-robin by type (one of each of the 6 types in turn), so a run stopped after N questions is balanced across types. claude-mem-rs#52, 2026-11-06.
+# memory-bench-pilot-120.txt reordered round-robin by type (one of each of the 6 types in turn), so a run stopped after N questions is balanced across types. trove#52, 2026-11-06.
 d52b4f67
 3249768e
 a89d7624

@@ -3,8 +3,8 @@
     "honcho_commit": "3326373c35f6538fb3b7af97803abe328c5aafb4",
     "honcho_config": "bench/memory/honcho.config.toml (Plastic Labs' published LongMemEval S settings mapped onto 3326373c)",
     "honcho_postgres_image": "pgvector/pgvector:pg17 sha256:ac08538c6f8b9904c33c8224c5e5706dbe760aca29db1d096972b4052c22a75d",
-    "claude_mem_rs_commit": "d86dbb06119617a1f074a8054895e537793505fa",
-    "claude_mem_rs_config": "bench/memory/cmr-up.sh (live.env retrieval settings of 2026-11-06, except the API cross-encoder: off, since it calls OpenRouter's rerank; inject gate off; 16 generation workers)",
+    "trove_commit": "d86dbb06119617a1f074a8054895e537793505fa",
+    "trove_config": "bench/memory/cmr-up.sh (live.env retrieval settings of 2026-11-06, except the API cross-encoder: off, since it calls OpenRouter's rerank; inject gate off; 16 generation workers)",
     "eval_commit": "",
     "datasets": {
       "longmemeval": "xiaowu0162/longmemeval-cleaned@98d7416c24c778c2fee6e6f3006e7a073259d48f longmemeval_s_cleaned.json sha256 d6f21ea9d60a0d56f34a05b609c79c88a451d2ae03597821ea3d5a9678c3a442; oracle arm G derived from it (evidence sessions only)",
@@ -15,7 +15,7 @@
     "second_judge_model": "claude-fable-5-1 via `claude -p` on the subscription (Rich's order, 2026-11-06; the plan named claude-sonnet-5-5)",
     "ingestion_models": {
       "A": "gemini-2.5-flash-lite via OpenRouter google/gemini-2.5-flash-lite, provider Google AI Studio; temperature 0, reasoning max_tokens 1024 (published: gemini-2.5-flash-lite-preview-09-2025 via Google)",
-      "B": "claude-haiku-5-5 through a bench claude-mem-rs runner on the subscription (bench/memory/runner-up.sh: runner binary sha256 2380a6da…, haiku pool only, 12 slots, no observer tools), from 2026-11-06 20:43 UTC; the smoke run used OpenRouter anthropic/claude-haiku-5.5",
+      "B": "claude-haiku-5-5 through a bench trove runner on the subscription (bench/memory/runner-up.sh: runner binary sha256 2380a6da…, haiku pool only, 12 slots, no observer tools), from 2026-11-06 20:43 UTC; the smoke run used OpenRouter anthropic/claude-haiku-5.5",
       "C": "not run: needs gemini-2.5-flash-lite, which only OpenRouter serves (no OpenRouter, Rich 2026-11-06)"
     },
     "honcho_dialectic_model": "claude-haiku-4-5 via OpenRouter anthropic/claude-haiku-4.5, provider Anthropic; thinking 4096, 20 tool iterations (published: the same model through OpenRouter, provider 'custom')",

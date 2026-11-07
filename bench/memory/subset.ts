@@ -1,4 +1,4 @@
-// Draws the pilot subset (claude-mem-rs#52): 20 LongMemEval S questions of
+// Draws the pilot subset (trove#52): 20 LongMemEval S questions of
 // each of the 6 types, seed 52, written to manifests/memory-bench-pilot-120.txt.
 //
 //   node bench/memory/subset.ts [--per-type 20] [--seed 52]

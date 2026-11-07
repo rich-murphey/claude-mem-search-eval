@@ -1,5 +1,5 @@
 // Phase 4–5 budget, extrapolated from the pilot's measured costs and rates
-// (claude-mem-rs#52, docs/memory-benchmark.md § Phases).
+// (trove#52, docs/memory-benchmark.md § Phases).
 //
 //   node bench/memory/budget.ts --summary <pilot-summary.json> --out results/memory-bench/pilot
 //

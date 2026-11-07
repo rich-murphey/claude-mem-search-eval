@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Start (or stop) the bench Honcho stack on dv (claude-mem-rs#52).
+# Start (or stop) the bench Honcho stack on dv (trove#52).
 #
 #   bench/memory/honcho-up.sh up|down|reset
 #
@@ -46,7 +46,7 @@ docker exec bench-honcho-pg psql -U postgres -qc 'CREATE EXTENSION IF NOT EXISTS
 systemctl --user stop bench-honcho.service 2>/dev/null || true
 systemctl --user reset-failed bench-honcho.service 2>/dev/null || true
 systemd-run --user --unit bench-honcho --collect --working-directory "$TREE" -E PATH="$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin" \
-  -p "Description=bench Honcho API + deriver (claude-mem-rs#52)" \
+  -p "Description=bench Honcho API + deriver (trove#52)" \
   /usr/bin/taskset -c "$CPUS" bash -c \
   'uv run --quiet fastapi run --host 127.0.0.1 --port 8010 src/main.py & uv run --quiet python -m src.deriver & wait -n; kill 0'
 for _ in $(seq 90); do

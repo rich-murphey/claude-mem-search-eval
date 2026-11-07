@@ -1,4 +1,4 @@
-// Memory benchmark runner (claude-mem-rs#52, docs/memory-benchmark.md).
+// Memory benchmark runner (trove#52, docs/memory-benchmark.md).
 //
 //   node bench/memory/run.ts --arm A|B|C|D|E|F|G --manifest manifests/memory-bench-pilot-120.txt
 //        --out results/memory-bench/pilot [--stage ingest|query|judge|all] [--repeats 3]

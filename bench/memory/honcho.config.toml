@@ -1,4 +1,4 @@
-# Honcho config for the memory benchmark (claude-mem-rs#52), copied to
+# Honcho config for the memory benchmark (trove#52), copied to
 # config.toml in the Honcho tree (~/wt/honcho/cc-memory-bench) by run-honcho.sh.
 #
 # Mirrors Plastic Labs' published LongMemEval S run (honcho-benchmarks

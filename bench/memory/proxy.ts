@@ -1,4 +1,4 @@
-// LLM usage proxy for the memory benchmark (claude-mem-rs#52).
+// LLM usage proxy for the memory benchmark (trove#52).
 //
 //   node bench/memory/proxy.ts --port 37902 --log results/memory-bench/<phase>/usage.jsonl
 //
@@ -28,7 +28,7 @@ const { values } = parseArgs({
     log: { type: 'string', default: 'results/memory-bench/usage.jsonl' },
     // Rich, 2026-11-06: no OpenRouter at all; its routes answer 403.
     'no-openrouter': { type: 'boolean', default: false },
-    // Messages calls go here instead (the claude-mem-rs subscription runner), model names unmapped.
+    // Messages calls go here instead (the trove subscription runner), model names unmapped.
     'messages-upstream': { type: 'string' },
   },
 });

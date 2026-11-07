@@ -1,4 +1,4 @@
-// Honcho adapter (arms A and E) over its v3 HTTP API (claude-mem-rs#52).
+// Honcho adapter (arms A and E) over its v3 HTTP API (trove#52).
 //
 // Per question: one workspace (named for the question), two peers, one
 // Honcho session per benchmark session, each session's turns added in order

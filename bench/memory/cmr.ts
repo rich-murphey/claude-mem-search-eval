@@ -1,4 +1,4 @@
-// claude-mem-rs adapter (arms B, C, D) over its HTTP API (claude-mem-rs#52).
+// trove adapter (arms B, C, D) over its HTTP API (trove#52).
 //
 // B and C ingest a chat the way the live plugin does (measured on the live
 // store 2026-11-06: user_prompt events carry no generation job, every

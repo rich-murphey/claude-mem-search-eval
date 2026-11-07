@@ -1,4 +1,4 @@
-// Phase 1 isolation check (claude-mem-rs#52): ask question 2 against question
+// Phase 1 isolation check (trove#52): ask question 2 against question
 // 1's store; none of question 2's evidence sessions may come back.
 //
 //   node bench/memory/isolation.ts --manifest manifests/memory-bench-smoke-2.txt [--prefix smoke-]

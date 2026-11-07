@@ -1,4 +1,4 @@
-// The judge and the shared answer harness (claude-mem-rs#52).
+// The judge and the shared answer harness (trove#52).
 //
 // Judge: LongMemEval's own answer-check prompts, copied from
 // xiaowu0162/LongMemEval src/evaluation/evaluate_qa.py get_anscheck_prompt

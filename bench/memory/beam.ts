@@ -1,5 +1,5 @@
 // One BEAM conversation ingested into arm A or B, to measure how ingestion
-// cost, drain time, CPU, RAM and disk scale to 1M tokens (claude-mem-rs#52,
+// cost, drain time, CPU, RAM and disk scale to 1M tokens (trove#52,
 // Phase 3). Accuracy on BEAM needs its nugget judge and is left to the full
 // runs.
 //

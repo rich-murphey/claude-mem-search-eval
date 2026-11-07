@@ -26,7 +26,7 @@ _Written 2026-11-07 from commits through a734f83, plan documents, issues and ses
    (the branch whose hybrid has the bm25 leg). Then rerun `bun src/server-search.ts --mode store`
    on LongMemEval and memsearch. Done when the server's own store-mode R@5 matches
    results/model-agnostic.md (MiniLM-L6 macro +0.014) within its interval. Underway in
-   claude-mem-rs/dashboard (dv, /home/rich/wt/claude-mem-rs/dashboard).
+   trove/dashboard (dv, /home/rich/wt/trove/dashboard).
 
 **Waiting on**
 nothing

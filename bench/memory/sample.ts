@@ -1,4 +1,4 @@
-// cgroup v2 resource sampler for the memory benchmark (claude-mem-rs#52).
+// cgroup v2 resource sampler for the memory benchmark (trove#52).
 //
 // Once a second, for each named cgroup: cpu.stat usage_usec, memory.current,
 // memory.peak, io.stat rbytes/wbytes summed over devices; plus the whole
