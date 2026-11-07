@@ -7,53 +7,64 @@ result can be checked in minutes rather than recomputed in hours.
 
 ## Where this stands
 
-<!-- status:begin sha=4a789c8 at=2026-11-06 -->
-_Written 2026-11-06 from commits through 4a789c8, issues https://github.com/rich-murphey/claude-mem-search-eval/issues/1 and https://github.com/rich-murphey/claude-mem-search-eval/issues/2, upstream PRs, and the judged-precision run._
+<!-- status:begin sha=a734f83 at=2026-11-07 -->
+_Written 2026-11-07 from commits through a734f83, plan documents, issues and session summaries, and the work view._
 
 **Next**
-1. <a id="n-de9865"></a>Open the claude-mem PR. First action: Rich reads the draft
-   (`~/wt/claude-mem/upstream-draft/pr.md`, local, not in a repo). He checks that its base hash
-   (9e4f313a8), commit count, cited hashes and test counts match the rebased branch. Then he
-   pushes `pr/pgvector-search` (tree `~/wt/claude-mem/granite`, local only) to the fork. Done
-   when the PR is open on thedotmack/claude-mem with release v2 linked.
+1. <a id="n-de9865"></a>Open the claude-mem PR, or drop it if upstream's PR 5001 covers it. First action:
+   diff `pr/pgvector-search` (tree `~/wt/claude-mem/granite`, local only) against upstream main
+   to see what PR 5001 (https://github.com/thedotmack/claude-mem/pull/5001) left out. If
+   something is left, read the draft (`~/wt/claude-mem/upstream-draft/pr.md`, local) and fix its
+   base hash (9e4f313a8), commit count, cited hashes and test counts to match the rebased
+   branch, then push the branch to the fork. Done when the PR is open on thedotmack/claude-mem
+   with release v2 linked, or you have recorded that nothing is left. Underway in
+   claude-mem-search-eval/cc-claude-mem-search-eval-batch (dv,
+   /home/rich/wt/claude-mem-search-eval/cc-claude-mem-search-eval-batch).
 2. <a id="n-9ba082"></a>Set claude-mem's RRF k to 5, issue
    https://github.com/rich-murphey/claude-mem-search-eval/issues/1. First action: change
    `const RRF_K = 60` in `src/storage/postgres/observations.ts` on `int/docs-semantic-inject`
    (the branch whose hybrid has the bm25 leg). Then rerun `bun src/server-search.ts --mode store`
    on LongMemEval and memsearch. Done when the server's own store-mode R@5 matches
-   results/model-agnostic.md (MiniLM-L6 macro +0.014) within its interval.
+   results/model-agnostic.md (MiniLM-L6 macro +0.014) within its interval. Underway in
+   claude-mem-rs/dashboard (dv, /home/rich/wt/claude-mem-rs/dashboard).
 
 **Waiting on**
 nothing
 
 **Context for the above**
-- 2026-11-06, issue https://github.com/rich-murphey/claude-mem-search-eval/issues/2: plan
-  step 5 is done. GPT-4o judged the unlabelled top-5 sessions on the 100-question LongMemEval
-  sample ($2.94 on OpenRouter), and Claude Sonnet 5.5 checked 40 verdicts. Judged P@5 is 0.354
-  (bound 0.348–0.402), the same as label P@5: the cleaned labels miss almost no answers.
+- 2026-11-06, src/judge.ts, 9f0774d: Rich approved about $3 of OpenRouter spend for the GPT-4o
+  judge, the same judge the memory benchmark uses.
+- 2026-11-06, src/judge-check.ts, 9f0774d: Rich ruled the check of the judge runs on `claude -p`
+  on the subscription.
+- 2026-11-06, bench/memory/common.ts, dd9b08f: benchmark answers use claude-haiku-4-5 via
+  `claude -p` on the subscription. No API key, no new OpenRouter spend; fall back to the nearest
+  Haiku for all arms.
+- 2026-11-06, bench/memory/judge.ts, dd9b08f: the second judge is claude-fable-5-1 via `claude -p`.
+- 2026-11-06, a734f83: Rich ruled no more Honcho benchmarking. Services are stopped; B (38 of 120
+  ingested) and D (48 of 120 ingested) are left partial. Nothing here is next. This supersedes the
+  earlier ruling to suspend arms D and B (SIGSTOP) when dv is short of CPU, since both arms are
+  now stopped for good (memory, 2026-11-07).
+- 2026-10-31, c8a3bec, ad0a139, 418c93e, issue
+  https://github.com/rich-murphey/claude-mem-search-eval/issues/1: RRF k = 5 is the one free
+  change both models choose and no dataset loses (store R@5 macro +0.014 MiniLM, +0.038 e5).
+  Convex fusion gains more, but its weight is per model and reading bm25 scores costs up to 0.4 s.
 - 2026-10-23: upstream merged pgvector search as
-  https://github.com/thedotmack/claude-mem/pull/5001 (`pr/pgvector-core`, 46 commits). Nobody
-  has checked whether that leaves anything for `pr/pgvector-search` (Next 1).
-- 2026-10-31, c8a3bec, ad0a139, 418c93e,
-  issue https://github.com/rich-murphey/claude-mem-search-eval/issues/1:
-  results/model-agnostic.md measures what works on top of any stored vectors, on all seven
-  datasets with MiniLM-L6 and e5-small. RRF k = 5 is the one free change that both models
-  choose and no dataset loses (store R@5 macro +0.014 MiniLM, +0.038 e5). Convex score fusion
-  gains more, but its weight is per model and reading pg_textsearch bm25 scores costs up to
-  0.4 s a query.
-- 2026-10-20, upstream 9e4f313a8: `pr/pgvector-search` (13 commits) was rebased onto it
-  without conflicts; tests 581 pass, 18 fail (upstream's same 18). The draft `pr.md` cites
-  stale hashes and test counts. claude-mem memory shows the PR still unopened and the draft
-  still stale, citing 583 pass against the branch's 581 (memory, 2026-11-03).
-- 2026-10-22, 916965d: the store-mode and scoped bm25 runs use `pr/model-choice`, while the
-  PR branch in Next 1 is `pr/pgvector-search`; only `int/docs-semantic-inject` carries the
-  bm25 hybrid leg that Next 2 changes.
+  https://github.com/thedotmack/claude-mem/pull/5001. 2026-10-20, 9e4f313a8: `pr/pgvector-search`
+  (13 commits) was rebased onto it; tests 581 pass, 18 fail (upstream's same 18). The draft
+  `pr.md` still cites stale hashes and 583 passes.
+- 2026-10-22, 916965d: store-mode and scoped bm25 runs use `pr/model-choice`; only
+  `int/docs-semantic-inject` carries the bm25 hybrid leg that Next 2 changes.
 
 **Open questions**
+- <a id="n-601958"></a>Does upstream's merged pgvector search (claude-mem PR 5001) leave anything for the PR in Next 1?
+  Stage: open since 2026-11-06. No recommendation recorded.
+- <a id="n-c7ce65"></a>Should a person also read the 40 check rows in `results/judge/check.tsv`, since a second model
+  and not a human did the check? Stage: asked 2026-11-06. No recommendation recorded.
 - <a id="n-d504bb"></a>Which release should GitHub mark as Latest, v4 or v5? The README has no
   rule, and the last session set v4 back to Latest only for that reason. Stage: open since
   2026-11-05. No recommendation recorded.
 <!-- status:end -->
+
 
 
 
