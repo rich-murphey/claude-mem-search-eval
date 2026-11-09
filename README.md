@@ -7,39 +7,35 @@ result can be checked in minutes rather than recomputed in hours.
 
 ## Where this stands
 
-<!-- status:begin sha=28ecabb at=2026-11-08 -->
-_Written 2026-11-08 from commits through 28ecabb, plan documents, issues and session summaries, and the work view._
+<!-- status:begin sha=58304f6 at=2026-11-09 -->
+_Written 2026-11-09 from commits through 58304f6, plan documents, issues and session summaries, and the work view._
 
 **Next**
-1. <a id="n-de9865"></a>Open the claude-mem PR, or drop it if upstream's PR 5001 covers it. First
-   action: diff `pr/pgvector-search` (tree `~/wt/claude-mem/granite`, local only) against
-   upstream main to see what PR 5001 (https://github.com/thedotmack/claude-mem/pull/5001) left
-   out. If something is left, fix the draft `~/wt/claude-mem/upstream-draft/pr.md` (base hash
-   9e4f313a8, commit count, cited hashes, test counts) and push the branch to the fork. Done
-   when the PR is open on thedotmack/claude-mem with release v2 linked, or you have recorded
-   that nothing is left. Underway in session 63f002ce (host and tree not recorded).
+1. <a id="n-de9865"></a>Open the claude-mem PR, or drop it if upstream's PR 5001 covers it. First action:
+   diff `pr/pgvector-search` (tree `~/wt/claude-mem/granite`, local only) against upstream main to
+   see what https://github.com/thedotmack/claude-mem/pull/5001 left out. If something is left,
+   fix the draft `~/wt/claude-mem/upstream-draft/pr.md` (base hash 9e4f313a8, commit count, cited
+   hashes, test counts) and push the branch to the fork. Done when the PR is open on
+   thedotmack/claude-mem with release v2 linked, or you have recorded that nothing is left.
+   Parked since 2026-11-06.
 
 **Waiting on**
 nothing
 
 **Context for the above**
-- 2026-11-07, issue https://github.com/rich-murphey/claude-mem-search-eval/issues/1 (handoff from
-  trove/rrf-k-sweep, c6893854): trove's TROVE_RRF_K stays 60, since under its live ColBERT
-  rerank no k beats 60. This concerns trove's server, not claude-mem's hybrid.
-- 2026-10-31, c8a3bec, ad0a139, 418c93e, issue
-  https://github.com/rich-murphey/claude-mem-search-eval/issues/1: RRF k = 5 is the one free
-  change both models choose and no dataset loses (store R@5 macro +0.014 MiniLM, +0.038 e5).
-  Memory shows claude-mem's RRF k set from 60 to 5 in `src/storage/postgres/observations.ts` on
-  `int/docs-semantic-inject` (memory, 2026-11-08). The former Next item 2 is dropped. Memory does
-  not show the store-mode rerun against results/model-agnostic.md, so that check is not confirmed.
+- Ruled 2026-11-06: Rich ended the Honcho benchmarking at about 21:45 UTC and every bench service was stopped. This supersedes the earlier ruling that arms D and B are paused when dv is short of CPU. B and D stay partial, with 38 and 48 of 120 ingested and no judged scores. Trove issue #52 was closed as not planned (memory, 2026-11-07).
 - 2026-10-23: upstream merged pgvector search as
-  https://github.com/thedotmack/claude-mem/pull/5001. 2026-10-20, 9e4f313a8: `pr/pgvector-search`
+  https://github.com/thedotmack/claude-mem/pull/5001 (46 commits, memory 2026-11-06). 2026-10-20, 9e4f313a8: `pr/pgvector-search`
   (13 commits) was rebased onto it; tests 581 pass, 18 fail (upstream's same 18). The draft
   `pr.md` still cites stale hashes and 583 passes.
+- 2026-10-31, c8a3bec, ad0a139, 418c93e, issue
+  https://github.com/rich-murphey/claude-mem-search-eval/issues/1: RRF k = 5 is the free win.
+  Memory shows it set in `src/storage/postgres/observations.ts` on `int/docs-semantic-inject`
+  (2026-11-08). The store-mode rerun against results/model-agnostic.md is not confirmed. Issue #1 was still open on 2026-11-06 (memory, 2026-11-06).
 - 2026-10-22, 916965d: store-mode and scoped bm25 runs use `pr/model-choice`; only
-  `int/docs-semantic-inject` carries the bm25 hybrid leg that the RRF k change touched.
-- 2026-11-06, 9f0774d: Rich ruled the check of the judge runs on `claude -p` on the
-  subscription; the 40 check rows are in `results/judge/check.tsv`.
+  `int/docs-semantic-inject` has the bm25 hybrid leg that the RRF k change touched.
+- 2026-11-06, 9f0774d: Rich ruled the judge-run check goes on `claude -p` on the subscription;
+  the 40 check rows are in `results/judge/check.tsv`. Issue #2 is closed. The check used Claude Sonnet 5.5 and agreed on 39 of 40 verdicts (memory, 2026-11-06).
 
 **Open questions**
 - <a id="n-601958"></a>Does upstream's merged pgvector search (claude-mem PR 5001) leave anything
@@ -51,6 +47,7 @@ nothing
   rule, and the last session set v4 back to Latest only for that reason. Stage: open since
   2026-11-05. No recommendation recorded.
 <!-- status:end -->
+
 
 
 
